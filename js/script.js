@@ -7,12 +7,12 @@ window.onload = function() {
         renderer = new THREE.WebGLRenderer({ antialias: true }); // antialias - сглаживаем ребра
 
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0xFFFFFF);
+    renderer.setClearColor(0x000000);
     document.body.appendChild(renderer.domElement);
 
     camera.position.z = 190;
 
-    let light = new THREE.DirectionalLight( 0xfff7e8, 1);
+    let light = new THREE.DirectionalLight( 0xfff7e8, 0.9);
 	scene.add(light); 
 
 
@@ -45,19 +45,32 @@ window.onload = function() {
                 meshes.push(child);
             }
         });
-
+        console.log(meshes);
         let head = meshes[0],
     	body = meshes[1];
 	 
 	    head.position.y = -80;
 	    body.position.y = -80;
 
+	    let bumpMapBody = new THREE.TextureLoader().load('model/BODY bump MAP.jpg');
+	    let bumpMapHead = new THREE.TextureLoader().load('model/HEAD bump MAP.jpg');
+
 	    scene.add(head);
 	    scene.add(body);
 
 	    // head.material = new THREE.MeshNormalMaterial();
-	    head.material = new THREE.MeshNormalMaterial()
-	    body.material = new THREE.MeshNormalMaterial();
+	    head.material = new THREE.MeshPhongMaterial({
+	    	map: textureHead,
+	    	bumpMap: bumpMapHead,
+	    	bumpScale: 1,
+	    	specular: 0xfff7e8// блик
+	    });
+	    body.material = new THREE.MeshPhongMaterial({
+	    	map: textureBody,
+	    	bumpMap: bumpMapBody,
+	    	bumpScale: 1,
+	    	specular: 0xfff7e8
+	    });
     });
 
     	
