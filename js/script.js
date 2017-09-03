@@ -1,51 +1,60 @@
 // "use strict";
 
 window.onload = function() {
-    let scene = new THREE.Scene(),
-        camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 10000),
+    let scene, camera, renderer
+    scene = new THREE.Scene();
+
+    function init() {
+        camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 10000);
         renderer = new THREE.WebGLRenderer({ antialias: true }); // antialias - сглаживаем ребра
+        camera.position.set(300, 800, 800);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.setSize(window.innerWidth - 5, window.innerHeight - 5);
+        renderer.setClearColor(0x000000);
+        document.body.appendChild(renderer.domElement);
+    }
+    function resize(){
+        camera.aspect = window.innerWidth / window.innerHeight;
+        renderer.setSize(window.innerWidth - 5, window.innerHeight - 5);
+        camera.updateProjectionMatrix ()
+    }
+    
 
-    renderer.setSize(window.innerWidth - 5, window.innerHeight - 5);
-    renderer.setClearColor(0x000000);
-    document.body.appendChild(renderer.domElement);
 
-    camera.position.x = 300;
-    camera.position.y = 800;
-    camera.position.z = 800;
     /////////////////////////////////////////////////////////////////
-    let light = new THREE.DirectionalLight(0xfff7e8, 0.9);
+    let light, d = 500;
+    // scene.add(new THREE.AmbientLight(0x666666));
+    light = new THREE.DirectionalLight(0xdfebff, 1.2);
+    light.position.set(0, 100, 0);
+    light.position.multiplyScalar(1.3);
+    light.castShadow = true;
+    light.shadow.mapSize.width = 1024;
+    light.shadow.mapSize.height = 1024;
+    light.shadow.camera.left = -d;
+    light.shadow.camera.right = d;
+    light.shadow.camera.top = d;
+    light.shadow.camera.bottom = -d;
+    light.shadow.camera.far = 2000;
     scene.add(light);
-
-    let light1 = new THREE.SpotLight(0xffffff);
-    light1.position.set(300, 200, 200);
-    light1.castShadow = true;
-    light1.shadow.mapSize.width = 500; // default
-    light1.shadow.mapSize.height = 500; // default
-    light1.shadow.camera.near = 0.1; // default
-    light1.shadow.camera.far = 300 // default
-    scene.add(light1);
-
-    let amColor = '#faffe3',
-        amLight = new THREE.AmbientLight(amColor);
-    scene.add(amLight);
 
     ////////////////////////////////////////////////// - plane
 
-    let plane_texture = new THREE.Texture(),
-        plane_loader = new THREE.ImageLoader();
+    let planeTexture = new THREE.Texture(),
+        planeLoader = new THREE.ImageLoader(),
+        planeBump = new THREE.TextureLoader().load('bump-metal.jpg');
 
-    plane_loader.load("asphalt_texture.jpg", function(e) {
-        plane_texture.image = e; // событие загрузки
-        plane_texture.needsUpdate = true;
+    planeLoader.load("floor.jpg", function(e) {
+        planeTexture.image = e; // событие загрузки
+        planeTexture.needsUpdate = true;
     });
 
-    let geometry = new THREE.PlaneGeometry(window.innerWidth, window.innerHeight); // 2д форма для поверхности
-    geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
-    // let material = new THREE.MeshStandardMaterial({ color: 0x838383 });
-    let material = new THREE.MeshStandardMaterial({ map: plane_texture, overdraw: true }),
-        plane = new THREE.Mesh(geometry, material);
-    plane.receiveShadow = true;
-    scene.add(plane);
+    let planeGeom = new THREE.PlaneGeometry(1000, 1000); // 2д форма для поверхности
+    planeGeom.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
+    let planeMat = new THREE.MeshStandardMaterial({ map: planeTexture, overdraw: true, bumpMap: planeBump }),
+        planeMesh = new THREE.Mesh(planeGeom, planeMat);
+    planeMesh.receiveShadow = true;
+    scene.add(planeMesh);
 
     /////////////////////////////////////////////////////
 
@@ -94,6 +103,8 @@ window.onload = function() {
 
         head.position.y = 0;
         head.position.x = 10;
+        sphere.castShadow = true; //default is false
+        sphere.receiveShadow = true; //defaul
         // body.position.y = 0;
         // body.castShadow = true; //default is false
         // body.receiveShadow = true; //defaul
@@ -131,56 +142,61 @@ window.onload = function() {
 
     let angle = 0,
         radius = 5;
+
     function animation(program) {
         switch (program) {
             case '8':
-                head.position.z += -10;
-                sphere.position.z += -10;
-                sphere.rotation.x -= 180 / Math.PI * 0.002;
+                head.position.z += -15;
+                sphere.position.z += -15;
+                sphere.rotation.x -= 180 / Math.PI * 0.003;
                 break;
             case '2':
-                head.position.z += 10;
-                sphere.position.z += 10;
-                sphere.rotation.x += 180 / Math.PI * 0.002;
+                head.position.z += 15;
+                sphere.position.z += 15;
+                sphere.rotation.x += 180 / Math.PI * 0.003;
                 break;
             case '4':
-                head.position.x += -10;
-                sphere.position.x += -10;
-                sphere.rotation.z += 180 / Math.PI * 0.002;
+                head.position.x += -15;
+                sphere.position.x += -15;
+                sphere.rotation.z += 180 / Math.PI * 0.003;
                 break;
             case '6':
-                head.position.x += 10;
-                sphere.position.x += 10;
-                sphere.rotation.z -= 180 / Math.PI * 0.002;
+                head.position.x += 15;
+                sphere.position.x += 15;
+                sphere.rotation.z -= 180 / Math.PI * 0.003;
                 break;
             case '7':
-            	head.position.z += 4 * Math.sin(angle);
-		        head.position.x += 4 * Math.cos(angle);
-	            sphere.position.z += 4 * Math.sin(angle);
-		        sphere.position.x += 4 * Math.cos(angle);
-		        sphere.rotation.y -= 180 / Math.PI * 0.002;
-		        // sphere.rotation.x += 180 / Math.PI * 0.002;
-		        angle += Math.PI / 180 * 2; // 2 - degree
+                head.position.z += 4 * Math.sin(angle);
+                head.position.x += 4 * Math.cos(angle);
+                sphere.position.z += 4 * Math.sin(angle);
+                sphere.position.x += 4 * Math.cos(angle);
+                sphere.rotation.y -= 180 / Math.PI * 0.002;
+                // sphere.rotation.x += 180 / Math.PI * 0.002;
+                angle += Math.PI / 180 * 2; // 2 - degree
                 // head.position.z += -10;
                 // sphere.position.z += -10;
                 // sphere.rotation.x -= 180 / Math.PI * 0.002;
                 // head.position.x += -10;
                 // sphere.position.x += -10;
                 // sphere.rotation.z -= 180 / Math.PI * 0.002;
-                break;    
-            /*sphere.position.z += 8 * Math.sin(angle);
+                break;
+                /*sphere.position.z += 8 * Math.sin(angle);
         sphere.position.x += radius * Math.cos(angle);
-        angle += Math.PI / 180 * 2; // 2 - degree  */  
+        angle += Math.PI / 180 * 2; // 2 - degree  */
         }
 
     };
 
     document.addEventListener('keydown', function(e) {
-    	console.log(e.key)
+        console.log(e.key)
         animation(e.key);
+    });
+    window.addEventListener('resize', function(e) {
+        resize();
     });
 
     // var helper = new THREE.CameraHelper(light1.shadow.camera);
     // scene.add(helper);
+    init();
     rendering();
 };
