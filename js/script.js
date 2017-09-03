@@ -1,7 +1,7 @@
 // "use strict";
 
 window.onload = function() {
-    let scene, camera, renderer, light;
+    let scene, camera, renderer, light, sphere, headMesh;
     scene = new THREE.Scene();
 
     function init() {
@@ -42,6 +42,35 @@ window.onload = function() {
     }
 
     function createEdges() {
+        let boxes = [{
+            w: 26,
+            h: 100,
+            d: 1000,
+            x: -495,
+            y: 0,
+            z: 0
+        }, {
+            w: 26,
+            h: 100,
+            d: 1000,
+            x: 495,
+            y: 0,
+            z: 0
+        }, {
+            w: 1015,
+            h: 100,
+            d: 26,
+            x: 0,
+            y: 0,
+            z: -510
+        }, {
+            w: 1015,
+            h: 100,
+            d: 26,
+            x: 0,
+            y: 0,
+            z: 510
+        }]
         let cubeTexture = new THREE.Texture(),
             loader = new THREE.ImageLoader(),
             boxBump = new THREE.TextureLoader().load('2.jpg');
@@ -66,130 +95,101 @@ window.onload = function() {
             this.cubeMesh.receiveShadow = true; //defaul
             scene.add(this.cubeMesh);
         }
-        let boxes = [{
-                w: 26,
-                h: 100,
-                d: 1000,
-                x: -495,
-                y: 0,
-                z: 0
-            }, {
-                w: 26,
-                h: 100,
-                d: 1000,
-                x: 495,
-                y: 0,
-                z: 0
-            },
-            {
-                w: 1015,
-                h: 100,
-                d: 26,
-                x: 0,
-                y: 0,
-                z: -510
-            }, {
-                w: 1015,
-                h: 100,
-                d: 26,
-                x: 0,
-                y: 0,
-                z: 510
-            }
-        ]
+
         let box1 = new cubeGenerator(boxes[0]),
             box2 = new cubeGenerator(boxes[1]),
             box3 = new cubeGenerator(boxes[2]),
             box4 = new cubeGenerator(boxes[3]);
     }
-    createEdges();
+
     ////////////////////////////////////////////////// - plane
+    function createPlane() {
+        let planeTexture = new THREE.Texture(),
+            planeLoader = new THREE.ImageLoader(),
+            planeBump = new THREE.TextureLoader().load('bump-metal.jpg');
 
-    let planeTexture = new THREE.Texture(),
-        planeLoader = new THREE.ImageLoader(),
-        planeBump = new THREE.TextureLoader().load('bump-metal.jpg');
-
-    planeLoader.load("floor.jpg", function(e) {
-        planeTexture.image = e; // событие загрузки
-        planeTexture.needsUpdate = true;
-    });
-
-    let planeGeom = new THREE.PlaneGeometry(1000, 1000); // 2д форма для поверхности
-    planeGeom.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
-    let planeMat = new THREE.MeshStandardMaterial({ map: planeTexture, overdraw: true, bumpMap: planeBump }),
-        planeMesh = new THREE.Mesh(planeGeom, planeMat);
-    planeMesh.receiveShadow = true;
-    scene.add(planeMesh);
-
-    /////////////////////////////////////////////////////
-
-    let manager = new THREE.LoadingManager(),
-        loader = new THREE.ImageLoader(manager);
-
-    let textureHead = new THREE.Texture();
-
-    loader.load('model/Head diff MAP.jpg', function(image) {
-        textureHead.image = image;
-        textureHead.needsUpdate = true;
-    });
-    let bodyBump = new THREE.TextureLoader().load('model/body-bump-map.jpg');
-    let meshes = [],
-        objLoader = new THREE.OBJLoader(),
-        headMesh,
-        sphere;
-    objLoader.load('model/bb8.obj', function(object) {
-        object.traverse(function(child) {
-            if (child instanceof THREE.Mesh) {
-                meshes.push(child);
-            }
+        planeLoader.load("floor.jpg", function(e) {
+            planeTexture.image = e; // событие загрузки
+            planeTexture.needsUpdate = true;
         });
-        let sphere_geometry = new THREE.SphereGeometry(50, 40, 40);
-        let sphere_texture = new THREE.Texture(),
-            sphere_loader = new THREE.ImageLoader();
-        sphere_loader.load("model/Body-diff-map.jpg", function(e) {
-            sphere_texture.image = e; // событие загрузки
-            sphere_texture.needsUpdate = true;
+
+        let planeGeom = new THREE.PlaneGeometry(1000, 1000); // 2д форма для поверхности
+        planeGeom.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
+        let planeMat = new THREE.MeshStandardMaterial({ map: planeTexture, overdraw: true, bumpMap: planeBump }),
+            planeMesh = new THREE.Mesh(planeGeom, planeMat);
+        planeMesh.receiveShadow = true;
+        scene.add(planeMesh);
+    }
+
+    function createRobot() { //            TODO REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        let manager = new THREE.LoadingManager(),
+            loader = new THREE.ImageLoader(manager);
+
+        let textureHead = new THREE.Texture();
+
+        loader.load('model/Head diff MAP.jpg', function(image) {
+            textureHead.image = image;
+            textureHead.needsUpdate = true;
         });
-        let sphereMat = new THREE.MeshStandardMaterial({
-            map: sphere_texture,
-            overdraw: true,
-            specular: 0xfff7e8,
-            roughness: 0.1,
-            metalness: 0.2,
-            specular: 0xffffff,
-            bumpMap: bodyBump
+        let bodyBump = new THREE.TextureLoader().load('model/body-bump-map.jpg');
+        let meshes = [],
+            objLoader = new THREE.OBJLoader();
+        objLoader.load('model/bb8.obj', function(object) {
+            object.traverse(function(child) {
+                if (child instanceof THREE.Mesh) {
+                    meshes.push(child);
+                }
+            });
+            let sphere_geometry = new THREE.SphereGeometry(50, 40, 40);
+            let sphere_texture = new THREE.Texture(),
+                sphere_loader = new THREE.ImageLoader();
+            sphere_loader.load("model/Body-diff-map.jpg", function(e) {
+                sphere_texture.image = e; // событие загрузки
+                sphere_texture.needsUpdate = true;
+            });
+            let sphereMat = new THREE.MeshStandardMaterial({
+                map: sphere_texture,
+                overdraw: true,
+                specular: 0xfff7e8,
+                roughness: 0.1,
+                metalness: 0.2,
+                specular: 0xffffff,
+                bumpMap: bodyBump
+            });
+            sphere = new THREE.Mesh(sphere_geometry, sphereMat);
+            sphere.position.x = 0;
+            sphere.position.y = 50;
+            sphere.position.z = 0;
+            scene.add(sphere);
+
+            headMesh = meshes[0],
+                body = meshes[1];
+
+            headMesh.position.y = 0;
+            headMesh.position.x = 10;
+            sphere.castShadow = true; //default is false
+            sphere.receiveShadow = true; //defaul
+
+            let bumpMapHead = new THREE.TextureLoader().load('model/HEAD bump MAP.jpg');
+
+            scene.add(headMesh);
+            headMesh.castShadow = true;
+            headMesh.receiveShadow = true;
+
+            headMesh.material = new THREE.MeshStandardMaterial({
+                map: textureHead,
+                bumpMap: bumpMapHead,
+                bumpScale: 1,
+                specular: 0xfff7e8,
+                roughness: 0.1,
+                metalness: 0.2,
+                specular: 0xffffff
+
+            });
         });
-        sphere = new THREE.Mesh(sphere_geometry, sphereMat);
-        sphere.position.x = 0;
-        sphere.position.y = 50;
-        sphere.position.z = 0;
-        scene.add(sphere);
+    }
 
-        headMesh = meshes[0],
-            body = meshes[1];
 
-        headMesh.position.y = 0;
-        headMesh.position.x = 10;
-        sphere.castShadow = true; //default is false
-        sphere.receiveShadow = true; //defaul
-
-        let bumpMapHead = new THREE.TextureLoader().load('model/HEAD bump MAP.jpg');
-
-        scene.add(headMesh);
-        headMesh.castShadow = true;
-        headMesh.receiveShadow = true;
-
-        headMesh.material = new THREE.MeshStandardMaterial({
-            map: textureHead,
-            bumpMap: bumpMapHead,
-            bumpScale: 1,
-            specular: 0xfff7e8,
-            roughness: 0.1,
-            metalness: 0.2,
-            specular: 0xffffff
-
-        });
-    });
 
 
     //////////////////////////////////////////////////////
@@ -200,30 +200,50 @@ window.onload = function() {
         requestAnimationFrame(rendering);
         controls.update();
         renderer.render(scene, camera);
-        // scene.rotation.y += 90 / Math.PI * 0.0001;
+        if (mode) {
+            scene.rotation.y += 90 / Math.PI * 0.0001;
+        }
+        if (camera.position.y >= 800) {
+            camera.position.y = 800;
+        }
+        else if (camera.position.y <= 50) {
+            camera.position.y = 50;
+        }
+        if (camera.position.z >= 800) {
+            camera.position.z = 800;
+        }
+        else if (camera.position.z <= -800) {
+            camera.position.z = -800;
+        }
+        if (camera.position.x >= 800) {
+            camera.position.x = 800;
+        }
+        else if (camera.position.x <= -800) {
+            camera.position.x = -800;
+        }
+        console.log(camera.position)
     };
 
     let angle = 0,
         radius = 5;
 
     function animation(program) {
-
         switch (program) {
-            case '8':
+            case 'up':
                 if (sphere.position.z >= -430) {
                     headMesh.position.z += -10;
                     sphere.position.z += -10;
                 }
                 sphere.rotation.x -= 180 / Math.PI * 0.002;
                 break;
-            case '2':
+            case 'down':
                 if (sphere.position.z <= 430) {
                     headMesh.position.z += 10;
                     sphere.position.z += 10;
                 }
                 sphere.rotation.x += 180 / Math.PI * 0.002;
                 break;
-            case '4':
+            case 'left':
                 if (sphere.position.x >= -420) {
                     headMesh.position.x += -10;
                     sphere.position.x += -10;
@@ -231,7 +251,7 @@ window.onload = function() {
                 sphere.rotation.z += 180 / Math.PI * 0.002;
                 sphere.rotation.x = 0;
                 break;
-            case '6':
+            case 'right':
                 if (sphere.position.x <= 420) {
                     headMesh.position.x += 10;
                     sphere.position.x += 10;
@@ -255,17 +275,44 @@ window.onload = function() {
                 // sphere.rotation.z -= 180 / Math.PI * 0.002;
                 break;
             default:
-                console.log()
                 break;
                 /*sphere.position.z += 8 * Math.sin(angle);
         sphere.position.x += radius * Math.cos(angle);
         angle += Math.PI / 180 * 2; // 2 - degree  */
         }
     };
+    let controlsWrapper = document.getElementById('control-wrapper');
+    let mode = false;
+    controlsWrapper.addEventListener('click', function(e) {
+        console.log(111);
+        mode = !mode;
+        // if (e.target.classList.contains('control')){
+        //     animation(e.target.classList[1]);
+        // }
 
+    });
     document.addEventListener('keydown', function(e) {
-        console.log(e.key)
-        animation(e.key);
+        let moveType = 'notype';
+        switch (e.key) {
+            case '8':
+                moveType = 'up';
+                break;
+            case '2':
+                moveType = 'down';
+                break;
+            case '4':
+                moveType = 'left';
+                break;
+            case '6':
+                moveType = 'right';
+                break;
+            default:
+                moveType = 'notype';
+                break;
+        }
+        if (moveType !== 'notype') {
+            animation(moveType);
+        }
     });
     window.addEventListener('resize', function(e) {
         resize();
@@ -273,8 +320,8 @@ window.onload = function() {
 
     // let helper = new THREE.DirectionalLightHelper(light,5);
     // scene.add(helper);
-    let box = new THREE.BoxHelper(sphere, 0xffff00);
-    scene.add(box);
-    box.position.x = 300;
     rendering();
+    createEdges();
+    createPlane();
+    createRobot();
 };
