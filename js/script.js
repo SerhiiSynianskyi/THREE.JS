@@ -52,7 +52,14 @@ window.onload = function() {
         cubeGenerator = function(obj) {
             let that = this;
             this.cubeGeom = new THREE.CubeGeometry(obj.w, obj.h, obj.d, 7, 7, 7);
-            this.cubeMat = new THREE.MeshStandardMaterial({ map: cubeTexture, overdraw: true, emissive: 0.2, metalness: 0.8, roughness: 0.4, bumpMap: boxBump });
+            this.cubeMat = new THREE.MeshStandardMaterial({
+                map: cubeTexture,
+                overdraw: true,
+                emissive: 0.2,
+                metalness: 0.8,
+                roughness: 0.4,
+                bumpMap: boxBump
+            });
             this.cubeMesh = new THREE.Mesh(this.cubeGeom, this.cubeMat);
             this.cubeMesh.position.set(obj.x, obj.y, obj.z)
             this.cubeMesh.castShadow = true; //default is false
@@ -125,11 +132,10 @@ window.onload = function() {
         textureHead.image = image;
         textureHead.needsUpdate = true;
     });
-
+    let bodyBump = new THREE.TextureLoader().load('model/body-bump-map.jpg');
     let meshes = [],
         objLoader = new THREE.OBJLoader(),
-        body,
-        head,
+        headMesh,
         sphere;
     objLoader.load('model/bb8.obj', function(object) {
         object.traverse(function(child) {
@@ -140,36 +146,48 @@ window.onload = function() {
         let sphere_geometry = new THREE.SphereGeometry(50, 40, 40);
         let sphere_texture = new THREE.Texture(),
             sphere_loader = new THREE.ImageLoader();
-        sphere_loader.load("model/Body diff MAP.jpg", function(e) {
+        sphere_loader.load("model/Body-diff-map.jpg", function(e) {
             sphere_texture.image = e; // событие загрузки
             sphere_texture.needsUpdate = true;
         });
-        let sphere_material = new THREE.MeshStandardMaterial({ map: sphere_texture, overdraw: true });
-        sphere = new THREE.Mesh(sphere_geometry, sphere_material);
+        let sphereMat = new THREE.MeshStandardMaterial({
+            map: sphere_texture,
+            overdraw: true,
+            specular: 0xfff7e8,
+            roughness: 0.1,
+            metalness: 0.2,
+            specular: 0xffffff,
+            bumpMap: bodyBump
+        });
+        sphere = new THREE.Mesh(sphere_geometry, sphereMat);
         sphere.position.x = 0;
         sphere.position.y = 50;
         sphere.position.z = 0;
         scene.add(sphere);
 
-        head = meshes[0],
+        headMesh = meshes[0],
             body = meshes[1];
 
-        head.position.y = 0;
-        head.position.x = 10;
+        headMesh.position.y = 0;
+        headMesh.position.x = 10;
         sphere.castShadow = true; //default is false
         sphere.receiveShadow = true; //defaul
 
         let bumpMapHead = new THREE.TextureLoader().load('model/HEAD bump MAP.jpg');
 
-        scene.add(head);
-        head.castShadow = true;
-        head.receiveShadow = true;
+        scene.add(headMesh);
+        headMesh.castShadow = true;
+        headMesh.receiveShadow = true;
 
-        head.material = new THREE.MeshPhongMaterial({
+        headMesh.material = new THREE.MeshStandardMaterial({
             map: textureHead,
             bumpMap: bumpMapHead,
             bumpScale: 1,
-            specular: 0xfff7e8 // блик
+            specular: 0xfff7e8,
+            roughness: 0.1,
+            metalness: 0.2,
+            specular: 0xffffff
+
         });
     });
 
@@ -189,38 +207,41 @@ window.onload = function() {
         radius = 5;
 
     function animation(program) {
+
         switch (program) {
             case '8':
                 if (sphere.position.z >= -430) {
-                    head.position.z += -10;
+                    headMesh.position.z += -10;
                     sphere.position.z += -10;
                 }
                 sphere.rotation.x -= 180 / Math.PI * 0.002;
                 break;
             case '2':
                 if (sphere.position.z <= 430) {
-                    head.position.z += 10;
+                    headMesh.position.z += 10;
                     sphere.position.z += 10;
                 }
                 sphere.rotation.x += 180 / Math.PI * 0.002;
                 break;
             case '4':
                 if (sphere.position.x >= -420) {
-                    head.position.x += -10;
+                    headMesh.position.x += -10;
                     sphere.position.x += -10;
                 }
                 sphere.rotation.z += 180 / Math.PI * 0.002;
+                sphere.rotation.x = 0;
                 break;
             case '6':
                 if (sphere.position.x <= 420) {
-                    head.position.x += 10;
+                    headMesh.position.x += 10;
                     sphere.position.x += 10;
                 }
                 sphere.rotation.z -= 180 / Math.PI * 0.002;
+                sphere.rotation.x = 0;
                 break;
             case '7':
-                head.position.z += 4 * Math.sin(angle);
-                head.position.x += 4 * Math.cos(angle);
+                headMesh.position.z += 4 * Math.sin(angle);
+                headMesh.position.x += 4 * Math.cos(angle);
                 sphere.position.z += 4 * Math.sin(angle);
                 sphere.position.x += 4 * Math.cos(angle);
                 sphere.rotation.y -= 180 / Math.PI * 0.002;
@@ -235,7 +256,7 @@ window.onload = function() {
                 break;
             default:
                 console.log()
-                break;    
+                break;
                 /*sphere.position.z += 8 * Math.sin(angle);
         sphere.position.x += radius * Math.cos(angle);
         angle += Math.PI / 180 * 2; // 2 - degree  */
@@ -252,8 +273,8 @@ window.onload = function() {
 
     // let helper = new THREE.DirectionalLightHelper(light,5);
     // scene.add(helper);
-    let box = new THREE.BoxHelper( sphere, 0xffff00 );
-    scene.add( box );
+    let box = new THREE.BoxHelper(sphere, 0xffff00);
+    scene.add(box);
     box.position.x = 300;
     rendering();
 };
