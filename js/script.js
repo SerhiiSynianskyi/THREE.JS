@@ -221,7 +221,6 @@ window.onload = function() {
         else if (camera.position.x <= -800) {
             camera.position.x = -800;
         }
-        console.log(camera.position)
     };
 
     let angle = 0,
@@ -259,7 +258,7 @@ window.onload = function() {
                 sphere.rotation.z -= 180 / Math.PI * 0.002;
                 sphere.rotation.x = 0;
                 break;
-            case '7':
+            case 'special':
                 headMesh.position.z += 4 * Math.sin(angle);
                 headMesh.position.x += 4 * Math.cos(angle);
                 sphere.position.z += 4 * Math.sin(angle);
@@ -306,6 +305,9 @@ window.onload = function() {
             case '6':
                 moveType = 'right';
                 break;
+            case '7':
+                moveType = 'special';
+                break;    
             default:
                 moveType = 'notype';
                 break;
