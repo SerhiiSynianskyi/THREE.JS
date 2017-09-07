@@ -1,6 +1,6 @@
 {
   "name": "star-wars-game",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "First game in Three.js",
   "main": "index.js",
   "scripts": {
