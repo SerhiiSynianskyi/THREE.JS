@@ -200,9 +200,12 @@ window.onload = function() {
         requestAnimationFrame(rendering);
         controls.update();
         renderer.render(scene, camera);
-        if (mode) {
-            scene.rotation.y += 90 / Math.PI * 0.0001;
+        if (mode){
+			animation(type);
         }
+        // if (mode) {
+        //     scene.rotation.y += 90 / Math.PI * 0.0001;
+        // }
         if (camera.position.y >= 800) {
             camera.position.y = 800;
         }
@@ -227,6 +230,8 @@ window.onload = function() {
         radius = 5;
 
     function animation(program) {
+        // console.log(666);
+        console.log(program);
         switch (program) {
             case 'up':
                 if (sphere.position.z >= -430) {
@@ -259,13 +264,13 @@ window.onload = function() {
                 sphere.rotation.x = 0;
                 break;
             case 'special':
-                headMesh.position.z += 4 * Math.sin(angle);
-                headMesh.position.x += 4 * Math.cos(angle);
-                sphere.position.z += 4 * Math.sin(angle);
-                sphere.position.x += 4 * Math.cos(angle);
-                sphere.rotation.y -= 180 / Math.PI * 0.002;
+                // headMesh.position.z += 4 * Math.sin(angle);
+                // headMesh.position.x += 4 * Math.cos(angle);
+                // sphere.position.z += 4 * Math.sin(angle);
+                // sphere.position.x += 4 * Math.cos(angle);
+                // sphere.rotation.y -= 180 / Math.PI * 0.002;
                 // sphere.rotation.x += 180 / Math.PI * 0.002;
-                angle += Math.PI / 180 * 2; // 2 - degree
+                // angle += Math.PI / 180 * 2; // 2 - degree
                 // head.position.z += -10;
                 // sphere.position.z += -10;
                 // sphere.rotation.x -= 180 / Math.PI * 0.002;
@@ -281,15 +286,25 @@ window.onload = function() {
         }
     };
     let controlsWrapper = document.getElementById('control-wrapper');
-    let mode = false;
-    controlsWrapper.addEventListener('click', function(e) {
-        console.log(111);
-        mode = !mode;
-        // if (e.target.classList.contains('control')){
-        //     animation(e.target.classList[1]);
-        // }
-
+    let mode = false,
+        type = 'undefined';
+    controlsWrapper.addEventListener('touchstart', function(e) {
+        if (e.target.classList.contains('control')){
+			mode = true;
+            console.log(1);
+			console.log(e.target.classList[1]);
+			type = e.target.classList[1]
+			animation(type);
+        }
     });
+	document.addEventListener('touchend', function(e) {
+		mode = false;
+		console.log(2);
+	});
+	window.addEventListener('touchmove', function(e) {
+		mode = false;
+		console.log(555);
+	});
     document.addEventListener('keydown', function(e) {
         let moveType = 'notype';
         switch (e.key) {
