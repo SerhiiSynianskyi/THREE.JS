@@ -1,0 +1,11 @@
+/node_modules
+/bower_components
+/build
+/html-report
+/report.tap
+/cobertura-coverage.xml
+/sandbox
+/docs
+.idea/
+/dist
+npm-debug-.log
