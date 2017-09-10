@@ -82,6 +82,30 @@ body {
 .other-info p {
     color: white;
 }
+/*/////////////////////////////////////////////// - TOP MODES*/
+
+.camera-modes {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    width: 220px;
+    margin: 30px;
+}
+
+.camera-modes .mode {
+    width: 40px;
+    height: 40px;
+    border-radius:50%;
+    background-color: rgb(255,255,255);
+    opacity: 0.1;
+}
+
+.mode.active {
+    opacity: 0.5;
+}
+
 
 /*@media screen and (orientation:portrait) {*/
     /*html{*/

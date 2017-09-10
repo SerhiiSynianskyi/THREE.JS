@@ -1,13 +1,15 @@
 // "use strict";
 
 window.onload = function() {
-    let scene, camera, renderer, light, sphere, headMesh;
+    let scene, camera, renderer, light, sphere, headMesh,
+        cameraMode = 1;
     scene = new THREE.Scene();
 
     function init() {
         camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 10000);
         renderer = new THREE.WebGLRenderer({ antialias: true }); // antialias - сглаживаем ребра
         camera.position.set(0, 615, 700);
+        camera.rotation.set(-0.72, 0, 0);
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         renderer.setSize(window.innerWidth - 5, window.innerHeight - 5);
@@ -189,40 +191,49 @@ window.onload = function() {
         });
     }
 
-
-
-
-    //////////////////////////////////////////////////////
-
-    let controls = new THREE.TrackballControls(camera);
-
-    function rendering() {
-        requestAnimationFrame(rendering);
-        controls.update();
-        renderer.render(scene, camera);
-        if (mode){
-			animation(type);
+    function setSceneLimits() {
+        if (mode) {
+            animation(type);
         }
         // if (mode) {
         //     scene.rotation.y += 90 / Math.PI * 0.0001;
         // }
         if (camera.position.y >= 800) {
             camera.position.y = 800;
-        }
-        else if (camera.position.y <= 50) {
+        } else if (camera.position.y <= 50) {
             camera.position.y = 50;
         }
         if (camera.position.z >= 800) {
             camera.position.z = 800;
-        }
-        else if (camera.position.z <= -800) {
+        } else if (camera.position.z <= -800) {
             camera.position.z = -800;
         }
         if (camera.position.x >= 800) {
             camera.position.x = 800;
-        }
-        else if (camera.position.x <= -800) {
+        } else if (camera.position.x <= -800) {
             camera.position.x = -800;
+        }
+    }
+
+    //////////////////////////////////////////////////////
+
+    let controls = new THREE.TrackballControls(camera),
+        t = 0;
+
+    function rendering() {
+        requestAnimationFrame(rendering);
+        if (cameraMode === 2) {
+            controls.update();
+        }
+
+        renderer.render(scene, camera);
+        setSceneLimits();
+
+        // console.log(camera.position);
+        // console.log(camera.rotation);
+        // scene.rotation.y += 90 / Math.PI * 0.0001;
+        if (cameraMode === 3) {
+            camera.lookAt(headMesh.position);
         }
     };
 
@@ -230,8 +241,6 @@ window.onload = function() {
         radius = 5;
 
     function animation(program) {
-        // console.log(666);
-        console.log(program);
         switch (program) {
             case 'up':
                 if (sphere.position.z >= -430) {
@@ -285,26 +294,33 @@ window.onload = function() {
         angle += Math.PI / 180 * 2; // 2 - degree  */
         }
     };
+
+    function moveCameraTo(from, to) {
+
+    }
+
+
+
+    ///////// LISTENERS
+
     let controlsWrapper = document.getElementById('control-wrapper');
     let mode = false,
-        type = 'undefined';
+        type = '';
+
     controlsWrapper.addEventListener('touchstart', function(e) {
-        if (e.target.classList.contains('control')){
-			mode = true;
-            console.log(1);
-			console.log(e.target.classList[1]);
-			type = e.target.classList[1]
-			animation(type);
+        if (e.target.classList.contains('control')) {
+            mode = true;
+            console.log(e.target.classList[1]);
+            type = e.target.classList[1]
+            animation(type);
         }
     });
-	document.addEventListener('touchend', function(e) {
-		mode = false;
-		console.log(2);
-	});
-	window.addEventListener('touchmove', function(e) {
-		mode = false;
-		console.log(555);
-	});
+    window.addEventListener('touchend', function(e) {
+        mode = false;
+    });
+    window.addEventListener('touchmove', function(e) {
+        mode = false;
+    });
     document.addEventListener('keydown', function(e) {
         let moveType = 'notype';
         switch (e.key) {
@@ -322,7 +338,7 @@ window.onload = function() {
                 break;
             case '7':
                 moveType = 'special';
-                break;    
+                break;
             default:
                 moveType = 'notype';
                 break;
@@ -335,6 +351,49 @@ window.onload = function() {
         resize();
     });
 
+    let data1 = document.getElementById('data1');
+    let data2 = document.getElementById('data2');
+    let data3 = document.getElementById('data3');
+    if (window.DeviceOrientationEvent) {
+        window.addEventListener('deviceorientation', function(e) {
+            data1.innerHTML = Math.ceil(event.alpha);
+            data2.innerHTML = Math.ceil(event.beta);
+            data3.innerHTML = Math.ceil(event.gamma);
+        });
+    }
+
+    ///////////////////////////////////////////////////// - camera modes
+
+    let modesWrapper = document.getElementsByClassName('camera-modes')[0];
+    modesWrapper.addEventListener('click', function(e) {
+        if (e.target.className === 'mode') {
+            Array.prototype.forEach.call(modesWrapper.children, function(item) {
+                item.classList.remove('active');
+            });
+            e.target.classList.add('active');
+            cameraMode = parseInt(e.target.dataset.mode);
+
+            if (cameraMode === 1) {
+                camera.position.set(0, 615, 700);
+                camera.rotation.set(-0.72, 0, 0);
+                controls.reset();
+            }
+            if (cameraMode === 2) {
+                controls.reset();
+            }
+        }
+    });
+
+
+    // window.addEventListener(deviceorientation, function() {
+    //  var orientation = Math.abs(window.orientation) == 90 ? 'landscape' : 'portrait';
+    //        console.log(orientation);
+    //  // Применяем нужные нам стили
+    // }, false);
+
+
+    ///////// FUNCTIONS CALL
+
     // let helper = new THREE.DirectionalLightHelper(light,5);
     // scene.add(helper);
     rendering();
@@ -342,22 +401,4 @@ window.onload = function() {
     createPlane();
     createRobot();
 
-	let data1 = document.getElementById('data1');
-	let data2 = document.getElementById('data2');
-	let data3 = document.getElementById('data3');
-
-	window.addEventListener('deviceorientation', function(e) {
-		data1.innerHTML = Math.ceil(event.alpha);
-		data2.innerHTML = Math.ceil(event.beta);
-		data3.innerHTML = Math.ceil(event.gamma);
-	});
-	// window.addEventListener('devicemotion', function(event) {
-	// 	data1.innerHTML = Math.ceil(event.accelerationIncludingGravity.x);
-	// 	data2.innerHTML = Math.ceil(event.accelerationIncludingGravity.y);
-	// 	data3.innerHTML = Math.ceil(event.accelerationIncludingGravity.z);
-	// });
-	window.addEventListener(orientationEvent, function() {
-		var orientation = Math.abs(window.orientation) == 90 ? 'landscape' : 'portrait';
-		// Применяем нужные нам стили
-	}, false);
 };
