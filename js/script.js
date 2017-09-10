@@ -341,4 +341,23 @@ window.onload = function() {
     createEdges();
     createPlane();
     createRobot();
+
+	let data1 = document.getElementById('data1');
+	let data2 = document.getElementById('data2');
+	let data3 = document.getElementById('data3');
+
+	window.addEventListener('deviceorientation', function(e) {
+		data1.innerHTML = Math.ceil(event.alpha);
+		data2.innerHTML = Math.ceil(event.beta);
+		data3.innerHTML = Math.ceil(event.gamma);
+	});
+	// window.addEventListener('devicemotion', function(event) {
+	// 	data1.innerHTML = Math.ceil(event.accelerationIncludingGravity.x);
+	// 	data2.innerHTML = Math.ceil(event.accelerationIncludingGravity.y);
+	// 	data3.innerHTML = Math.ceil(event.accelerationIncludingGravity.z);
+	// });
+	window.addEventListener(orientationEvent, function() {
+		var orientation = Math.abs(window.orientation) == 90 ? 'landscape' : 'portrait';
+		// Применяем нужные нам стили
+	}, false);
 };
