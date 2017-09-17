@@ -83,29 +83,65 @@ body {
     color: white;
 }
 /*/////////////////////////////////////////////// - TOP MODES*/
-
-.camera-modes {
+.top-menu {
     position: absolute;
     left: 0;
     top: 0;
     display: flex;
     justify-content: space-between;
-    width: 220px;
-    margin: 30px;
+    align-items: center;
+}
+
+.menu-icon {
+    height: 60px;
+    width: 60px;
+    background-color: rgb(20,20,20);
+}
+
+
+.camera-modes {
+    display: flex;
+    justify-content: space-between;
+    width: 180px;
+    margin: 0 30px;
 }
 
 .camera-modes .mode {
     width: 40px;
     height: 40px;
     border-radius:50%;
-    background-color: rgb(255,255,255);
-    opacity: 0.1;
+    opacity: 0.2;
 }
 
 .mode.active {
-    opacity: 0.5;
+    opacity: 0.9;
 }
 
+.mode[data-mode='1']{
+  background: rgb(100,100,100) url('../images/home.png') center center/ 55% 55%  no-repeat;
+}
+
+.mode[data-mode='2']{
+  background: rgb(100,100,100) url('../images/mode2.png') center center/ 70% 70%  no-repeat;
+}
+
+.mode[data-mode='3']{
+  background: rgb(100,100,100) url('../images/mode3.png') center center/ 70% 70%  no-repeat;
+}
+
+.track-ball {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    height: 60px;
+    width: 60px;
+    border-radius:50%;
+    background: rgb(100,100,100) url('../images/trackball.png') center center/ 55% 55%  no-repeat;
+    opacity: 0.2;
+}
+.track-ball.active {
+    opacity: 0.9;
+}
 
 /*@media screen and (orientation:portrait) {*/
     /*html{*/

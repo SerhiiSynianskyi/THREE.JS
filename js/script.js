@@ -2,7 +2,8 @@
 
 window.onload = function() {
     let scene, camera, renderer, light, sphere, headMesh,
-        cameraMode = 1;
+        cameraMode = 1,
+        trackBallMode = false;
     scene = new THREE.Scene();
 
     function init() {
@@ -123,6 +124,29 @@ window.onload = function() {
         scene.add(planeMesh);
     }
 
+    function createSpaceScene() {
+        var materials = [];
+        var side= [];
+        var imgData = 'space5.jpg';
+        var loader = new THREE.TextureLoader();
+        var imageArray = [[2,2],[0,2],[1,3],[1,1],[1,2],[1,0]]
+        for (var i = 0; i < 6; i++) {
+            side[i] = loader.load(imgData); //2048x256 // changed
+            side[i].repeat.x = 1 / 3;
+            side[i].repeat.y = 1 / 4;
+            side[i].offset.x = imageArray[i][0] / 3;
+            side[i].offset.y = imageArray[i][1] / 4;
+            // side[i].minFilter = THREE.NearestFilter;
+            // side[i].generateMipmaps = false;
+            materials.push(new THREE.MeshBasicMaterial({ map: side[i],
+            opacity: 0.1 }));
+        }
+
+        var skyBox = new THREE.Mesh(new THREE.CubeGeometry(5000, 5000, 5000), new THREE.MeshFaceMaterial(materials));
+        skyBox.applyMatrix(new THREE.Matrix4().makeScale(1, 1, -1));
+        scene.add(skyBox);
+    }
+
     function createRobot() { //            TODO REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         let manager = new THREE.LoadingManager(),
             loader = new THREE.ImageLoader(manager);
@@ -222,7 +246,7 @@ window.onload = function() {
 
     function rendering() {
         requestAnimationFrame(rendering);
-        if (cameraMode === 2) {
+        if (trackBallMode) {
             controls.update();
         }
 
@@ -232,8 +256,11 @@ window.onload = function() {
         // console.log(camera.position);
         // console.log(camera.rotation);
         // scene.rotation.y += 90 / Math.PI * 0.0001;
-        if (cameraMode === 3) {
-            camera.lookAt(headMesh.position);
+        // if (cameraMode === 3) {
+        //     camera.lookAt(headMesh.position);
+        // }
+        if (cameraMode === 2) {
+            scene.rotation.y += 90 / Math.PI * 0.0001;
         }
     };
 
@@ -364,7 +391,8 @@ window.onload = function() {
 
     ///////////////////////////////////////////////////// - camera modes
 
-    let modesWrapper = document.getElementsByClassName('camera-modes')[0];
+    let modesWrapper = document.getElementsByClassName('camera-modes')[0],
+        trackBallWrap = document.getElementsByClassName('track-ball')[0];
     modesWrapper.addEventListener('click', function(e) {
         if (e.target.className === 'mode') {
             Array.prototype.forEach.call(modesWrapper.children, function(item) {
@@ -372,17 +400,29 @@ window.onload = function() {
             });
             e.target.classList.add('active');
             cameraMode = parseInt(e.target.dataset.mode);
-
             if (cameraMode === 1) {
+                controls.reset();
                 camera.position.set(0, 615, 700);
                 camera.rotation.set(-0.72, 0, 0);
-                controls.reset();
+                trackBallMode = false;
+                scene.rotation.y = 0;
+                checkTrackBall();
             }
-            if (cameraMode === 2) {
-                controls.reset();
-            }
+            if (cameraMode === 2) {}
         }
     });
+    trackBallWrap.addEventListener('click', function(e) {
+        trackBallMode = !trackBallMode;
+        checkTrackBall();
+    });
+
+    function checkTrackBall() {
+        if (trackBallMode) {
+            trackBallWrap.classList.add('active');
+        } else {
+            trackBallWrap.classList.remove('active');
+        }
+    }
 
 
     // window.addEventListener(deviceorientation, function() {
@@ -397,7 +437,9 @@ window.onload = function() {
     // let helper = new THREE.DirectionalLightHelper(light,5);
     // scene.add(helper);
     rendering();
+    createSpaceScene();
     createEdges();
+
     createPlane();
     createRobot();
 
