@@ -2,8 +2,7 @@
 
 window.onload = function() {
     let scene, camera, renderer, light, sphere, headMesh,
-        cameraMode = 1,
-        trackBallMode = false;
+        cameraMode = 1;
     scene = new THREE.Scene();
 
     function init() {
@@ -125,27 +124,29 @@ window.onload = function() {
     }
 
     function createSpaceScene() {
-        var materials = [];
-        var side= [];
-        var imgData = 'space5.jpg';
-        var loader = new THREE.TextureLoader();
-        var imageArray = [[2,2],[0,2],[1,3],[1,1],[1,2],[1,0]]
-        for (var i = 0; i < 6; i++) {
-            side[i] = loader.load(imgData); //2048x256 // changed
-            side[i].repeat.x = 1 / 3;
-            side[i].repeat.y = 1 / 4;
-            side[i].offset.x = imageArray[i][0] / 3;
-            side[i].offset.y = imageArray[i][1] / 4;
-            // side[i].minFilter = THREE.NearestFilter;
-            // side[i].generateMipmaps = false;
-            materials.push(new THREE.MeshBasicMaterial({ map: side[i],
-            opacity: 0.1 }));
-        }
-
-        var skyBox = new THREE.Mesh(new THREE.CubeGeometry(5000, 5000, 5000), new THREE.MeshFaceMaterial(materials));
-        skyBox.applyMatrix(new THREE.Matrix4().makeScale(1, 1, -1));
-        scene.add(skyBox);
-    }
+        let cubeGeometry = new THREE.CubeGeometry(6000, 6000, 6000);
+        let cubeMaterialsSpace = 
+        [
+            new THREE.MeshBasicMaterial( {map: new THREE.TextureLoader().load('skybox/space/2.png'), side: THREE.DoubleSide}),
+            new THREE.MeshBasicMaterial( {map: new THREE.TextureLoader().load('skybox/space/4.png'), side: THREE.DoubleSide}),
+            new THREE.MeshBasicMaterial( {map: new THREE.TextureLoader().load('skybox/space/5.png'), side: THREE.DoubleSide}),
+            new THREE.MeshBasicMaterial( {map: new THREE.TextureLoader().load('skybox/space/6.png'), side: THREE.DoubleSide}),
+            new THREE.MeshBasicMaterial( {map: new THREE.TextureLoader().load('skybox/space/3.png'), side: THREE.DoubleSide}),
+            new THREE.MeshBasicMaterial( {map: new THREE.TextureLoader().load('skybox/space/1.png'), side: THREE.DoubleSide})
+        ];
+        let cubeMaterialsDust = 
+        [
+            new THREE.MeshBasicMaterial( {map: new THREE.TextureLoader().load('skybox/dark_dust/sleepyhollow_ft.jpg'), side: THREE.DoubleSide}),
+            new THREE.MeshBasicMaterial( {map: new THREE.TextureLoader().load('skybox/dark_dust/sleepyhollow_bk.jpg'), side: THREE.DoubleSide}),
+            new THREE.MeshBasicMaterial( {map: new THREE.TextureLoader().load('skybox/dark_dust/sleepyhollow_up.jpg'), side: THREE.DoubleSide}),
+            new THREE.MeshBasicMaterial( {map: new THREE.TextureLoader().load('skybox/dark_dust/sleepyhollow_dn.jpg'), side: THREE.DoubleSide}),
+            new THREE.MeshBasicMaterial( {map: new THREE.TextureLoader().load('skybox/dark_dust/sleepyhollow_rt.jpg'), side: THREE.DoubleSide}),
+            new THREE.MeshBasicMaterial( {map: new THREE.TextureLoader().load('skybox/dark_dust/sleepyhollow_lf.jpg'), side: THREE.DoubleSide})
+        ];
+        let cubeMaterial = new THREE.MeshFaceMaterial(cubeMaterialsDust);
+        let cubeMesh = new THREE.Mesh(cubeGeometry,cubeMaterial);
+        scene.add(cubeMesh);
+    }    
 
     function createRobot() { //            TODO REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         let manager = new THREE.LoadingManager(),
@@ -197,7 +198,7 @@ window.onload = function() {
             sphere.receiveShadow = true; //defaul
 
             let bumpMapHead = new THREE.TextureLoader().load('model/HEAD bump MAP.jpg');
-
+         
             scene.add(headMesh);
             headMesh.castShadow = true;
             headMesh.receiveShadow = true;
@@ -241,17 +242,15 @@ window.onload = function() {
 
     //////////////////////////////////////////////////////
 
-    let controls = new THREE.TrackballControls(camera),
-        t = 0;
-
+    let controls = new THREE.OrbitControls(camera);
+        controls.enabled = false;
+        controls.enableKeys = false;  
+        
+        console.log(controls);
     function rendering() {
         requestAnimationFrame(rendering);
-        if (trackBallMode) {
-            controls.update();
-        }
-
         renderer.render(scene, camera);
-        setSceneLimits();
+        // setSceneLimits();
 
         // console.log(camera.position);
         // console.log(camera.rotation);
@@ -337,11 +336,11 @@ window.onload = function() {
     controlsWrapper.addEventListener('touchstart', function(e) {
         if (e.target.classList.contains('control')) {
             mode = true;
-            console.log(e.target.classList[1]);
             type = e.target.classList[1]
             animation(type);
         }
     });
+
     window.addEventListener('touchend', function(e) {
         mode = false;
     });
@@ -353,7 +352,7 @@ window.onload = function() {
         switch (e.key) {
             case '8':
                 moveType = 'up';
-                break;
+                break;  
             case '2':
                 moveType = 'down';
                 break;
@@ -366,6 +365,18 @@ window.onload = function() {
             case '7':
                 moveType = 'special';
                 break;
+            case 'ArrowUp':
+                moveType = 'up';
+                break;
+            case 'ArrowDown':
+                moveType = 'down';
+                break;
+            case 'ArrowLeft':
+                moveType = 'left';
+                break;
+            case 'ArrowRight':
+                moveType = 'right';
+                break;          
             default:
                 moveType = 'notype';
                 break;
@@ -404,7 +415,7 @@ window.onload = function() {
                 controls.reset();
                 camera.position.set(0, 615, 700);
                 camera.rotation.set(-0.72, 0, 0);
-                trackBallMode = false;
+                controls.enabled = false; 
                 scene.rotation.y = 0;
                 checkTrackBall();
             }
@@ -412,16 +423,12 @@ window.onload = function() {
         }
     });
     trackBallWrap.addEventListener('click', function(e) {
-        trackBallMode = !trackBallMode;
+        controls.enabled = !controls.enabled;
         checkTrackBall();
     });
 
     function checkTrackBall() {
-        if (trackBallMode) {
-            trackBallWrap.classList.add('active');
-        } else {
-            trackBallWrap.classList.remove('active');
-        }
+        controls.enabled ? trackBallWrap.classList.add('active') : trackBallWrap.classList.remove('active');
     }
 
 
@@ -437,8 +444,9 @@ window.onload = function() {
     // let helper = new THREE.DirectionalLightHelper(light,5);
     // scene.add(helper);
     rendering();
+    // createSpaceScene();
     createSpaceScene();
-    createEdges();
+    // createEdges();
 
     createPlane();
     createRobot();
