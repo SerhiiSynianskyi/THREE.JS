@@ -1,7 +1,7 @@
 // "use strict";
 
 window.onload = function() {
-    let scene, camera, renderer, light, sphere, headMesh,
+    let scene, camera, renderer, light, sphere, headMesh, targetObject,
         cameraMode = 1;
     scene = new THREE.Scene();
 
@@ -13,6 +13,9 @@ window.onload = function() {
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         renderer.setSize(window.innerWidth - 5, window.innerHeight - 5);
+        renderer.gammaInput = renderer.gammaOutput = true;
+        renderer.toneMapping = THREE.LinearToneMapping;
+        // renderer.toneMappingExposure = 1;
         renderer.setClearColor(0x000000);
         document.body.appendChild(renderer.domElement);
     }
@@ -67,16 +70,85 @@ window.onload = function() {
         }
     }
 
+    function createRobot() { //            TODO REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        let manager = new THREE.LoadingManager(),
+            loader = new THREE.ImageLoader(manager);
+
+        let textureHead = new THREE.Texture();
+
+        loader.load('model/Head diff MAP.jpg', function(image) {
+            textureHead.image = image;
+            textureHead.needsUpdate = true;
+        });
+        let bodyBump = new THREE.TextureLoader().load('model/body-bump-map.jpg');
+        let meshes = [],
+            objLoader = new THREE.OBJLoader();
+        objLoader.load('model/bb8.obj', function(object) {
+            object.traverse(function(child) {
+                if (child instanceof THREE.Mesh) {
+                    meshes.push(child);
+                }
+            });
+            let sphereGeometry = new THREE.SphereGeometry(50, 40, 40);
+            let sphereTexture = new THREE.Texture(),
+                sphereLoader = new THREE.ImageLoader();
+            sphereLoader.load("model/Body-diff-map.jpg", function(e) {
+                sphereTexture.image = e; 
+                sphereTexture.needsUpdate = true;
+            });
+            let sphereMat = new THREE.MeshStandardMaterial({
+                map: sphereTexture,
+                overdraw: true,
+                roughness: 0.1,
+                metalness: 0.2,
+                specular: 0x222222,
+                bumpMap: bodyBump
+            });
+            sphere = new THREE.Mesh(sphereGeometry, sphereMat);
+            sphere.position.x = 0;
+            sphere.position.y = 50;
+            sphere.position.z = 0;
+            scene.add(sphere);
+
+            headMesh = meshes[0],
+                body = meshes[1];
+
+            headMesh.position.y = 0;
+            headMesh.position.x = 10;
+            sphere.castShadow = true; //default is false
+            sphere.receiveShadow = true; //defaul
+
+            let bumpMapHead = new THREE.TextureLoader().load('model/HEAD bump MAP.jpg');
+
+            scene.add(headMesh);
+            headMesh.castShadow = true;
+            headMesh.receiveShadow = true;
+
+            headMesh.material = new THREE.MeshStandardMaterial({
+                map: textureHead,
+                bumpMap: bumpMapHead,
+                bumpScale: 1,
+                specular: 0xfff7e8,
+                roughness: 0.1,
+                metalness: 0.2,
+                specular: 0xffffff
+
+            });
+        });
+        return [sphere, headMesh]
+    }
     //////////////////////////////////////////////////////
 
     let controls = new THREE.OrbitControls(camera);
-        controls.enabled = false;
-        controls.enableKeys = false;  
-        
-        console.log(controls);
+    controls.enabled = false;
+    controls.enableKeys = false;
+    let stats = new Stats();
+    window.fps.appendChild(stats.dom);
+
     function rendering() {
         requestAnimationFrame(rendering);
         renderer.render(scene, camera);
+        stats.update();
         // setSceneLimits();
 
         // console.log(camera.position);
@@ -85,6 +157,7 @@ window.onload = function() {
         // if (cameraMode === 3) {
         //     camera.lookAt(headMesh.position);
         // }
+        targetObject.rotation.y += 0.03;
         if (cameraMode === 2) {
             scene.rotation.y += 90 / Math.PI * 0.0001;
         }
@@ -179,7 +252,7 @@ window.onload = function() {
         switch (e.key) {
             case '8':
                 moveType = 'up';
-                break;  
+                break;
             case '2':
                 moveType = 'down';
                 break;
@@ -203,7 +276,7 @@ window.onload = function() {
                 break;
             case 'ArrowRight':
                 moveType = 'right';
-                break;          
+                break;
             default:
                 moveType = 'notype';
                 break;
@@ -242,7 +315,7 @@ window.onload = function() {
                 controls.reset();
                 camera.position.set(0, 615, 700);
                 camera.rotation.set(-0.72, 0, 0);
-                controls.enabled = false; 
+                controls.enabled = false;
                 scene.rotation.y = 0;
                 checkTrackBall();
             }
@@ -270,11 +343,13 @@ window.onload = function() {
 
     // let helper = new THREE.DirectionalLightHelper(light,5);
     // scene.add(helper);
-    rendering();
+
     scene.add(createSpaceScene());
     createEdges(scene);
+    targetObject = createTargetObject(),
 
-    scene.add(createPlane(scene));
-    createRobot(scene);
-
+    scene.add(createPlane());
+    createRobot();
+    scene.add(targetObject);
+    rendering();
 };

@@ -4,7 +4,7 @@ function createPlane() {
         planeBump = new THREE.TextureLoader().load('bump-metal.jpg');
 
     planeLoader.load("floor.jpg", function(e) {
-        planeTexture.image = e; // событие загрузки
+        planeTexture.image = e;
         planeTexture.needsUpdate = true;
     });
 
@@ -102,70 +102,23 @@ function createEdges(scene) {
         box4 = new cubeGenerator(boxes[3]);
 }
 
-function createRobot(scene) { //            TODO REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    let manager = new THREE.LoadingManager(),
-        loader = new THREE.ImageLoader(manager);
 
-    let textureHead = new THREE.Texture();
-
-    loader.load('model/Head diff MAP.jpg', function(image) {
-        textureHead.image = image;
-        textureHead.needsUpdate = true;
+function createTargetObject() {
+    let giftGeometry = new THREE.OctahedronGeometry(40, 0);
+    let giftMat = new THREE.MeshStandardMaterial({
+        color: 0x2Dff27,
+        aoMapIntensity: 0,
+        roughness: 0.1,
+        metalness: 0.2,
+        specular: 0xff0000,
+        opacity: 0.9,
+        displacementScale: 0.5,
+        transparent: true
     });
-    let bodyBump = new THREE.TextureLoader().load('model/body-bump-map.jpg');
-    let meshes = [],
-        objLoader = new THREE.OBJLoader();
-    objLoader.load('model/bb8.obj', function(object) {
-        object.traverse(function(child) {
-            if (child instanceof THREE.Mesh) {
-                meshes.push(child);
-            }
-        });
-        let sphere_geometry = new THREE.SphereGeometry(50, 40, 40);
-        let sphere_texture = new THREE.Texture(),
-            sphere_loader = new THREE.ImageLoader();
-        sphere_loader.load("model/Body-diff-map.jpg", function(e) {
-            sphere_texture.image = e; // событие загрузки
-            sphere_texture.needsUpdate = true;
-        });
-        let sphereMat = new THREE.MeshStandardMaterial({
-            map: sphere_texture,
-            overdraw: true,
-            specular: 0xfff7e8,
-            roughness: 0.1,
-            metalness: 0.2,
-            specular: 0xffffff,
-            bumpMap: bodyBump
-        });
-        sphere = new THREE.Mesh(sphere_geometry, sphereMat);
-        sphere.position.x = 0;
-        sphere.position.y = 50;
-        sphere.position.z = 0;
-        scene.add(sphere);
+    let giftMesh = new THREE.Mesh(giftGeometry, giftMat);
+    giftMesh.castShadow = false; //default is false
+    giftMesh.receiveShadow = false; //defaul
+    giftMesh.position.set(100, 50, 100)
 
-        headMesh = meshes[0],
-            body = meshes[1];
-
-        headMesh.position.y = 0;
-        headMesh.position.x = 10;
-        sphere.castShadow = true; //default is false
-        sphere.receiveShadow = true; //defaul
-
-        let bumpMapHead = new THREE.TextureLoader().load('model/HEAD bump MAP.jpg');
-
-        scene.add(headMesh);
-        headMesh.castShadow = true;
-        headMesh.receiveShadow = true;
-
-        headMesh.material = new THREE.MeshStandardMaterial({
-            map: textureHead,
-            bumpMap: bumpMapHead,
-            bumpScale: 1,
-            specular: 0xfff7e8,
-            roughness: 0.1,
-            metalness: 0.2,
-            specular: 0xffffff
-
-        });
-    });
+    return giftMesh;
 }
