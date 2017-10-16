@@ -1,8 +1,11 @@
 // "use strict";
 
 window.onload = function() {
-    let scene, camera, renderer, light, sphere, headMesh, targetObject,
-        cameraMode = 1;
+    console.time('userTime');
+    let scene, camera, renderer, light, sphere, headMesh, targetObject, shaderMaterial,
+        cameraMode = 1,
+        start = Date.now(),
+        perWeight = 20.0;
     scene = new THREE.Scene();
 
     function init() {
@@ -69,7 +72,8 @@ window.onload = function() {
             camera.position.x = -800;
         }
     }
-
+    //////////////////////////////////////////////////////
+    
     function createRobot() { //            TODO REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         let manager = new THREE.LoadingManager(),
             loader = new THREE.ImageLoader(manager);
@@ -93,7 +97,7 @@ window.onload = function() {
             let sphereTexture = new THREE.Texture(),
                 sphereLoader = new THREE.ImageLoader();
             sphereLoader.load("model/Body-diff-map.jpg", function(e) {
-                sphereTexture.image = e; 
+                sphereTexture.image = e;
                 sphereTexture.needsUpdate = true;
             });
             let sphereMat = new THREE.MeshStandardMaterial({
@@ -149,6 +153,9 @@ window.onload = function() {
         requestAnimationFrame(rendering);
         renderer.render(scene, camera);
         stats.update();
+
+        shaderMaterial.uniforms['time'].value = .005 * (Date.now() - start);
+        shaderMaterial.uniforms['weight'].value = perWeight * 0.05;
         // setSceneLimits();
 
         // console.log(camera.position);
@@ -347,9 +354,12 @@ window.onload = function() {
     scene.add(createSpaceScene());
     createEdges(scene);
     targetObject = createTargetObject(),
-
+    scene.add(targetObject);
     scene.add(createPlane());
     createRobot();
-    scene.add(targetObject);
+    shaderMaterial = createEnemyRobot(scene);
+    
+
     rendering();
+    console.timeEnd('userTime');
 };

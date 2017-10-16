@@ -104,21 +104,78 @@ function createEdges(scene) {
 
 
 function createTargetObject() {
-    let giftGeometry = new THREE.OctahedronGeometry(40, 0);
+    let giftGeom = new THREE.OctahedronGeometry(40, 0);
+    let giftBump = new THREE.TextureLoader().load('textures/giftTexture.jpg');
     let giftMat = new THREE.MeshStandardMaterial({
         color: 0x2Dff27,
-        aoMapIntensity: 0,
-        roughness: 0.1,
-        metalness: 0.2,
-        specular: 0xff0000,
-        opacity: 0.9,
+        aoMapIntensity: 1,
+        roughness: 0.4,
+        metalness: 0.5,
+        opacity: 0.85,
+        bumpMap: giftBump,
+        overdraw: true,
         displacementScale: 0.5,
         transparent: true
     });
-    let giftMesh = new THREE.Mesh(giftGeometry, giftMat);
-    giftMesh.castShadow = false; //default is false
-    giftMesh.receiveShadow = false; //defaul
-    giftMesh.position.set(100, 50, 100)
+    let giftMesh = new THREE.Mesh(giftGeom, giftMat);
+    giftMesh.castShadow = true; 
+    giftMesh.receiveShadow = true; 
+    giftMesh.position.set(-300, 50, 300)
 
     return giftMesh;
+}
+
+function createEnemyRobot(scene) {
+    let laserGeo, shaderMat, uniforms, buffGeo, laserMesh;
+    laserGeom = new THREE.TorusGeometry(44, 9, 40, 40);
+    buffGeom = new THREE.BufferGeometry().fromGeometry(laserGeom);
+    let imgTexture = new Image;
+    imgTexture.src = "textures/laserTexture.jpg";
+    imgTexture.crossOrigin = "Anonymous";
+    THREE.ImageUtils.crossOrigin = '';
+    //Shader Material Loader
+    shaderMat = new THREE.ShaderMaterial({
+
+        uniforms: {
+            tShine: { type: "t", value: THREE.ImageUtils.loadTexture(imgTexture.src) },
+            time: { type: "f", value: 0 },
+            weight: { type: "f", value: 0 }
+        },
+
+        vertexShader: xVertex,
+        fragmentShader: xFragment
+
+    });
+
+    shaderMat.uniforms.tShine.wrapS = THREE.Repeat;
+    shaderMat.uniforms.tShine.wrapT = THREE.Repeat;
+
+    laserMesh = new THREE.Mesh(laserGeom, shaderMat);
+    laserMesh.doubleSided = true;
+    laserMesh.position.set(200, 60, -100);
+    laserMesh.rotateX(Math.PI / 2);
+    laserMesh.rotateZ(Math.PI);
+    laserMesh.castShadow = true;
+    laserMesh.receiveShadow = true;
+
+    scene.add(laserMesh);
+
+    let enemyBodyTexture = new THREE.TextureLoader().load('textures/enemyTexture.jpg');
+    let enemyBodyBump = new THREE.TextureLoader().load('textures/enemyBumpMap.jpg');
+    let enemyBodyGeom = new THREE.SphereGeometry(50, 40, 40);
+    let enemyBodyMat = new THREE.MeshStandardMaterial({
+        map: enemyBodyTexture,
+        roughness: 0.3,
+        metalness: 0.8,
+        emissive: 0.8,
+        color: 0x121212,
+        bumpMap: enemyBodyBump,
+        overdraw: true
+    });
+    let enemyBodyMesh = new THREE.Mesh(enemyBodyGeom, enemyBodyMat);
+    enemyBodyMesh.castShadow = true;
+    enemyBodyMesh.receiveShadow = true;
+    enemyBodyMesh.position.set(200, 60, -100);
+    scene.add(enemyBodyMesh);
+    return shaderMat;
 }
