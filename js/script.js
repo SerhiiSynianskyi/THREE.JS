@@ -57,7 +57,11 @@ window.onload = function() {
         controls.minDistance = 150;
     }
     //////////////////////////////////////////////////////
-
+    function createBackgroundSound() {
+        let audio = new Audio('sound.mp3');
+        audio.play();
+        audio.loop = true;
+    };
     function createRobot() { //            TODO REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         let manager = new THREE.LoadingManager(),
             loader = new THREE.ImageLoader(manager);
@@ -131,9 +135,6 @@ window.onload = function() {
     let controls = new THREE.OrbitControls(camera);
     controls.enabled = false;
     controls.enableKeys = false;
-    console.log(666);
-
-    console.log(controls);
     let stats = new Stats();
     window.fps.appendChild(stats.dom);
 
@@ -345,8 +346,7 @@ window.onload = function() {
     scene.add(createPlane());
     createRobot();
     shaderMaterial = createEnemyRobot(scene);
-
-
+    createBackgroundSound();
     rendering();
     console.timeEnd('userTime');
 };
