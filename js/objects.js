@@ -1,9 +1,9 @@
 function createPlane() {
     let planeTexture = new THREE.Texture(),
         planeLoader = new THREE.ImageLoader(),
-        planeBump = new THREE.TextureLoader().load('bump-metal.jpg');
+        planeBump = new THREE.TextureLoader().load('textures/floorBumpMap.jpg');
 
-    planeLoader.load("floor.jpg", function(e) {
+    planeLoader.load("textures/floorTexture.jpg", function(e) {
         planeTexture.image = e;
         planeTexture.needsUpdate = true;
     });
@@ -72,9 +72,8 @@ function createEdges(scene) {
         z: 510
     }]
     let cubeTexture = new THREE.Texture(),
-        loader = new THREE.ImageLoader(),
-        boxBump = new THREE.TextureLoader().load('2.jpg');
-    loader.load("metal.jpg", function(e) {
+        loader = new THREE.ImageLoader()
+    loader.load("textures/edgeTexture.jpg", function(e) {
         cubeTexture.image = e; // событие загрузки
         cubeTexture.needsUpdate = true;
     });
@@ -84,10 +83,9 @@ function createEdges(scene) {
         this.cubeMat = new THREE.MeshStandardMaterial({
             map: cubeTexture,
             overdraw: true,
-            emissive: 0.2,
-            metalness: 0.8,
-            roughness: 0.4,
-            bumpMap: boxBump
+            emissive: 0.6,
+            metalness: 0.9,
+            roughness: 0.5
         });
         this.cubeMesh = new THREE.Mesh(this.cubeGeom, this.cubeMat);
         this.cubeMesh.position.set(obj.x, obj.y, obj.z)
@@ -105,7 +103,7 @@ function createEdges(scene) {
 
 function createTargetObject() {
     let giftGeom = new THREE.OctahedronGeometry(40, 0);
-    let giftBump = new THREE.TextureLoader().load('textures/giftTexture.jpg');
+    let giftBump = new THREE.TextureLoader().load('textures/text.jpg');
     let giftMat = new THREE.MeshStandardMaterial({
         color: 0x2Dff27,
         aoMapIntensity: 1,

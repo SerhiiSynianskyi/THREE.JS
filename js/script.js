@@ -53,38 +53,22 @@ window.onload = function() {
         if (mode) {
             animation(type);
         }
-        // if (mode) {
-        //     scene.rotation.y += 90 / Math.PI * 0.0001;
-        // }
-        if (camera.position.y >= 800) {
-            camera.position.y = 800;
-        } else if (camera.position.y <= 50) {
-            camera.position.y = 50;
-        }
-        if (camera.position.z >= 800) {
-            camera.position.z = 800;
-        } else if (camera.position.z <= -800) {
-            camera.position.z = -800;
-        }
-        if (camera.position.x >= 800) {
-            camera.position.x = 800;
-        } else if (camera.position.x <= -800) {
-            camera.position.x = -800;
-        }
+        controls.maxDistance = 1200;
+        controls.minDistance = 150;
     }
     //////////////////////////////////////////////////////
-    
+
     function createRobot() { //            TODO REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         let manager = new THREE.LoadingManager(),
             loader = new THREE.ImageLoader(manager);
 
         let textureHead = new THREE.Texture();
 
-        loader.load('model/Head diff MAP.jpg', function(image) {
+        loader.load('model/headTexture.jpg', function(image) {
             textureHead.image = image;
             textureHead.needsUpdate = true;
         });
-        let bodyBump = new THREE.TextureLoader().load('model/body-bump-map.jpg');
+        let bodyBump = new THREE.TextureLoader().load('model/bodyBumpMap.jpg');
         let meshes = [],
             objLoader = new THREE.OBJLoader();
         objLoader.load('model/bb8.obj', function(object) {
@@ -96,7 +80,7 @@ window.onload = function() {
             let sphereGeometry = new THREE.SphereGeometry(50, 40, 40);
             let sphereTexture = new THREE.Texture(),
                 sphereLoader = new THREE.ImageLoader();
-            sphereLoader.load("model/Body-diff-map.jpg", function(e) {
+            sphereLoader.load("model/bodyTexture.jpg", function(e) {
                 sphereTexture.image = e;
                 sphereTexture.needsUpdate = true;
             });
@@ -105,7 +89,6 @@ window.onload = function() {
                 overdraw: true,
                 roughness: 0.1,
                 metalness: 0.2,
-                specular: 0x222222,
                 bumpMap: bodyBump
             });
             sphere = new THREE.Mesh(sphereGeometry, sphereMat);
@@ -116,28 +99,30 @@ window.onload = function() {
 
             headMesh = meshes[0],
                 body = meshes[1];
-
             headMesh.position.y = 0;
             headMesh.position.x = 10;
             sphere.castShadow = true; //default is false
             sphere.receiveShadow = true; //defaul
 
-            let bumpMapHead = new THREE.TextureLoader().load('model/HEAD bump MAP.jpg');
+            let bumpMapHead = new THREE.TextureLoader().load('model/headBumpMap.jpg');
 
             scene.add(headMesh);
             headMesh.castShadow = true;
             headMesh.receiveShadow = true;
-
             headMesh.material = new THREE.MeshStandardMaterial({
                 map: textureHead,
                 bumpMap: bumpMapHead,
                 bumpScale: 1,
-                specular: 0xfff7e8,
                 roughness: 0.1,
-                metalness: 0.2,
-                specular: 0xffffff
-
+                metalness: 0.2
             });
+            // headMesh.material[5] = new THREE.MeshStandardMaterial({ //TODO
+            //     map: new THREE.TextureLoader().load('model/head top diff MAP.jpg'),
+            //     bumpScale: 1,
+            //     roughness: 0.1,
+            //     metalness: 0.2,
+            //     overdraw: true
+            // });
         });
         return [sphere, headMesh]
     }
@@ -146,6 +131,9 @@ window.onload = function() {
     let controls = new THREE.OrbitControls(camera);
     controls.enabled = false;
     controls.enableKeys = false;
+    console.log(666);
+
+    console.log(controls);
     let stats = new Stats();
     window.fps.appendChild(stats.dom);
 
@@ -156,7 +144,7 @@ window.onload = function() {
 
         shaderMaterial.uniforms['time'].value = .005 * (Date.now() - start);
         shaderMaterial.uniforms['weight'].value = perWeight * 0.05;
-        // setSceneLimits();
+        setSceneLimits();
 
         // console.log(camera.position);
         // console.log(camera.rotation);
@@ -340,9 +328,8 @@ window.onload = function() {
 
 
     // window.addEventListener(deviceorientation, function() {
-    //  var orientation = Math.abs(window.orientation) == 90 ? 'landscape' : 'portrait';
+    //  let orientation = Math.abs(window.orientation) == 90 ? 'landscape' : 'portrait';
     //        console.log(orientation);
-    //  // Применяем нужные нам стили
     // }, false);
 
 
@@ -354,11 +341,11 @@ window.onload = function() {
     scene.add(createSpaceScene());
     createEdges(scene);
     targetObject = createTargetObject(),
-    scene.add(targetObject);
+        scene.add(targetObject);
     scene.add(createPlane());
     createRobot();
     shaderMaterial = createEnemyRobot(scene);
-    
+
 
     rendering();
     console.timeEnd('userTime');
