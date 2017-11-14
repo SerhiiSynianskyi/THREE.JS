@@ -116,8 +116,8 @@ function createTargetObject() {
         transparent: true
     });
     let giftMesh = new THREE.Mesh(giftGeom, giftMat);
-    giftMesh.castShadow = true; 
-    giftMesh.receiveShadow = true; 
+    giftMesh.castShadow = true;
+    giftMesh.receiveShadow = true;
     giftMesh.position.set(-300, 50, 300)
 
     return giftMesh;
@@ -155,7 +155,6 @@ function createEnemyRobot(scene, robotParams) {
     laserMesh.castShadow = true;
     laserMesh.receiveShadow = true;
 
-    scene.add(laserMesh);
 
     let enemyBodyTexture = new THREE.TextureLoader().load('textures/enemyTexture.jpg');
     let enemyBodyBump = new THREE.TextureLoader().load('textures/enemyBumpMap.jpg');
@@ -172,10 +171,86 @@ function createEnemyRobot(scene, robotParams) {
     let enemyBodyMesh = new THREE.Mesh(enemyBodyGeom, enemyBodyMat);
     enemyBodyMesh.castShadow = true;
     enemyBodyMesh.receiveShadow = true;
-    scene.add(enemyBodyMesh);
+    // scene.add(enemyBodyMesh);
+    let totalBody = new THREE.Group();
+    totalBody.add(enemyBodyMesh);
+    totalBody.add(laserMesh);
+    scene.add(totalBody);
     return enemyBody = {
         shader: shaderMat,
-        body: enemyBodyMesh,
-        laser: laserMesh
-    }    
+        totalBody: totalBody
+    }
+}
+
+
+function createRobot(scene,robotParams) { //            TODO REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    let manager = new THREE.LoadingManager(),
+        loader = new THREE.ImageLoader(manager),
+        totalBody = new THREE.Group(),
+        headMesh, bodyMesh;
+
+    let textureHead = new THREE.Texture();
+
+    loader.load('model/headTexture.jpg', function(image) {
+        textureHead.image = image;
+        textureHead.needsUpdate = true;
+    });
+    let bodyBump = new THREE.TextureLoader().load('model/bodyBumpMap.jpg');
+    let meshes = [],
+        objLoader = new THREE.OBJLoader();
+    objLoader.load('model/bb8.obj', function(object) {
+        object.traverse(function(child) {
+            if (child instanceof THREE.Mesh) {
+                meshes.push(child);
+            }
+        });
+        let sphereGeometry = new THREE.SphereGeometry(robotParams.bodySize, 40, 40);
+        let sphereTexture = new THREE.Texture(),
+            sphereLoader = new THREE.ImageLoader();
+        sphereLoader.load("model/bodyTexture.jpg", function(e) {
+            sphereTexture.image = e;
+            sphereTexture.needsUpdate = true;
+        });
+        let sphereMat = new THREE.MeshStandardMaterial({
+            map: sphereTexture,
+            overdraw: true,
+            roughness: 0.1,
+            metalness: 0.2,
+            bumpMap: bodyBump
+        });
+        bodyMesh = new THREE.Mesh(sphereGeometry, sphereMat);
+        bodyMesh.position.x = 0;
+        bodyMesh.position.y = 50;
+        bodyMesh.position.z = 0;
+
+        headMesh = meshes[0],
+            body = meshes[1];
+        headMesh.position.y = 0;
+        headMesh.position.x = 10;
+        bodyMesh.castShadow = true; //default is false
+        bodyMesh.receiveShadow = true; //defaul
+
+        let bumpMapHead = new THREE.TextureLoader().load('model/headBumpMap.jpg');
+
+        headMesh.castShadow = true;
+        headMesh.receiveShadow = true;
+        headMesh.material = new THREE.MeshStandardMaterial({
+            map: textureHead,
+            bumpMap: bumpMapHead,
+            bumpScale: 1,
+            roughness: 0.1,
+            metalness: 0.2
+        });
+        // headMesh.material[5] = new THREE.MeshStandardMaterial({ //TODO
+        //     map: new THREE.TextureLoader().load('model/head top diff MAP.jpg'),
+        //     bumpScale: 1,
+        //     roughness: 0.1,
+        //     metalness: 0.2,
+        //     overdraw: true
+        // });
+        
+        totalBody.add(bodyMesh);
+        totalBody.add(headMesh);
+    });
+    return totalBody;
 }

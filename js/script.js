@@ -2,7 +2,7 @@
 
 window.onload = function() {
     console.time('userTime');
-    let scene, camera, renderer, light, sphere, headMesh, targetObject, enemyRobot,
+    let scene, camera, renderer, light, targetObject, enemyRobot, userRobot,
         gameStart = false,
         cameraMode = 1,
         start = Date.now(),
@@ -13,7 +13,9 @@ window.onload = function() {
         enemyParams = {
             bodySize: 50,
             movingCoordinate: 0
-        };
+        },
+        enemies = [];
+
     sceneSize = {
         maxZ: 500,
         mixZ: -500,
@@ -78,79 +80,7 @@ window.onload = function() {
         audio.loop = true;
     };
 
-    function createRobot() { //            TODO REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        let manager = new THREE.LoadingManager(),
-            loader = new THREE.ImageLoader(manager);
-
-        let textureHead = new THREE.Texture();
-
-        loader.load('model/headTexture.jpg', function(image) {
-            textureHead.image = image;
-            textureHead.needsUpdate = true;
-        });
-        let bodyBump = new THREE.TextureLoader().load('model/bodyBumpMap.jpg');
-        let meshes = [],
-            objLoader = new THREE.OBJLoader();
-        objLoader.load('model/bb8.obj', function(object) {
-            object.traverse(function(child) {
-                if (child instanceof THREE.Mesh) {
-                    meshes.push(child);
-                }
-            });
-            let sphereGeometry = new THREE.SphereGeometry(robotParams.bodySize, 40, 40);
-            let sphereTexture = new THREE.Texture(),
-                sphereLoader = new THREE.ImageLoader();
-            sphereLoader.load("model/bodyTexture.jpg", function(e) {
-                sphereTexture.image = e;
-                sphereTexture.needsUpdate = true;
-            });
-            let sphereMat = new THREE.MeshStandardMaterial({
-                map: sphereTexture,
-                overdraw: true,
-                roughness: 0.1,
-                metalness: 0.2,
-                bumpMap: bodyBump
-            });
-            sphere = new THREE.Mesh(sphereGeometry, sphereMat);
-            sphere.position.x = 0;
-            sphere.position.y = 50;
-            sphere.position.z = 0;
-            scene.add(sphere);
-
-            headMesh = meshes[0],
-                body = meshes[1];
-            headMesh.position.y = 0;
-            headMesh.position.x = 10;
-            sphere.castShadow = true; //default is false
-            sphere.receiveShadow = true; //defaul
-
-            let bumpMapHead = new THREE.TextureLoader().load('model/headBumpMap.jpg');
-
-            scene.add(headMesh);
-            headMesh.castShadow = true;
-            headMesh.receiveShadow = true;
-            headMesh.material = new THREE.MeshStandardMaterial({
-                map: textureHead,
-                bumpMap: bumpMapHead,
-                bumpScale: 1,
-                roughness: 0.1,
-                metalness: 0.2
-            });
-            // headMesh.material[5] = new THREE.MeshStandardMaterial({ //TODO
-            //     map: new THREE.TextureLoader().load('model/head top diff MAP.jpg'),
-            //     bumpScale: 1,
-            //     roughness: 0.1,
-            //     metalness: 0.2,
-            //     overdraw: true
-            // });
-        });
-        return [sphere, headMesh]
-    }
-
     function enemyLogic(params) {
-        function getRandomArbitary(min, max) {
-            return
-        }
         setInterval(
             function() {
                 params.movingCoordinate = Math.floor(Math.random() * 4)
@@ -160,47 +90,47 @@ window.onload = function() {
     function moveEnemy(params) {
         switch (params.movingCoordinate) {
             case 0:
-                if (enemyRobot.body.position.z >= sceneSize.mixZ + 60) {
-                    enemyRobot.body.position.z += -6;
-                    enemyRobot.laser.position.z += -6;
+                if (enemyRobot.totalBody.position.z >= sceneSize.mixZ + 60) {
+                    enemyRobot.totalBody.position.z += -6;
                 }
                 break;
             case 1:
-                if (enemyRobot.body.position.z <= sceneSize.maxZ - 60) {
-                    enemyRobot.body.position.z += 6;
-                    enemyRobot.laser.position.z += 6;
+                if (enemyRobot.totalBody.position.z <= sceneSize.maxZ - 60) {
+                    enemyRobot.totalBody.position.z += 6;
                 }
                 break;
             case 2:
-                if (enemyRobot.body.position.x >= sceneSize.minX + 60) {
-                    enemyRobot.body.position.x += -6;
-                    enemyRobot.laser.position.x += -6;
+                if (enemyRobot.totalBody.position.x >= sceneSize.minX + 60) {
+                    enemyRobot.totalBody.position.x += -6;
                 }
                 break;
             case 3:
-                if (enemyRobot.body.position.x <= sceneSize.maxX - 60) {
-                    enemyRobot.body.position.x += 6;
-                    enemyRobot.laser.position.x += 6;
+                if (enemyRobot.totalBody.position.x <= sceneSize.maxX - 60) {
+                    enemyRobot.totalBody.position.x += 6;
                 }
                 break;
         }
     }
 
-
     function checkCollapse(userRobot, enemyRobot) {
-        let enemyBodyX = enemyRobot.body.position.x,
-            enemyBodyZ = enemyRobot.body.position.z,
-            userX = userRobot.position.x,
-            userZ = userRobot.position.z,
+        let enemyBodyX,
+            enemyBodyZ,
+            userX,
+            userZ,
             delta = 10;
+        if (userRobot && enemyRobot){
+            enemyBodyX = enemyRobot.totalBody.position.x;
+            enemyBodyZ = enemyRobot.totalBody.position.z;
+            userX = userRobot.position.x;
+            userZ = userRobot.position.z;
+        }    
 
         // console.log((userRobot.position.x + robotParams.bodySize) + '!!!!!!!!!' + (enemyRobot.body.position.x - enemyParams.bodySize))
         // console.log(enemyRobot);
         if ((userX + robotParams.bodySize >= enemyBodyX - enemyParams.bodySize + delta) && (userX - robotParams.bodySize <= enemyBodyX + enemyParams.bodySize - delta) && (userZ + robotParams.bodySize >= enemyBodyZ - enemyParams.bodySize + delta) && (userZ - robotParams.bodySize <= enemyBodyZ + enemyParams.bodySize - delta)) {
             console.log('X COLAPSE!!!!!')
         }
- 
-
+        moveEnemy(enemyParams);
     }
     //////////////////////////////////////////////////////
 
@@ -220,8 +150,7 @@ window.onload = function() {
         enemyRobot.shader.uniforms['time'].value = .005 * (Date.now() - start);
         enemyRobot.shader.uniforms['weight'].value = perNoizeWeight * 0.05;
         setSceneLimits();
-        moveEnemy(enemyParams);
-        checkCollapse(sphere, enemyRobot);
+        checkCollapse(userRobot, enemyRobot);
         // console.log(camera.position);
         // console.log(camera.rotation);
         // scene.rotation.y += 90 / Math.PI * 0.0001;
@@ -240,34 +169,30 @@ window.onload = function() {
     function animation(program) {
         switch (program) {
             case 'up':
-                if (sphere.position.z >= sceneSize.mixZ + robotParams.bodySize + 10) {
-                    headMesh.position.z += -11;
-                    sphere.position.z += -11;
+                if (userRobot.position.z >= sceneSize.mixZ + robotParams.bodySize + 10) {
+                    userRobot.position.z += -11;
                 }
-                sphere.rotation.x -= 180 / Math.PI * 0.002;
+                userRobot.children[0].rotation.x -= 180 / Math.PI * 0.002;
                 break;
             case 'down':
-                if (sphere.position.z <= sceneSize.maxZ - robotParams.bodySize - 10) {
-                    headMesh.position.z += 11;
-                    sphere.position.z += 11;
+                if (userRobot.position.z <= sceneSize.maxZ - robotParams.bodySize - 10) {
+                    userRobot.position.z += 11;
                 }
-                sphere.rotation.x += 180 / Math.PI * 0.002;
+                userRobot.children[0].rotation.x += 180 / Math.PI * 0.002;
                 break;
             case 'left':
-                if (sphere.position.x >= sceneSize.minX + robotParams.bodySize + 10) {
-                    headMesh.position.x += -11;
-                    sphere.position.x += -11;
+                if (userRobot.position.x >= sceneSize.minX + robotParams.bodySize + 10) {
+                    userRobot.position.x += -11;
                 }
-                sphere.rotation.z += 180 / Math.PI * 0.002;
-                sphere.rotation.x = 0;
+                userRobot.children[0].rotation.z += 180 / Math.PI * 0.002;
+                userRobot.children[0].rotation.x = 0;
                 break;
             case 'right':
-                if (sphere.position.x <= sceneSize.maxX - robotParams.bodySize - 10) {
-                    headMesh.position.x += 11;
-                    sphere.position.x += 11;
+                if (userRobot.position.x <= sceneSize.maxX - robotParams.bodySize - 10) {
+                    userRobot.position.x += 11;
                 }
-                sphere.rotation.z -= 180 / Math.PI * 0.002;
-                sphere.rotation.x = 0;
+                userRobot.children[0].rotation.z -= 180 / Math.PI * 0.002;
+                userRobot.children[0].rotation.x = 0;
                 break;
             case 'special':
                 // headMesh.position.z += 4 * Math.sin(angle);
@@ -295,8 +220,6 @@ window.onload = function() {
     function moveCameraTo(from, to) {
 
     }
-
-
 
     ///////// LISTENERS
 
@@ -402,7 +325,11 @@ window.onload = function() {
         controls.enabled ? trackBallWrap.classList.add('active') : trackBallWrap.classList.remove('active');
     }
 
-
+    let mainMenu = document.getElementsByClassName('menu-icon')[0];
+    mainMenu.addEventListener('click', function(){
+        mainMenu.classList.toggle('open-menu');
+        gameStart = false;
+    });
     // window.addEventListener(deviceorientation, function() {
     //  let orientation = Math.abs(window.orientation) == 90 ? 'landscape' : 'portrait';
     //        console.log(orientation);
@@ -413,25 +340,30 @@ window.onload = function() {
 
     // let helper = new THREE.DirectionalLightHelper(light,5);
     // scene.add(helper);
-
-    scene.add(createSpaceScene());
-    createEdges(scene);
-    targetObject = createTargetObject(),
+    function buildObjects(){
+        scene.add(createSpaceScene());
+        createEdges(scene);
+        targetObject = createTargetObject(),
         scene.add(targetObject);
-    scene.add(createPlane());
-    createRobot();
-    enemyRobot = createEnemyRobot(scene, enemyParams);
+        scene.add(createPlane());
+        userRobot = createRobot(scene,robotParams);
+        scene.add(userRobot);
+        enemyRobot = createEnemyRobot(scene, enemyParams);
+        enemyLogic(enemyParams);
+        enemyRobot.totalBody.position.set(100, 60, -100);
+    }
+    
     // createBackgroundSound();
 
     console.timeEnd('userTime');
 
-    enemyLogic(enemyParams);
-
-    enemyRobot.body.position.set(100, 60, -100);
-    enemyRobot.laser.position.set(100, 60, -100);
+    
+    // enemyRobot.body.position.set(100, 60, -100);
+    // enemyRobot.laser.position.set(100, 60, -100);
 
     setTimeout(function() {
         gameStart = true;
+        buildObjects();
         rendering();
     }, 2000);
 };
