@@ -8,7 +8,7 @@ function createPlane() {
         planeTexture.needsUpdate = true;
     });
 
-    let planeGeom = new THREE.CubeGeometry(1000, 50, 1000); // 2д форма для поверхности
+    let planeGeom = new THREE.CubeGeometry(1010, 50, 1010); // 2д форма для поверхности
     //planeGeom.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
     let planeMat = new THREE.MeshStandardMaterial({ map: planeTexture, overdraw: true, bumpMap: planeBump }),
         planeMesh = new THREE.Mesh(planeGeom, planeMat);
@@ -43,33 +43,33 @@ function createSpaceScene() {
 
 function createEdges(scene) {
     let boxes = [{
-        w: 26,
+        w: 25,
         h: 100,
-        d: 1000,
-        x: -495,
+        d: 1005,
+        x: -515,
         y: 0,
         z: 0
     }, {
-        w: 26,
+        w: 25,
         h: 100,
-        d: 1000,
-        x: 495,
+        d: 1005,
+        x: 515,
         y: 0,
         z: 0
     }, {
-        w: 1015,
+        w: 1055,
         h: 100,
-        d: 26,
+        d: 25,
         x: 0,
         y: 0,
-        z: -510
+        z: -515
     }, {
-        w: 1015,
+        w: 1055,
         h: 100,
-        d: 26,
+        d: 25,
         x: 0,
         y: 0,
-        z: 510
+        z: 515
     }]
     let cubeTexture = new THREE.Texture(),
         loader = new THREE.ImageLoader()
@@ -123,9 +123,9 @@ function createTargetObject() {
     return giftMesh;
 }
 
-function createEnemyRobot(scene) {
+function createEnemyRobot(scene, robotParams) {
     let laserGeo, shaderMat, uniforms, buffGeo, laserMesh;
-    laserGeom = new THREE.TorusGeometry(44, 9, 40, 40);
+    laserGeom = new THREE.TorusGeometry(48, 9, 40, 40);
     buffGeom = new THREE.BufferGeometry().fromGeometry(laserGeom);
     let imgTexture = new Image;
     imgTexture.src = "textures/laserTexture.jpg";
@@ -150,7 +150,6 @@ function createEnemyRobot(scene) {
 
     laserMesh = new THREE.Mesh(laserGeom, shaderMat);
     laserMesh.doubleSided = true;
-    laserMesh.position.set(200, 60, -100);
     laserMesh.rotateX(Math.PI / 2);
     laserMesh.rotateZ(Math.PI);
     laserMesh.castShadow = true;
@@ -160,7 +159,7 @@ function createEnemyRobot(scene) {
 
     let enemyBodyTexture = new THREE.TextureLoader().load('textures/enemyTexture.jpg');
     let enemyBodyBump = new THREE.TextureLoader().load('textures/enemyBumpMap.jpg');
-    let enemyBodyGeom = new THREE.SphereGeometry(50, 40, 40);
+    let enemyBodyGeom = new THREE.SphereGeometry(robotParams.bodySize, 40, 40);
     let enemyBodyMat = new THREE.MeshStandardMaterial({
         map: enemyBodyTexture,
         roughness: 0.3,
@@ -173,7 +172,10 @@ function createEnemyRobot(scene) {
     let enemyBodyMesh = new THREE.Mesh(enemyBodyGeom, enemyBodyMat);
     enemyBodyMesh.castShadow = true;
     enemyBodyMesh.receiveShadow = true;
-    enemyBodyMesh.position.set(200, 60, -100);
     scene.add(enemyBodyMesh);
-    return shaderMat;
+    return enemyBody = {
+        shader: shaderMat,
+        body: enemyBodyMesh,
+        laser: laserMesh
+    }    
 }
