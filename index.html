@@ -2,48 +2,59 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>ROBOT</title>
-    <link href="styles/style.css" rel="stylesheet" type="text/css">
+	<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<title>ROBOT</title>
+	<link href="styles/normalize.css" rel="stylesheet" type="text/css">
+	<link href="styles/style.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-    <div class="top-menu">
-        <div class="menu-icon">
-            
-        </div>
-        <div class="camera-modes">
-            <div data-mode="1" class="mode active"></div>
-            <div data-mode="2" class="mode"></div>
-            <div data-mode="3" class="mode"></div>
-        </div>
-    </div>
-    <div class="track-ball"></div>
-    <div id="fps"></div>
-    
-    <div id="control-wrapper">
-        <div class="inner-wrapper">
-            <div class="control up"></div>
-            <div class="control left"></div>
-            <div class="control right"></div>
-            <div class="control down"></div>
-        </div>
-    </div>
-    <div class="info">
-        <!-- <p>V0.1 by S+</p> -->
-    </div>
-    <div class="other-info">
-        <p id="data1">111</p>
-        <p id="data2">111</p>
-        <p id="data3">111</p>
-    </div>
+	<div class="main-wrapper">
+		<div class="top-menu">
+			<button class="menu-icon">
+			</button>
+			<div class="camera-modes">
+				<button data-mode="1" class="mode active"></button>
+				<button data-mode="2" class="mode"></button>
+				<button data-mode="3" class="mode"></button>
+			</div>
+			<button class="track-ball"></button>
+		</div>
+		<div class="menu-substrate">
+			<ul class="main-menu">
+				<li>Continue</li>
+				<li>Maps</li>
+				<li>Store</li>
+				<li>Settings</li>
+				<li>Credits</li>
+				<li>Exit game</li>
+			</ul>
+		</div>
+		<div id="fps"></div>
+		<div id="control-wrapper">
+			<div class="inner-wrapper">
+				<button class="control up"></button>
+				<button class="control left"></button>
+				<button class="control right"></button>
+				<button class="control down"></button>
+			</div>
+		</div>
+		<div class="info">
+			<!-- <p>V0.1 by S+</p> -->
+		</div>
+		<div class="other-info">
+			<p id="data1">111</p>
+			<p id="data2">111</p>
+			<p id="data3">111</p>
+		</div>
+	</div>
 </body>
 <script src="js/three.min.js"></script>
 <script src="js/OBJLoader.js"></script>
 <script src="js/OrbitControls.js"></script>
 <script src="js/dat.gui.min.js"></script>
 <script src="js/fps.js"></script>
-<script src="js/shaders/enemy-x-fragment.js" ></script>
+<script src="js/shaders/enemy-x-fragment.js"></script>
 <script src="js/shaders/enemy-x-vertex.js"></script>
 <script src="js/objects.js"></script>
 <script src="js/script.js"></script>
