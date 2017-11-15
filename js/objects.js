@@ -175,7 +175,6 @@ function createEnemyRobot(scene, robotParams) {
     let totalBody = new THREE.Group();
     totalBody.add(enemyBodyMesh);
     totalBody.add(laserMesh);
-    scene.add(totalBody);
     return enemyBody = {
         shader: shaderMat,
         totalBody: totalBody
