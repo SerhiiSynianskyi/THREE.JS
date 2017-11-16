@@ -23,6 +23,11 @@ button {
 	/*Unhuman interface =(*/
 }
 
+.main-wrapper {
+	width: 100%;
+	height: 100%;
+}
+
 #control-wrapper {
 	position: absolute;
 	bottom: 30px;
@@ -31,6 +36,8 @@ button {
 	height: 140px;
 	border-radius: 50%;
 	background-color: rgba(95, 105, 115, 0.4);
+	opacity: 1;
+	transition: 0.5s opacity linear;
 	z-index: 100;
 }
 
@@ -103,6 +110,9 @@ button {
 
 
 
+
+
+
 /*/////////////////////////////////////////////// - TOP MODES*/
 
 .top-menu {
@@ -113,6 +123,7 @@ button {
 	align-items: flex-start;
 	justify-content: flex-start;
 	width: 100%;
+	padding-left: 16px;
 	z-index: 10;
 }
 
@@ -124,17 +135,16 @@ button {
 	width: 100%;
 	height: 90px;
 	background-color: rgba(0, 0, 0, 0.5);
-	box-shadow: 5px 0px 26px 8px rgba(0,0,0,0.8);
-	transform: translate3d(0,0,0) skewY(2deg);
+	box-shadow: 5px 0px 26px 8px rgba(0, 0, 0, 0.8);
+	transform: translate3d(0, 0, 0) skewY(2deg);
 	z-index: -1;
 }
 
 .menu-icon {
 	height: 60px;
 	width: 60px;
-	background-color: rgb(20, 20, 20);
+	background: transparent;
 }
-
 
 .camera-modes {
 	display: flex;
@@ -203,15 +213,15 @@ button {
 }
 
 .main-menu {
-	width: 26%;
+	width: 28%;
 	height: 100%;
-	padding: 65px 0 0 50px;
+	padding: 65px 0 0 75px;
 	margin: 0;
 	background-color: rgba(0, 0, 0, 0.5);
 	color: white;
 	font: 700 28px/1 BRL;
 	letter-spacing: 5px;
-	box-shadow: 5px 0px 26px 8px rgba(0,0,0,0.8);
+	box-shadow: 5px 0px 26px 8px rgba(0, 0, 0, 0.8);
 	transform: translate3d(-100%, 0, 0) skew(-5deg);
 	transition: 0.5s linear transform;
 }
@@ -230,7 +240,12 @@ button {
 }
 
 .open-menu .main-menu {
-	transform: translate3d(0, 0, 0) skew(-5deg);
+	transform: translate3d(-30px, 0, 0) skew(-5deg);
+}
+
+.open-menu #control-wrapper {
+	opacity: 0;
+	pointer-events: none;
 }
 
 .score-data {
@@ -252,6 +267,9 @@ button {
 	font-family: BRL;
 	src: url(../fonts/BRLNSR.TTF);
 }
+
+
+
 
 
 /*@media screen and (orientation:portrait) {*/

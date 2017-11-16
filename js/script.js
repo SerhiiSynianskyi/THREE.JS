@@ -2,8 +2,15 @@
 window.onload = function() {
 	console.time('userTime');
 	let mainWrapper = document.getElementsByClassName('main-wrapper')[0],
-		scoresData = document.getElementsByClassName('scores')[0];
-	let scene, camera, renderer, light, targetObject, enemyRobot1, userRobot,
+		scoresData = document.getElementsByClassName('scores')[0],
+		controlsWrapper = document.getElementById('control-wrapper'),
+		modesWrapper = document.getElementsByClassName('camera-modes')[0],
+		trackBallWrap = document.getElementsByClassName('track-ball')[0],
+		menuIcon = document.getElementsByClassName('menu-icon')[0],
+		mainMenu = document.getElementsByClassName('main-menu')[0];
+
+	let scene, camera, renderer, light, targetObject, enemyRobot1, userRobot, touchType,
+		touchMode = false,
 		gameStart = false,
 		targetParams = {
 			bodySize: 40,
@@ -38,8 +45,9 @@ window.onload = function() {
 		};
 
 	scene = new THREE.Scene();
+	init();
 
-	function init() {
+	function initScene() {
 		camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 10000);
 		renderer = new THREE.WebGLRenderer({ antialias: true }); // antialias - сглаживаем ребра
 		camera.position.set(0, 615, 700);
@@ -51,7 +59,7 @@ window.onload = function() {
 		renderer.toneMapping = THREE.LinearToneMapping;
 		// renderer.toneMappingExposure = 1;
 		renderer.setClearColor(0x000000);
-		document.body.appendChild(renderer.domElement);
+		mainWrapper.appendChild(renderer.domElement);
 	}
 
 	function resize() {
@@ -59,8 +67,7 @@ window.onload = function() {
 		renderer.setSize(window.innerWidth - 5, window.innerHeight - 5);
 		camera.updateProjectionMatrix()
 	}
-	init();
-	addLights();
+
 	/////////////////////////////////////////////////////////////////
 	function addLights() {
 		light;
@@ -81,8 +88,8 @@ window.onload = function() {
 	}
 
 	function setSceneLimits() {
-		if (mode) {
-			userAnimation(type);
+		if (touchMode) {
+			userAnimation(touchType);
 		}
 		controls.maxDistance = 1200;
 		controls.minDistance = 150;
@@ -212,7 +219,7 @@ window.onload = function() {
 					targetLogic(2);
 					console.log('Pickle RICK');
 				}
-				
+
 			}
 			///////////////////////////////////////////// - enemies collapse
 			subArray.forEach(function(subItem, subI, subArr) {
@@ -310,7 +317,7 @@ window.onload = function() {
 	window.fps.appendChild(stats.dom);
 
 	function rendering() {
-		if(gameStart){
+		if (gameStart) {
 			requestAnimationFrame(rendering);
 		}
 
@@ -388,30 +395,70 @@ window.onload = function() {
 		angle += Math.PI / 180 * 2; // 2 - degree  */
 		}
 	};
-
+	function menuInteraction(type){
+		switch (type) {
+			case 'play':
+				mainWrapper.classList.remove('open-menu');
+				setTimeout(function(){
+					gameStart = true;
+					rendering();
+				},500)
+				break;
+		default:
+			break;
+		}	
+	}
 	function moveCameraTo(from, to) {
 
 	}
+	///////// FUNCTIONS CALL
+
+	// let helper = new THREE.DirectionalLightHelper(light,5);
+	// scene.add(helper);
+
+	function buildObjects() {
+		scene.add(createSpaceScene());
+		createEdges(scene);
+		targetObject = createTargetObject(),
+
+			scene.add(createPlane());
+		userRobot = createRobot(scene, robotParams);
+		scene.add(userRobot);
+		createEnemies();
+		enemyLogic(enemies);
+
+		targetLogic(0);
+	}
+
+	function init() {
+		initScene();
+		addLights();
+	}
+	// createBackgroundSound();
+
+	console.timeEnd('userTime');
+
+	setTimeout(function() {
+		gameStart = true;
+		buildObjects();
+		rendering();
+	}, 2000);
 
 	///////// LISTENERS
 
-	let controlsWrapper = document.getElementById('control-wrapper');
-	let mode = false,
-		type = '';
-
 	controlsWrapper.addEventListener('touchstart', function(e) {
 		if (e.target.classList.contains('control')) {
-			mode = true;
-			type = e.target.classList[1]
-			userAnimation(type);
+			touchMode = true;
+			touchType = e.target.classList[1];
+			userAnimation(touchType);
 		}
 	});
 
 	window.addEventListener('touchend', function(e) {
-		mode = false;
+		touchMode = false;
 	});
 	window.addEventListener('touchmove', function(e) {
-		mode = false;
+		touchMode = false;
 	});
 	document.addEventListener('keydown', function(e) {
 		let moveType = 'notype';
@@ -467,9 +514,6 @@ window.onload = function() {
 	}
 
 	///////////////////////////////////////////////////// - camera modes
-
-	let modesWrapper = document.getElementsByClassName('camera-modes')[0],
-		trackBallWrap = document.getElementsByClassName('track-ball')[0];
 	modesWrapper.addEventListener('click', function(e) {
 		if (e.target.className === 'mode') {
 			Array.prototype.forEach.call(modesWrapper.children, function(item) {
@@ -497,43 +541,19 @@ window.onload = function() {
 		controls.enabled ? trackBallWrap.classList.add('active') : trackBallWrap.classList.remove('active');
 	}
 
-	let mainMenu = document.getElementsByClassName('menu-icon')[0];
-	mainMenu.addEventListener('click', function() {
-		mainWrapper.classList.toggle('open-menu');
+	menuIcon.addEventListener('click', function() {
+		mainWrapper.classList.add('open-menu');
 		gameStart = false;
+	});
+
+	mainMenu.addEventListener('click', function(e) {
+		if(e.target.dataset.menu){
+			menuInteraction(e.target.dataset.menu);
+		}
 	});
 	// window.addEventListener(deviceorientation, function() {
 	//  let orientation = Math.abs(window.orientation) == 90 ? 'landscape' : 'portrait';
 	//        console.log(orientation);
 	// }, false);
 
-
-	///////// FUNCTIONS CALL
-
-	// let helper = new THREE.DirectionalLightHelper(light,5);
-	// scene.add(helper);
-	function buildObjects() {
-		scene.add(createSpaceScene());
-		createEdges(scene);
-		targetObject = createTargetObject(),
-
-			scene.add(createPlane());
-		userRobot = createRobot(scene, robotParams);
-		scene.add(userRobot);
-		createEnemies();
-		enemyLogic(enemies);
-
-		targetLogic(0);
-	}
-
-	// createBackgroundSound();
-
-	console.timeEnd('userTime');
-
-
-	setTimeout(function() {
-		gameStart = true;
-		buildObjects();
-		rendering();
-	}, 2000);
 };
