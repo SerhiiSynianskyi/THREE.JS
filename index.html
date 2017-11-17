@@ -32,7 +32,7 @@
 		</div>
 		<div class="score-data">
 			<p>SCORES:</p>
-			<p class="scores">0</p>
+			<output name="scores" class="scores"></output>
 		</div>
 		<div id="fps"></div>
 		<div id="control-wrapper">
@@ -43,13 +43,19 @@
 				<button class="control down"></button>
 			</div>
 		</div>
-		<div class="info">
-			<!-- <p>V0.1 by S+</p> -->
-		</div>
 		<div class="other-info">
 			<p id="data1">111</p>
 			<p id="data2">111</p>
 			<p id="data3">111</p>
+		</div>
+		<div class="end-game-wrapper">
+			<p class="end-game-text">you are defeated</p>
+			<output class="end-game-scores"></output>
+			<form id="user-form">
+				<input type="text" class="user-name" name="userName" pattern="[a-zA-Z0-9_-]{2,20}" placeholder="YOUR NAME" required autocomplete="off"></input>
+				<input type="submit" value="SUBMIT">
+				<button class="restart-game">RESTART</button>
+			</form>
 		</div>
 	</div>
 </body>

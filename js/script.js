@@ -3,11 +3,14 @@ window.onload = function() {
 	console.time('userTime');
 	let mainWrapper = document.getElementsByClassName('main-wrapper')[0],
 		scoresData = document.getElementsByClassName('scores')[0],
+		endGameScored = document.getElementsByClassName('end-game-scores')[0],
 		controlsWrapper = document.getElementById('control-wrapper'),
 		modesWrapper = document.getElementsByClassName('camera-modes')[0],
 		trackBallWrap = document.getElementsByClassName('track-ball')[0],
 		menuIcon = document.getElementsByClassName('menu-icon')[0],
-		mainMenu = document.getElementsByClassName('main-menu')[0];
+		mainMenu = document.getElementsByClassName('main-menu')[0],
+		userForm = document.getElementById('user-form'),
+		inputUserName = userForm.getElementsByClassName('user-name')[0];
 
 	let scene, camera, renderer, light, targetObject, enemyRobot1, userRobot, touchType,
 		touchMode = false,
@@ -35,6 +38,7 @@ window.onload = function() {
 			name: '',
 			scores: 0
 		},
+		users = [],
 		enemies = [],
 		stateChange = new Event('newState'),
 		sceneSize = {
@@ -135,7 +139,6 @@ window.onload = function() {
 
 	function enemyLogic(enemies) {
 		let randomInterval = 2500;
-		console.log()
 		enemies.forEach(function(item) {
 			randomInterval = randomInterval - 300;
 			let startMovingCoordinate = item.movingCoordinate
@@ -151,7 +154,7 @@ window.onload = function() {
 	};
 
 	function showScores() {
-		scoresData.innerText = userData.scores;;
+		scoresData.value = userData.scores;;
 	}
 
 	function enemyAnimation(enemy) {
@@ -211,13 +214,12 @@ window.onload = function() {
 			}
 			///////////////////////////////////////////// - user collapse
 			if ((userX + robotParams.bodySize >= enemyBodyX - enemyParams.bodySize + delta) && (userX - robotParams.bodySize <= enemyBodyX + enemyParams.bodySize - delta) && (userZ + robotParams.bodySize >= enemyBodyZ - enemyParams.bodySize + delta) && (userZ - robotParams.bodySize <= enemyBodyZ + enemyParams.bodySize - delta)) {
-				console.log('X COLAPSE!!!!!')
+				endGame();
 			}
 			///////////////////////////////////////////// - enemy and target collapse
 			if ((enemyBodyX + fullEnemyBodySize >= targetX - targetSize) && (enemyBodyX - fullEnemyBodySize <= targetX + targetSize) && (enemyBodyZ + fullEnemyBodySize >= targetZ - targetSize) && (enemyBodyZ - fullEnemyBodySize <= targetZ + targetSize)) {
 				if (targetParams.targetState !== 2) {
 					targetLogic(2);
-					console.log('Pickle RICK');
 				}
 
 			}
@@ -268,6 +270,12 @@ window.onload = function() {
 				object.scale.z -= 0.03;
 			}
 		}
+	}
+
+	function endGame() {
+		// endGameScored.value = userData.scores;
+		// gameStart = false;
+		// mainWrapper.classList.add('stop-game');
 	}
 
 	function setTargetColor(target, arr) {
@@ -395,19 +403,21 @@ window.onload = function() {
 		angle += Math.PI / 180 * 2; // 2 - degree  */
 		}
 	};
-	function menuInteraction(type){
+
+	function menuInteraction(type) {
 		switch (type) {
 			case 'play':
 				mainWrapper.classList.remove('open-menu');
-				setTimeout(function(){
+				setTimeout(function() {
 					gameStart = true;
 					rendering();
-				},500)
+				}, 500)
 				break;
-		default:
-			break;
-		}	
+			default:
+				break;
+		}
 	}
+
 	function moveCameraTo(from, to) {
 
 	}
@@ -426,13 +436,16 @@ window.onload = function() {
 		scene.add(userRobot);
 		createEnemies();
 		enemyLogic(enemies);
-
 		targetLogic(0);
 	}
 
 	function init() {
 		initScene();
 		addLights();
+		if (JSON.parse(localStorage.getItem('starWarsGameUsers', users))) {
+			users = JSON.parse(localStorage.getItem('starWarsGameUsers', users));
+		}
+
 	}
 	// createBackgroundSound();
 
@@ -442,6 +455,7 @@ window.onload = function() {
 		gameStart = true;
 		buildObjects();
 		rendering();
+		// endGame();
 	}, 2000);
 
 	///////// LISTENERS
@@ -547,7 +561,7 @@ window.onload = function() {
 	});
 
 	mainMenu.addEventListener('click', function(e) {
-		if(e.target.dataset.menu){
+		if (e.target.dataset.menu) {
 			menuInteraction(e.target.dataset.menu);
 		}
 	});
@@ -555,5 +569,11 @@ window.onload = function() {
 	//  let orientation = Math.abs(window.orientation) == 90 ? 'landscape' : 'portrait';
 	//        console.log(orientation);
 	// }, false);
-
+	window.addEventListener('submit', function(e) {
+		userData.name = inputUserName.value;
+		users.push(userData);
+		localStorage.setItem('starWarsGameUsers', JSON.stringify(users));
+		e.preventDefault();
+		let data = localStorage.getItem('starWarsGameUsers', users);
+	});
 };
