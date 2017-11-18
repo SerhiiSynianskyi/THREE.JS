@@ -93,21 +93,12 @@ window.onload = function() {
 
 	function setSceneLimits() {
 		if (touchMode) {
-			userAnimation(touchType);
+			userAnimation(touchType, userRobot, sceneSize, robotParams);
 		}
 		controls.maxDistance = 1200;
 		controls.minDistance = 150;
 	}
 	//////////////////////////////////////////////////////
-	function createBackgroundSound() {
-		let audio = new Audio('sound.mp3');
-		audio.play();
-		audio.loop = true;
-	};
-
-	function getRandomInt(min, max) {
-		return Math.floor(Math.random() * (max - min + 1)) + min;
-	}
 
 	function createEnemies() {
 		enemyRobot1 = createEnemyRobot(scene, enemyParams);
@@ -137,183 +128,10 @@ window.onload = function() {
 		enemyRobot6.position.set(-100, 60, -500);
 	}
 
-	function enemyLogic(enemies) {
-		let randomInterval = 2500;
-		enemies.forEach(function(item) {
-			randomInterval = randomInterval - 300;
-			let startMovingCoordinate = item.movingCoordinate
-			setInterval(function() {
-				if (!item.colapsed) {
-					item.movingCoordinate = getRandomInt(0, 3);
-					if (item.movingCoordinate === startMovingCoordinate) {
-						item.movingCoordinate = getRandomInt(0, 3);
-					}
-				}
-			}, randomInterval);
-		});
-	};
-
-	function showScores() {
-		scoresData.value = userData.scores;;
-	}
-
-	function enemyAnimation(enemy) {
-		switch (enemy.movingCoordinate) {
-			case 0:
-				if (enemy.position.z >= sceneSize.mixZ + 60) {
-					enemy.position.z += -6;
-				}
-				break;
-			case 1:
-				if (enemy.position.z <= sceneSize.maxZ - 60) {
-					enemy.position.z += 6;
-				}
-				break;
-			case 2:
-				if (enemy.position.x >= sceneSize.minX + 60) {
-					enemy.position.x += -6;
-				}
-				break;
-			case 3:
-				if (enemy.position.x <= sceneSize.maxX - 60) {
-					enemy.position.x += 6;
-				}
-				break;
-		}
-	}
-
-	function checkCollapse(userRobot, enemyRobots, target) {
-		let enemyBodyX,
-			enemyBodyZ,
-			userX = userRobot.position.x,
-			userZ = userRobot.position.z,
-			targetSize = target.geometry.parameters.radius,
-			targetX = target.position.x,
-			targetZ = target.position.z,
-			delta = 10,
-			fullEnemyBodySize = enemyParams.bodySize + 5;
-
-		///////////////////////////////////////////// - target collapse
-		if ((userX + robotParams.bodySize >= targetX - targetSize + delta) && (userX - robotParams.bodySize <= targetX + targetSize - delta) && (userZ + robotParams.bodySize >= targetZ - targetSize + delta) && (userZ - robotParams.bodySize <= targetZ + targetSize - delta)) {
-			if (targetParams.targetState !== 2) {
-				targetLogic(2);
-				userData.scores += targetParams.values[targetParams.targetType];
-				showScores();
-			}
-		}
-
-		enemyRobots.forEach(function(item, i, arr) {
-			let subArray = arr.map(function(subItem) {
-				return subItem;
-			});
-			subArray.splice(subArray.indexOf(item), 1);
-
-			if (item) {
-				enemyBodyX = item.position.x;
-				enemyBodyZ = item.position.z;
-			}
-			///////////////////////////////////////////// - user collapse
-			if ((userX + robotParams.bodySize >= enemyBodyX - enemyParams.bodySize + delta) && (userX - robotParams.bodySize <= enemyBodyX + enemyParams.bodySize - delta) && (userZ + robotParams.bodySize >= enemyBodyZ - enemyParams.bodySize + delta) && (userZ - robotParams.bodySize <= enemyBodyZ + enemyParams.bodySize - delta)) {
-				// endGame();
-			}
-			///////////////////////////////////////////// - enemy and target collapse
-			if ((enemyBodyX + fullEnemyBodySize >= targetX - targetSize) && (enemyBodyX - fullEnemyBodySize <= targetX + targetSize) && (enemyBodyZ + fullEnemyBodySize >= targetZ - targetSize) && (enemyBodyZ - fullEnemyBodySize <= targetZ + targetSize)) {
-				if (targetParams.targetState !== 2) {
-					targetLogic(2);
-				}
-
-			}
-			///////////////////////////////////////////// - enemies collapse
-			subArray.forEach(function(subItem, subI, subArr) {
-				let basicRobot = item.movingCoordinate,
-					comparableRobot = subItem.movingCoordinate,
-					comparableRobotX = subItem.position.x,
-					comparableRobotZ = subItem.position.z,
-					collapsed;
-
-				if ((enemyBodyX + fullEnemyBodySize >= comparableRobotX - fullEnemyBodySize) && (enemyBodyX - fullEnemyBodySize <= comparableRobotX + fullEnemyBodySize) && (enemyBodyZ + fullEnemyBodySize >= comparableRobotZ - fullEnemyBodySize) && (enemyBodyZ - fullEnemyBodySize <= comparableRobotZ + fullEnemyBodySize)) {
-					collapsed = true;
-					item.movingCoordinate = Math.abs(3 - basicRobot);
-					subItem.movingCoordinate = Math.abs(1 - basicRobot);
-					item.collapsed = true;
-				} else {
-					collapsed = false;
-					item.collapsed = false;
-				}
-
-
-			});
-			enemyAnimation(item);
-		})
-	}
-
-	function targetAnimation(object, params) {
-		if (params.targetState === 1) {
-			if (object.scale.x <= 1) {
-				object.scale.x += 0.03;
-			}
-			if (object.scale.y <= 1.3) {
-				object.scale.y += 0.03;
-			}
-			if (object.scale.z <= 1) {
-				object.scale.z += 0.03;
-			}
-		}
-		if (params.targetState === 2) {
-			if (object.scale.x >= 0.1) {
-				object.scale.x -= 0.03;
-			}
-			if (object.scale.y >= 0.1) {
-				object.scale.y -= 0.03;
-			}
-			if (object.scale.z >= 0.1) {
-				object.scale.z -= 0.03;
-			}
-		}
-	}
-
 	function endGame() {
 		endGameScored.value = userData.scores;
 		gameStart = false;
 		mainWrapper.classList.add('stop-game');
-	}
-
-	function setTargetColor(target, arr) {
-		target.material.color.b = arr[0];
-		target.material.color.g = arr[1];
-		target.material.color.r = arr[2];
-	}
-
-	function targetLogic(state) {
-		switch (state) { ////////////// - TODO better to use onserver
-			case 0:
-				targetObject.position.set((getRandomInt(-40, 40) * 10), 50, (getRandomInt(-40, 40) * 10));
-				let targetType = getRandomInt(0, 10);
-				if (targetType === 0) {
-					setTargetColor(targetObject, [0, 0, 1])
-					targetParams.targetType = 0;
-				} else if (targetType >= 1 && targetType <= 3) {
-					setTargetColor(targetObject, [0.1, 1, 1])
-					targetParams.targetType = 1;
-				} else {
-					setTargetColor(targetObject, [0.1, 1, 0.2])
-					targetParams.targetType = 2;
-				}
-				scene.add(targetObject);
-				targetParams.targetState = 1;
-				break;
-			case 1:
-				break;
-			case 2:
-				targetParams.targetState = 2;
-				setTimeout(function() {
-					targetParams.targetState = 0;
-					targetLogic(0);
-				}, 750)
-				break;
-			default:
-				break;
-		}
 	}
 
 	//////////////////////////////////////////////////////
@@ -336,7 +154,7 @@ window.onload = function() {
 		enemyRobot1.shader.uniforms['time'].value = .005 * (Date.now() - startDate);
 		enemyRobot1.shader.uniforms['weight'].value = perNoizeWeight * 0.05;
 		setSceneLimits();
-		checkCollapse(userRobot, enemies, targetObject);
+		checkCollapse(userRobot, enemies, targetObject, robotParams, enemyParams, targetParams, sceneSize, scene, userData, scoresData); // A lot of parametrs
 		targetAnimation(targetObject, targetParams)
 		// console.log(camera.position);
 		// console.log(camera.rotation);
@@ -353,61 +171,10 @@ window.onload = function() {
 	let angle = 0,
 		radius = 5;
 
-	function userAnimation(program) {
-		switch (program) {
-			case 'up':
-				if (userRobot.position.z >= sceneSize.mixZ + robotParams.bodySize + 10) {
-					userRobot.position.z += -11;
-				}
-				userRobot.children[0].rotation.x -= 180 / Math.PI * 0.002;
-				break;
-			case 'down':
-				if (userRobot.position.z <= sceneSize.maxZ - robotParams.bodySize - 10) {
-					userRobot.position.z += 11;
-				}
-				userRobot.children[0].rotation.x += 180 / Math.PI * 0.002;
-				break;
-			case 'left':
-				if (userRobot.position.x >= sceneSize.minX + robotParams.bodySize + 10) {
-					userRobot.position.x += -11;
-				}
-				userRobot.children[0].rotation.z += 180 / Math.PI * 0.002;
-				userRobot.children[0].rotation.x = 0;
-				break;
-			case 'right':
-				if (userRobot.position.x <= sceneSize.maxX - robotParams.bodySize - 10) {
-					userRobot.position.x += 11;
-				}
-				userRobot.children[0].rotation.z -= 180 / Math.PI * 0.002;
-				userRobot.children[0].rotation.x = 0;
-				break;
-			case 'special':
-				// headMesh.position.z += 4 * Math.sin(angle);
-				// headMesh.position.x += 4 * Math.cos(angle);
-				// sphere.position.z += 4 * Math.sin(angle);
-				// sphere.position.x += 4 * Math.cos(angle);
-				// sphere.rotation.y -= 180 / Math.PI * 0.002;
-				// sphere.rotation.x += 180 / Math.PI * 0.002;
-				// angle += Math.PI / 180 * 2; // 2 - degree
-				// head.position.z += -10;
-				// sphere.position.z += -10;
-				// sphere.rotation.x -= 180 / Math.PI * 0.002;
-				// head.position.x += -10;
-				// sphere.position.x += -10;
-				// sphere.rotation.z -= 180 / Math.PI * 0.002;
-				break;
-			default:
-				break;
-				/*sphere.position.z += 8 * Math.sin(angle);
-		sphere.position.x += radius * Math.cos(angle);
-		angle += Math.PI / 180 * 2; // 2 - degree  */
-		}
-	};
-
+	
 	function buildScores(){
 
 	}
-
 
 	function menuInteraction(type) {
 		switch (type) {
@@ -450,7 +217,7 @@ window.onload = function() {
 		scene.add(userRobot);
 		createEnemies();
 		enemyLogic(enemies);
-		targetLogic(0);
+		targetLogic(0,scene,targetObject,targetParams);
 	}
 
 	function init() {
@@ -478,7 +245,7 @@ window.onload = function() {
 		if (e.target.classList.contains('control')) {
 			touchMode = true;
 			touchType = e.target.classList[1];
-			userAnimation(touchType);
+			userAnimation(touchType, userRobot, sceneSize, robotParams);
 		}
 	});
 
@@ -523,7 +290,7 @@ window.onload = function() {
 				break;
 		}
 		if (moveType !== 'notype') {
-			userAnimation(moveType);
+			userAnimation(moveType, userRobot, sceneSize, robotParams);
 		}
 	});
 	window.addEventListener('resize', function(e) {

@@ -1,3 +1,5 @@
+"use strict";
+
 function createPlane() {
 	let planeTexture = new THREE.Texture(),
 		planeLoader = new THREE.ImageLoader(),
@@ -19,14 +21,14 @@ function createPlane() {
 
 function createSpaceScene() {
 	let cubeGeometry = new THREE.CubeGeometry(6000, 6000, 6000);
-	let cubeMaterialsSpace = [
-		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/space/2.png'), side: THREE.DoubleSide }),
-		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/space/4.png'), side: THREE.DoubleSide }),
-		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/space/5.png'), side: THREE.DoubleSide }),
-		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/space/6.png'), side: THREE.DoubleSide }),
-		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/space/3.png'), side: THREE.DoubleSide }),
-		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/space/1.png'), side: THREE.DoubleSide })
-	];
+	// let cubeMaterialsSpace = [
+	// 	new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/space/2.png'), side: THREE.DoubleSide }),
+	// 	new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/space/4.png'), side: THREE.DoubleSide }),
+	// 	new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/space/5.png'), side: THREE.DoubleSide }),
+	// 	new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/space/6.png'), side: THREE.DoubleSide }),
+	// 	new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/space/3.png'), side: THREE.DoubleSide }),
+	// 	new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/space/1.png'), side: THREE.DoubleSide })
+	// ];
 	let cubeMaterialsDust = [
 		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/dark_dust/sleepyhollow_ft.jpg'), side: THREE.DoubleSide }),
 		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/dark_dust/sleepyhollow_bk.jpg'), side: THREE.DoubleSide }),
@@ -77,7 +79,8 @@ function createEdges(scene) {
 		cubeTexture.image = e; // событие загрузки
 		cubeTexture.needsUpdate = true;
 	});
-	cubeGenerator = function(obj) {
+
+	function cubeGenerator(obj) {
 		let that = this;
 		this.cubeGeom = new THREE.CubeGeometry(obj.w, obj.h, obj.d, 7, 7, 7);
 		this.cubeMat = new THREE.MeshStandardMaterial({
@@ -116,16 +119,17 @@ function createTargetObject() {
 		transparent: true
 	});
 	let giftMesh = new THREE.Mesh(giftGeom, giftMat);
-	giftMesh.scale.set(0.3,0.3,0.3);
+	giftMesh.scale.set(0.3, 0.3, 0.3);
 	giftMesh.castShadow = true;
 	giftMesh.receiveShadow = true;
 	return giftMesh;
 }
 
 function createEnemyRobot(scene, robotParams) {
-	let laserGeo, shaderMat, uniforms, buffGeo, laserMesh;
-	laserGeom = new THREE.TorusGeometry(48, 9, 40, 40);
-	buffGeom = new THREE.BufferGeometry().fromGeometry(laserGeom);
+	let laserGeo, shaderMat, uniforms, buffGeo, laserMesh,
+		enemyBody = {},
+		laserGeom = new THREE.TorusGeometry(48, 9, 40, 40),
+		buffGeom = new THREE.BufferGeometry().fromGeometry(laserGeom);
 	let imgTexture = new Image;
 	imgTexture.src = "textures/laserTexture.jpg";
 	imgTexture.crossOrigin = "Anonymous";
@@ -174,14 +178,13 @@ function createEnemyRobot(scene, robotParams) {
 	let totalBody = new THREE.Group();
 	totalBody.add(enemyBodyMesh);
 	totalBody.add(laserMesh);
-	return enemyBody = {
-		shader: shaderMat,
-		totalBody: totalBody
-	}
+	enemyBody.shader = shaderMat;
+	enemyBody.totalBody = totalBody;
+	return enemyBody;
 }
 
 
-function createRobot(scene,robotParams) { //            TODO REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+function createRobot(scene, robotParams) { //            TODO REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	let manager = new THREE.LoadingManager(),
 		loader = new THREE.ImageLoader(manager),
 		totalBody = new THREE.Group(),
@@ -221,8 +224,8 @@ function createRobot(scene,robotParams) { //            TODO REFACTOR!!!!!!!!!!!
 		bodyMesh.position.y = 50;
 		bodyMesh.position.z = 0;
 
-		headMesh = meshes[0],
-			body = meshes[1];
+		headMesh = meshes[0];
+		// bodyMehh = meshes[1];
 		headMesh.position.y = 0;
 		headMesh.position.x = 10;
 		bodyMesh.castShadow = true; //default is false
@@ -246,7 +249,7 @@ function createRobot(scene,robotParams) { //            TODO REFACTOR!!!!!!!!!!!
 		//     metalness: 0.2,
 		//     overdraw: true
 		// });
-		
+
 		totalBody.add(bodyMesh);
 		totalBody.add(headMesh);
 	});
