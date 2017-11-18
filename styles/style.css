@@ -184,9 +184,12 @@ button {
 }
 
 .menu-icon {
-	height: 60px;
-	width: 60px;
-	background: transparent;
+    width: 40px;
+    height: 40px;
+    margin-top: 10px;
+    border-radius: 50%;
+    opacity: 0.2;
+    background: rgb(100, 100, 100);
 }
 
 .camera-modes {
@@ -242,7 +245,7 @@ button {
 	position: relative !important;
 }
 
-.menu-substrate {
+.menu-substate {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -277,7 +280,7 @@ button {
 	transform: skew(5deg)
 }
 
-.open-menu .menu-substrate {
+.open-menu .menu-substate {
 	pointer-events: auto;
 	opacity: 1;
 }
@@ -355,6 +358,16 @@ input[type=submit],
 	letter-spacing: 3px;
 	color: lightgray;
 	transition: 1s opacity linear;
+}
+
+.menu-subwrappers,
+.subwrapper {
+	position: absolute;
+    top: 0;
+    left: 0;
+	height: 100%;
+	width: 100%;
+	z-index: 1;
 }
 
 @font-face {

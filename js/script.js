@@ -214,7 +214,7 @@ window.onload = function() {
 			}
 			///////////////////////////////////////////// - user collapse
 			if ((userX + robotParams.bodySize >= enemyBodyX - enemyParams.bodySize + delta) && (userX - robotParams.bodySize <= enemyBodyX + enemyParams.bodySize - delta) && (userZ + robotParams.bodySize >= enemyBodyZ - enemyParams.bodySize + delta) && (userZ - robotParams.bodySize <= enemyBodyZ + enemyParams.bodySize - delta)) {
-				endGame();
+				// endGame();
 			}
 			///////////////////////////////////////////// - enemy and target collapse
 			if ((enemyBodyX + fullEnemyBodySize >= targetX - targetSize) && (enemyBodyX - fullEnemyBodySize <= targetX + targetSize) && (enemyBodyZ + fullEnemyBodySize >= targetZ - targetSize) && (enemyBodyZ - fullEnemyBodySize <= targetZ + targetSize)) {
@@ -273,9 +273,9 @@ window.onload = function() {
 	}
 
 	function endGame() {
-		// endGameScored.value = userData.scores;
-		// gameStart = false;
-		// mainWrapper.classList.add('stop-game');
+		endGameScored.value = userData.scores;
+		gameStart = false;
+		mainWrapper.classList.add('stop-game');
 	}
 
 	function setTargetColor(target, arr) {
@@ -404,6 +404,11 @@ window.onload = function() {
 		}
 	};
 
+	function buildScores(){
+
+	}
+
+
 	function menuInteraction(type) {
 		switch (type) {
 			case 'play':
@@ -413,6 +418,15 @@ window.onload = function() {
 					rendering();
 				}, 500)
 				break;
+			case 'maps':
+				console.log(1);
+				break;
+			case 'scores':
+				break;
+			case 'settings':
+				break;	
+			case 'credits':
+				break;				
 			default:
 				break;
 		}
