@@ -15,7 +15,7 @@ window.onload = function() {
         menuSubwrapper = document.getElementById('menu-subwrappers'),
         inputUserName = userForm.getElementsByClassName('user-name')[0];
 
-    let scene, camera, renderer, light, targetObject, enemyRobot1, userRobot, touchType,
+    let scene, camera, renderer, light, targetObject, enemyRobot1, userRobot, touchType, stats, controls,
         touchMode = false,
         gameStart = false,
         targetParams = {
@@ -123,51 +123,59 @@ window.onload = function() {
     }
 
     function createEnemies(params) { // TODO -refaactor this fu.....
-        console.log(123);
-        console.log(params.count);
-        console.log(difficulty.values[params.count])
-
         switch (params.count) {
             case 1:
+                console.log('1!');
                 enemyRobot1 = createEnemyRobot(scene, enemyParams);
                 enemyRobot1.totalBody.movingCoordinate = 0;
+                enemyRobot1.totalBody.robot = true;
                 enemies.push(enemyRobot1.totalBody);
                 scene.add(enemyRobot1.totalBody);
                 enemyRobot1.totalBody.position.set(-400, 60, -400);
                 enemyLogic(enemies);
                 break;
             case 2:
+                console.log('2!');
                 let enemyRobot2 = enemyRobot1.totalBody.clone();
                 enemies.push(enemyRobot2);
                 enemyRobot2.position.set(-400, 60, 400);
+                enemyRobot2.robot = true;
                 scene.add(enemyRobot2);
                 enemyLogic(enemies);
                 break;
             case 3:
+                console.log('3!');
                 let enemyRobot3 = enemyRobot1.totalBody.clone();
                 enemies.push(enemyRobot3);
                 enemyRobot3.position.set(-400, 60, -400);
+                enemyRobot3.robot = true;
                 scene.add(enemyRobot3);
                 enemyLogic(enemies);
                 break;
             case 4:
+                console.log('4!');
                 let enemyRobot4 = enemyRobot1.totalBody.clone();
                 enemies.push(enemyRobot4);
                 enemyRobot4.position.set(-400, 60, 400);
+                enemyRobot4.robot = true;
                 scene.add(enemyRobot4);
                 enemyLogic(enemies);
                 break;
             case 5:
+                console.log('5!');
                 let enemyRobot5 = enemyRobot1.totalBody.clone();
                 enemies.push(enemyRobot5);
                 enemyRobot5.position.set(-400, 60, -400);
+                enemyRobot5.robot = true;
                 scene.add(enemyRobot5);
                 enemyLogic(enemies);
                 break;
             case 6:
+                console.log('6!');
                 let enemyRobot6 = enemyRobot1.totalBody.clone();
                 enemies.push(enemyRobot6);
                 enemyRobot6.position.set(-400, 60, 400);
+                enemyRobot6.robot = true;
                 scene.add(enemyRobot6);
                 enemyLogic(enemies);
                 break;
@@ -204,10 +212,10 @@ window.onload = function() {
 
     //////////////////////////////////////////////////////
 
-    let controls = new THREE.OrbitControls(camera);
+    controls = new THREE.OrbitControls(camera);
     controls.enabled = false;
     controls.enableKeys = false;
-    let stats = new Stats();
+    stats = new Stats();
     window.fps.appendChild(stats.dom);
 
     function rendering() {
@@ -216,12 +224,17 @@ window.onload = function() {
         }
 
         renderer.render(scene, camera);
+        if (stats) {
+            stats.update();
+        }
+        if (enemyRobot1) {
+            enemyRobot1.shader.uniforms['time'].value = .005 * (Date.now() - startDate);
+            enemyRobot1.shader.uniforms['weight'].value = perNoizeWeight * 0.05;
+        }
+        if (controls) {
+            setSceneLimits();
+        }
 
-        stats.update();
-
-        enemyRobot1.shader.uniforms['time'].value = .005 * (Date.now() - startDate);
-        enemyRobot1.shader.uniforms['weight'].value = perNoizeWeight * 0.05;
-        setSceneLimits();
         checkCollapse(userRobot, enemies, targetObject, robotParams, enemyParams, targetParams, sceneSize, scene, userData, scoresData, endGame, creationLogic); // A lot of parametrs
         targetAnimation(targetObject, targetParams)
         // console.log(camera.position);
@@ -297,30 +310,53 @@ window.onload = function() {
         scene.add(createSpaceScene());
         createEdges(scene);
         targetObject = createTargetObject(),
-
             scene.add(createPlane());
         userRobot = createRobot(scene, robotParams);
         scene.add(userRobot);
+        targetLogic(0, scene, targetObject, targetParams);
         createEnemies(enemyParams);
         enemyLogic(enemies);
-        targetLogic(0, scene, targetObject, targetParams);
+    }
+
+    function preInit() {
+        if (JSON.parse(localStorage.getItem('starWarsGameUsers', users))) {
+            users = JSON.parse(localStorage.getItem('starWarsGameUsers', users));
+        }
+        if (userRobot) {
+            userRobot.position.set(0, 0, 0);
+        }
+        userData.name = '';
+        userData.scores = 0;
+        gameStart = true;
+        mainWrapper.classList.remove('stop-game');
+        showScores(scoresData, userData);
+        scene.children.forEach(function(item, index, arr) {
+            if (item.robot) {
+                scene.remove(item);
+            }
+            arr.forEach(function(subItem) {
+                if (subItem.robot) {
+                    scene.remove(subItem);
+                }
+            });
+        });
+        enemies.length = 0;
+        enemyParams.count = 1;
+        setTimeout(function() {// TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            rendering();
+        }, 1000);
     }
 
     function init() {
         initScene();
         addLights();
-        if (JSON.parse(localStorage.getItem('starWarsGameUsers', users))) {
-            users = JSON.parse(localStorage.getItem('starWarsGameUsers', users));
-        }
+        preInit();
+        buildObjects();
 
     }
     // createBackgroundSound();
 
-    setTimeout(function() {
-        gameStart = true;
-        buildObjects();
-        rendering();
-    }, 2000);
+
 
     ///////// LISTENERS
 
@@ -432,10 +468,11 @@ window.onload = function() {
             menuInteraction(e.target.dataset.menu);
         }
     });
-
     restartGame.addEventListener('click', function(e) {
-        console.log(999);
+        console.log(666);
+        preInit();
     });
+
     // window.addEventListener(deviceorientation, function() {
     //  let orientation = Math.abs(window.orientation) == 90 ? 'landscape' : 'portrait';
     //        console.log(orientation);
@@ -445,7 +482,8 @@ window.onload = function() {
         users.push(userData);
         localStorage.setItem('starWarsGameUsers', JSON.stringify(users));
         e.preventDefault();
-        let data = localStorage.getItem('starWarsGameUsers', users);
+        console.log(555);
+        preInit();
     });
     console.timeEnd('userTime');
 

@@ -305,7 +305,7 @@ button {
 	justify-content: space-between;
 	align-items: center;
 	width: 170px;
-	z-index: 40;
+	z-index: 20;
 }
 
 .score-data p,
