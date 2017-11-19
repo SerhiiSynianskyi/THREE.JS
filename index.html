@@ -2,68 +2,86 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-	<title>ROBOT</title>
-	<link href="styles/normalize.css" rel="stylesheet" type="text/css">
-	<link href="styles/style.css" rel="stylesheet" type="text/css">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>ROBOT</title>
+    <link href="styles/normalize.css" rel="stylesheet" type="text/css">
+    <link href="styles/style.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-	<div class="main-wrapper">
-		<div class="top-menu">
-			<button class="menu-icon">
-			</button>
-			<div class="camera-modes">
-				<button data-mode="1" class="mode active"></button>
-				<button data-mode="2" class="mode"></button>
-				<button data-mode="3" class="mode"></button>
-			</div>
-			<button class="track-ball"></button>
-		</div>
-		<div class="menu-substate">
-			<ul class="main-menu">
-				<li data-menu='play'>Continue</li>
-				<li data-menu='maps'>Maps</li>
-				<li data-menu='scores'>Scores</li>
-				<li data-menu='settings'>Settings</li>
-				<li data-menu='credits'>Credits</li>
-				<li data-menu='exit'>Exit game</li>
-			</ul>
-		</div>
-		<div class="score-data">
-			<p>SCORES:</p>
-			<output name="scores" class="scores"></output>
-		</div>
-		<div id="fps"></div>
-		<div id="control-wrapper">
-			<div class="inner-wrapper">
-				<button class="control up"></button>
-				<button class="control left"></button>
-				<button class="control right"></button>
-				<button class="control down"></button>
-			</div>
-		</div>
-		<div class="other-info">
-			<p id="data1">111</p>
-			<p id="data2">111</p>
-			<p id="data3">111</p>
-		</div>
-		<div class="end-game-wrapper">
-			<p class="end-game-text">you are defeated</p>
-			<output class="end-game-scores"></output>
-			<form id="user-form">
-				<input type="text" class="user-name" name="userName" pattern="[a-zA-Z0-9_-]{2,20}" placeholder="YOUR NAME" required autocomplete="off"></input>
-				<input type="submit" value="SUBMIT">
-			</form>
-			<button class="restart-game">RESTART</button>
-		</div>
-		<div class="menu-subwrappers">
-			<div class="subwrapper scores-wrapper"></div>
-			<div class="subwrapper maps-wrapper"></div>
-			<div class="subwrapper settings-wrapper"></div>
-			<div class="subwrapper credits-wrapper"></div>
-		</div>
-	</div>
+    <div class="main-wrapper">
+        <div class="top-menu">
+            <button class="menu-icon">
+            </button>
+            <div class="camera-modes">
+                <button data-mode="1" class="mode active"></button>
+                <button data-mode="2" class="mode"></button>
+                <button data-mode="3" class="mode"></button>
+            </div>
+            <button class="track-ball"></button>
+        </div>
+        <ul id="main-menu">
+            <li data-menu='continue'>Continue</li>
+            <li data-menu='maps'>Maps</li>
+            <li data-menu='scores'>Scores</li>
+            <li data-menu='settings'>Settings</li>
+            <li data-menu='credits'>Credits</li>
+            <li data-menu='exit'>Exit game</li>
+        </ul>
+        <div class="score-data">
+            <p>SCORES:</p>
+            <output name="scores" class="scores"></output>
+        </div>
+        <div id="fps"></div>
+        <div id="control-wrapper">
+            <div class="inner-wrapper">
+                <button class="control up"></button>
+                <button class="control left"></button>
+                <button class="control right"></button>
+                <button class="control down"></button>
+            </div>
+        </div>
+        <div class="other-info">
+            <p id="data1">111</p>
+            <p id="data2">111</p>
+            <p id="data3">111</p>
+        </div>
+        <div class="end-game-wrapper">
+            <p class="end-game-text">you are defeated</p>
+            <output class="end-game-scores"></output>
+            <form id="user-form">
+                <input type="text" class="user-name" name="userName" pattern="[a-zA-Z0-9_-]{2,20}" placeholder="YOUR NAME" required autocomplete="off"></input>
+                <input type="submit" value="SUBMIT">
+            </form>
+            <button class="restart-game">RESTART</button>
+        </div>
+        <div id="menu-subwrappers" class="hidden">
+            <div class="subwrapper maps-wrapper" data-subwrapper="maps">
+                <p>Some maps</p>
+            </div>
+            <div class="subwrapper scores-wrapper" data-subwrapper="scores">
+                <div>
+                    <table class="scores-head-table">
+                        <thead>
+                            <th></th>
+                            <th>SCORE</th>
+                            <th>NAME</th>
+                        </thead>
+                    </table>
+                    <div class="scores-table-wrapper">
+                        <table class="scores-table">
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="subwrapper settings-wrapper" data-subwrapper="settings">
+                <p>Some settings</p>
+            </div>
+            <div class="subwrapper credits-wrapper" data-subwrapper="credits">
+                <p>Some credits</p>
+            </div>
+        </div>
+    </div>
 </body>
 <script src="js/vendor/three.min.js"></script>
 <script src="js/vendor/OBJLoader.js"></script>
