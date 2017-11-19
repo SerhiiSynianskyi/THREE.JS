@@ -25,8 +25,7 @@ window.onload = function() {
             values: [500, 300, 100]
         },
         difficulty = {
-            currentDiff: 0,
-            values: [1000, 2000]
+            values: [0, 500, 1500, 3500, 5500, 7000, 8000]
         },
         cameraMode = 1,
         startDate = Date.now(),
@@ -36,7 +35,7 @@ window.onload = function() {
         },
         enemyParams = {
             bodySize: 50,
-            count: 1;
+            count: 1
         },
         userData = {
             name: '',
@@ -104,33 +103,81 @@ window.onload = function() {
     }
     //////////////////////////////////////////////////////
 
-    function createEnemies(params) { // TOFO -refaactor this fu.....
-    	switch (params.enemyCount) {
-            case '1':
+    function creationLogic(params) {
+        if (userData.scores > difficulty.values[params.count] && params.count === 1) {
+            params.count = 2;
+            createEnemies(enemyParams)
+        } else if (userData.scores > difficulty.values[params.count] && params.count === 2) {
+            params.count = 3;
+            createEnemies(enemyParams)
+        } else if (userData.scores > difficulty.values[params.count] && params.count === 3) {
+            params.count = 4;
+            createEnemies(enemyParams)
+        } else if (userData.scores > difficulty.values[params.count] && params.count === 4) {
+            params.count = 5;
+            createEnemies(enemyParams)
+        } else if (userData.scores > difficulty.values[params.count] && params.count === 5) {
+            params.count = 6;
+            createEnemies(enemyParams)
+        }
+    }
+
+    function createEnemies(params) { // TODO -refaactor this fu.....
+        console.log(123);
+        console.log(params.count);
+        console.log(difficulty.values[params.count])
+
+        switch (params.count) {
+            case 1:
+                enemyRobot1 = createEnemyRobot(scene, enemyParams);
+                enemyRobot1.totalBody.movingCoordinate = 0;
+                enemies.push(enemyRobot1.totalBody);
+                scene.add(enemyRobot1.totalBody);
+                enemyRobot1.totalBody.position.set(-400, 60, -400);
+                enemyLogic(enemies);
                 break;
-            case '2':
+            case 2:
+                let enemyRobot2 = enemyRobot1.totalBody.clone();
+                enemies.push(enemyRobot2);
+                enemyRobot2.position.set(-400, 60, 400);
+                scene.add(enemyRobot2);
+                enemyLogic(enemies);
                 break;
-            case '3':
-                buildScores();
+            case 3:
+                let enemyRobot3 = enemyRobot1.totalBody.clone();
+                enemies.push(enemyRobot3);
+                enemyRobot3.position.set(-400, 60, -400);
+                scene.add(enemyRobot3);
+                enemyLogic(enemies);
                 break;
-            case '4':
+            case 4:
+                let enemyRobot4 = enemyRobot1.totalBody.clone();
+                enemies.push(enemyRobot4);
+                enemyRobot4.position.set(-400, 60, 400);
+                scene.add(enemyRobot4);
+                enemyLogic(enemies);
                 break;
-            case '5':
+            case 5:
+                let enemyRobot5 = enemyRobot1.totalBody.clone();
+                enemies.push(enemyRobot5);
+                enemyRobot5.position.set(-400, 60, -400);
+                scene.add(enemyRobot5);
+                enemyLogic(enemies);
                 break;
-            case '6':
+            case 6:
+                let enemyRobot6 = enemyRobot1.totalBody.clone();
+                enemies.push(enemyRobot6);
+                enemyRobot6.position.set(-400, 60, 400);
+                scene.add(enemyRobot6);
+                enemyLogic(enemies);
                 break;
             default:
                 break;
         }
 
-        enemyRobot1 = createEnemyRobot(scene, enemyParams);
-        // enemyRobot1.totalBody.movingCoordinate = 0;
-        // let enemyRobot2 = enemyRobot1.totalBody.clone();
-        // let enemyRobot3 = enemyRobot1.totalBody.clone();
-        // let enemyRobot4 = enemyRobot1.totalBody.clone();
-        // let enemyRobot5 = enemyRobot1.totalBody.clone();
-        // let enemyRobot6 = enemyRobot1.totalBody.clone();
-        enemies.push(enemyRobot1.totalBody);
+
+
+
         // enemies.push(enemyRobot2);
         // enemies.push(enemyRobot3);
         // enemies.push(enemyRobot4);
@@ -141,8 +188,7 @@ window.onload = function() {
         // scene.add(enemyRobot4);
         // scene.add(enemyRobot5);
         // scene.add(enemyRobot6);
-        scene.add(enemyRobot1.totalBody);
-        enemyRobot1.totalBody.position.set(-200, 60, -100);
+
         // enemyRobot2.position.set(200, 60, -100);
         // enemyRobot3.position.set(-200, 60, 100);
         // enemyRobot4.position.set(-300, 60, 200);
@@ -176,7 +222,7 @@ window.onload = function() {
         enemyRobot1.shader.uniforms['time'].value = .005 * (Date.now() - startDate);
         enemyRobot1.shader.uniforms['weight'].value = perNoizeWeight * 0.05;
         setSceneLimits();
-        checkCollapse(userRobot, enemies, targetObject, robotParams, enemyParams, targetParams, sceneSize, scene, userData, scoresData, endGame); // A lot of parametrs
+        checkCollapse(userRobot, enemies, targetObject, robotParams, enemyParams, targetParams, sceneSize, scene, userData, scoresData, endGame, creationLogic); // A lot of parametrs
         targetAnimation(targetObject, targetParams)
         // console.log(camera.position);
         // console.log(camera.rotation);
@@ -388,8 +434,8 @@ window.onload = function() {
     });
 
     restartGame.addEventListener('click', function(e) {
-    	console.log(999);
-    });	
+        console.log(999);
+    });
     // window.addEventListener(deviceorientation, function() {
     //  let orientation = Math.abs(window.orientation) == 90 ? 'landscape' : 'portrait';
     //        console.log(orientation);

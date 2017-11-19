@@ -156,7 +156,7 @@ function userAnimation(program, userRobot, sceneSize, robotParams) {
 
 /////////////////////////////////////////// COLLAPSE
 
-function checkCollapse(userRobot, enemyRobots, target, robotParams, enemyParams, targetParams, sceneSize, scene, userData, scoresData, endGame) { // A lot of parametrs
+function checkCollapse(userRobot, enemyRobots, target, robotParams, enemyParams, targetParams, sceneSize, scene, userData, scoresData, endGame, creationLogic) { // A lot of parametrs
 	let enemyBodyX,
 		enemyBodyZ,
 		userX = userRobot.position.x,
@@ -171,9 +171,9 @@ function checkCollapse(userRobot, enemyRobots, target, robotParams, enemyParams,
 	if ((userX + robotParams.bodySize >= targetX - targetSize + delta) && (userX - robotParams.bodySize <= targetX + targetSize - delta) && (userZ + robotParams.bodySize >= targetZ - targetSize + delta) && (userZ - robotParams.bodySize <= targetZ + targetSize - delta)) {
 		if (targetParams.targetState !== 2) {
 			targetLogic(2, scene, target, targetParams);
-			console.log(123);
 			userData.scores += targetParams.values[targetParams.targetType];
 			showScores(scoresData, userData);
+			creationLogic(enemyParams);
 		}
 	}
 
@@ -194,6 +194,7 @@ function checkCollapse(userRobot, enemyRobots, target, robotParams, enemyParams,
 		///////////////////////////////////////////// - enemy and target collapse
 		if ((enemyBodyX + fullEnemyBodySize >= targetX - targetSize) && (enemyBodyX - fullEnemyBodySize <= targetX + targetSize) && (enemyBodyZ + fullEnemyBodySize >= targetZ - targetSize) && (enemyBodyZ - fullEnemyBodySize <= targetZ + targetSize)) {
 			if (targetParams.targetState !== 2) {
+				console.log('000');
 				targetLogic(2, scene, target, targetParams);
 			}
 
