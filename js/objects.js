@@ -122,6 +122,7 @@ function createTargetObject() {
 	giftMesh.scale.set(0.3, 0.3, 0.3);
 	giftMesh.castShadow = true;
 	giftMesh.receiveShadow = true;
+	giftMesh.giftDetected = true;
 	return giftMesh;
 }
 
@@ -180,6 +181,7 @@ function createEnemyRobot(scene, robotParams) {
 	totalBody.add(laserMesh);
 	enemyBody.shader = shaderMat;
 	enemyBody.totalBody = totalBody;
+	enemyBody.totalBody.enemyDetected = true;
 	return enemyBody;
 }
 
