@@ -60,7 +60,7 @@ button {
     width: 55px;
     height: 55px;
     border-radius: 50%;
-    background: url('../control.png') center center/ 65% 65% no-repeat;
+    background: url('../images/control.png') center center/ 65% 65% no-repeat;
     opacity: 0.2;
     z-index: 101;
 }

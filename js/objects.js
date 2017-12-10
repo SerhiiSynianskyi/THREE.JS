@@ -3,9 +3,9 @@
 function createPlane() {
 	let planeTexture = new THREE.Texture(),
 		planeLoader = new THREE.ImageLoader(),
-		planeBump = new THREE.TextureLoader().load('textures/floorBumpMap.jpg');
+		planeBump = new THREE.TextureLoader().load('images/textures/floorBumpMap.jpg');
 
-	planeLoader.load("textures/floorTexture.jpg", function(e) {
+	planeLoader.load("images/textures/floorTexture.jpg", function(e) {
 		planeTexture.image = e;
 		planeTexture.needsUpdate = true;
 	});
@@ -30,12 +30,12 @@ function createSpaceScene() {
 	// 	new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/space/1.png'), side: THREE.DoubleSide })
 	// ];
 	let cubeMaterialsDust = [
-		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/dark_dust/sleepyhollow_ft.jpg'), side: THREE.DoubleSide }),
-		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/dark_dust/sleepyhollow_bk.jpg'), side: THREE.DoubleSide }),
-		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/dark_dust/sleepyhollow_up.jpg'), side: THREE.DoubleSide }),
-		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/dark_dust/sleepyhollow_dn.jpg'), side: THREE.DoubleSide }),
-		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/dark_dust/sleepyhollow_rt.jpg'), side: THREE.DoubleSide }),
-		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/dark_dust/sleepyhollow_lf.jpg'), side: THREE.DoubleSide })
+		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_ft.jpg'), side: THREE.DoubleSide }),
+		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_bk.jpg'), side: THREE.DoubleSide }),
+		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_up.jpg'), side: THREE.DoubleSide }),
+		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_dn.jpg'), side: THREE.DoubleSide }),
+		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_rt.jpg'), side: THREE.DoubleSide }),
+		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_lf.jpg'), side: THREE.DoubleSide })
 	];
 	let cubeMaterial = new THREE.MeshFaceMaterial(cubeMaterialsDust);
 	let cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
@@ -75,7 +75,7 @@ function createEdges(scene) {
 	}]
 	let cubeTexture = new THREE.Texture(),
 		loader = new THREE.ImageLoader()
-	loader.load("textures/edgeTexture.jpg", function(e) {
+	loader.load("images/textures/edgeTexture.jpg", function(e) {
 		cubeTexture.image = e; // событие загрузки
 		cubeTexture.needsUpdate = true;
 	});
@@ -106,7 +106,7 @@ function createEdges(scene) {
 
 function createTargetObject() {
 	let giftGeom = new THREE.OctahedronGeometry(40, 0);
-	let giftBump = new THREE.TextureLoader().load('textures/text.jpg');
+	let giftBump = new THREE.TextureLoader().load('images/textures/text.jpg');
 	let giftMat = new THREE.MeshStandardMaterial({
 		color: 0x2Dff27,
 		aoMapIntensity: 1,
@@ -132,7 +132,7 @@ function createEnemyRobot(scene, robotParams) {
 		laserGeom = new THREE.TorusGeometry(48, 9, 40, 40),
 		buffGeom = new THREE.BufferGeometry().fromGeometry(laserGeom);
 	let imgTexture = new Image;
-	imgTexture.src = "textures/laserTexture.jpg";
+	imgTexture.src = "images/textures/laserTexture.jpg";
 	imgTexture.crossOrigin = "Anonymous";
 	THREE.ImageUtils.crossOrigin = '';
 	//Shader Material Loader
@@ -160,8 +160,8 @@ function createEnemyRobot(scene, robotParams) {
 	laserMesh.receiveShadow = true;
 
 
-	let enemyBodyTexture = new THREE.TextureLoader().load('textures/enemyTexture.jpg');
-	let enemyBodyBump = new THREE.TextureLoader().load('textures/enemyBumpMap.jpg');
+	let enemyBodyTexture = new THREE.TextureLoader().load('images/textures/enemyTexture.jpg');
+	let enemyBodyBump = new THREE.TextureLoader().load('images/textures/enemyBumpMap.jpg');
 	let enemyBodyGeom = new THREE.SphereGeometry(robotParams.bodySize, 40, 40);
 	let enemyBodyMat = new THREE.MeshStandardMaterial({
 		map: enemyBodyTexture,

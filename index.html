@@ -2,104 +2,104 @@
 <html lang="en">
 
 <head>
-    <title>ROBOT</title>
-    <meta name="description" content="Game base on Three.js"/>
-    <meta name="keywords" content="StarWars, WebGL, Three.js"/>
-    <meta name="author" content="Serhii Synianskyi"/>
-    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=0.85, maximum-scale=0.85, user-scalable=0, minimal-ui">
+	<title>ROBOT</title>
+	<meta name="description" content="Game base on Three.js"/>
+	<meta name="keywords" content="StarWars, WebGL, Three.js"/>
+	<meta name="author" content="Serhii Synianskyi"/>
+	<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=0.85, maximum-scale=0.85, user-scalable=0, minimal-ui">
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta http-equiv="imagetoolbar" content="no"/>
-    <meta name="format-detection" content="telephone=no"/>
-    <meta name="format-detection" content="address=no"/>
-    <link rel="apple-touch-icon" href="apple-touch-icon-57x57.png" />
-    <link rel="apple-touch-icon" sizes="120x120" href="touch-icon-iphone-retina.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="touch-icon-ipad-retina.png">
-    <meta name="msapplication-square150x150logo" content="custom_icon_150.png"/>
-    <meta name="msapplication-square310x310logo" content="custom_icon_310.png"/>
-    <meta name="msapplication-wide310x150logo" content="custom_icon_310x150.png"/>
-    <meta http-equiv="Cache-Control" content="no-cache"/>
-    <link href="styles/normalize.css" rel="stylesheet" type="text/css">
-    <link href="styles/style.css" rel="stylesheet" type="text/css">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta http-equiv="imagetoolbar" content="no"/>
+	<meta name="format-detection" content="telephone=no"/>
+	<meta name="format-detection" content="address=no"/>
+	<link rel="apple-touch-icon" href="images/apple-touch-icon-57x57.png" />
+	<link rel="apple-touch-icon" sizes="120x120" href="images/touch-icon-iphone-retina.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="images/touch-icon-ipad-retina.png">
+	<meta name="msapplication-square150x150logo" content="images/custom-icon-150.png"/>
+	<meta name="msapplication-square310x310logo" content="images/custom-icon-310.png"/>
+	<meta name="msapplication-wide310x150logo" content="images/custom-icon-310x150.png"/>
+	<meta http-equiv="Cache-Control" content="no-cache"/>
+	<link href="styles/normalize.css" rel="stylesheet" type="text/css">
+	<link href="styles/style.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-    <div class="main-wrapper">
-        <div class="game-data-wrapper">
-            <div class="top-menu">
-                <button class="menu-icon">
-                </button>
-                <div class="camera-modes">
-                    <button data-mode="1" class="mode active"></button>
-                    <button data-mode="2" class="mode"></button>
-                    <button data-mode="3" class="mode"></button>
-                </div>
-                <button class="track-ball"></button>
-            </div>
-            <ul id="main-menu">
-                <li data-menu='continue'>Continue</li>
-                <li data-menu='maps'>Maps</li>
-                <li data-menu='scores'>Scores</li>
-                <li data-menu='settings'>Settings</li>
-                <li data-menu='credits'>Credits</li>
-                <li data-menu='exit'>Exit game</li>
-            </ul>
-            <div class="score-data">
-                <p>SCORES:</p>
-                <output name="scores" class="scores"></output>
-            </div>
-            <div id="fps"></div>
-            <div id="control-wrapper">
-                <div class="inner-wrapper">
-                    <button class="control up"></button>
-                    <button class="control left"></button>
-                    <button class="control right"></button>
-                    <button class="control down"></button>
-                </div>
-            </div>
-        </div>
-        <div class="other-info">
-            <p id="data1">111</p>
-            <p id="data2">111</p>
-            <p id="data3">111</p>
-        </div>
-        <div class="end-game-wrapper">
-            <p class="end-game-text">you are defeated</p>
-            <output class="end-game-scores"></output>
-            <form id="user-form">
-                <input type="text" class="user-name" name="userName" pattern="[a-zA-Z0-9_-]{2,20}" placeholder="YOUR NAME" required autocomplete="off"></input>
-                <input type="submit" value="SUBMIT">
-            </form>
-            <button class="restart-game">RESTART</button>
-        </div>
-        <div id="menu-subwrappers" class="hidden">
-            <div class="subwrapper maps-wrapper" data-subwrapper="maps">
-                <p>Some maps</p>
-            </div>
-            <div class="subwrapper scores-wrapper" data-subwrapper="scores">
-                <div>
-                    <table class="scores-head-table">
-                        <thead>
-                            <th></th>
-                            <th>SCORE</th>
-                            <th>NAME</th>
-                        </thead>
-                    </table>
-                    <div class="scores-table-wrapper">
-                        <table class="scores-table">
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="subwrapper settings-wrapper" data-subwrapper="settings">
-                <p>Some settings</p>
-            </div>
-            <div class="subwrapper credits-wrapper" data-subwrapper="credits">
-                <p>Some credits</p>
-            </div>
-        </div>
-    </div>
+	<div class="main-wrapper">
+		<div class="game-data-wrapper">
+			<div class="top-menu">
+				<button class="menu-icon">
+				</button>
+				<div class="camera-modes">
+					<button data-mode="1" class="mode active"></button>
+					<button data-mode="2" class="mode"></button>
+					<button data-mode="3" class="mode"></button>
+				</div>
+				<button class="track-ball"></button>
+			</div>
+			<ul id="main-menu">
+				<li data-menu='continue'>Continue</li>
+				<li data-menu='maps'>Maps</li>
+				<li data-menu='scores'>Scores</li>
+				<li data-menu='settings'>Settings</li>
+				<li data-menu='credits'>Credits</li>
+				<li data-menu='exit'>Exit game</li>
+			</ul>
+			<div class="score-data">
+				<p>SCORES:</p>
+				<output name="scores" class="scores"></output>
+			</div>
+			<div id="fps"></div>
+			<div id="control-wrapper">
+				<div class="inner-wrapper">
+					<button class="control up"></button>
+					<button class="control left"></button>
+					<button class="control right"></button>
+					<button class="control down"></button>
+				</div>
+			</div>
+		</div>
+		<div class="other-info">
+			<p id="data1">111</p>
+			<p id="data2">111</p>
+			<p id="data3">111</p>
+		</div>
+		<div class="end-game-wrapper">
+			<p class="end-game-text">you are defeated</p>
+			<output class="end-game-scores"></output>
+			<form id="user-form">
+				<input type="text" class="user-name" name="userName" pattern="[a-zA-Z0-9_-]{2,20}" placeholder="YOUR NAME" required autocomplete="off"></input>
+				<input type="submit" value="SUBMIT">
+			</form>
+			<button class="restart-game">RESTART</button>
+		</div>
+		<div id="menu-subwrappers" class="hidden">
+			<div class="subwrapper maps-wrapper" data-subwrapper="maps">
+				<p>Some maps</p>
+			</div>
+			<div class="subwrapper scores-wrapper" data-subwrapper="scores">
+				<div>
+					<table class="scores-head-table">
+						<thead>
+							<th></th>
+							<th>SCORE</th>
+							<th>NAME</th>
+						</thead>
+					</table>
+					<div class="scores-table-wrapper">
+						<table class="scores-table">
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="subwrapper settings-wrapper" data-subwrapper="settings">
+				<p>Some settings</p>
+			</div>
+			<div class="subwrapper credits-wrapper" data-subwrapper="credits">
+				<p>Some credits</p>
+			</div>
+		</div>
+	</div>
 </body>
 <script src="js/vendor/three.min.js"></script>
 <script src="js/vendor/OBJLoader.js"></script>

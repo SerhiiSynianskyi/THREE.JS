@@ -2,7 +2,7 @@ function animateSpleshScene(clock, gameState, camera, smokeParticles) {
 	newDelta = clock.getDelta();
 	evolveSmoke(smokeParticles, newDelta);
 	if (gameState === 1) {
-		camera.position.z -= 2.7;
+		camera.position.z -= 12.7;
 		camera.rotation.z += 0.005;
 	}
 }
@@ -14,13 +14,13 @@ function buildSplashScreen(scene, smokeParticles) {
 	splashSubSceneMesh.position.set(0, 0, 1300);
 	let textGeom = new THREE.PlaneGeometry(300, 300);
 	THREE.ImageUtils.crossOrigin = '';
-	let textTexture = THREE.ImageUtils.loadTexture('quickText.png');
+	let textTexture = THREE.ImageUtils.loadTexture('images/quick-text.png');
 	let textMat = new THREE.MeshLambertMaterial({ color: 0xf2f2f2, opacity: 1, map: textTexture, transparent: true, blending: THREE.AdditiveBlending })
 	let textMesh = new THREE.Mesh(textGeom, textMat);
 	textMesh.position.z = 1350;
 
 
-	let smokeTexture = THREE.ImageUtils.loadTexture('Smoke-Element.png');
+	let smokeTexture = THREE.ImageUtils.loadTexture('images/smoke-element.png');
 	let smokeMaterial = new THREE.MeshLambertMaterial({ color: 0x425662, map: smokeTexture, transparent: true });
 	let smokeGeo = new THREE.PlaneGeometry(300, 300);
 	let particlesGroup = new THREE.Group();
