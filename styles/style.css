@@ -43,6 +43,7 @@ button {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+    display: none;
 }
 
 .inner-wrapper {
@@ -170,23 +171,26 @@ button {
     display: none;
 }
 
+
 /*/////////// - GAME PREVIEW*/
-.main-wrapper:before{
-	content: '';
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0,0,0,0);
-	transition: background 3s linear;
+
+.main-wrapper:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0);
+    transition: background 3s linear;
     pointer-events: none;
 }
 
 .game-previev-ready.main-wrapper:before {
-	background: rgba(0,0,0,1);
-	transition-duration: 0s;
+    background: rgba(0, 0, 0, 1);
+    transition-duration: 0s;
 }
+
 
 
 
@@ -429,6 +433,13 @@ input[type=submit],
     opacity: 0;
 }
 
+.nipple {
+    /*display: none !important; /* I have to =(*/
+}
+.game-process-enabled .nipple {
+    /*display: block !important;*/
+}
+
 .substate-maps .maps-wrapper,
 .substate-scores .scores-wrapper,
 .substate-settings .settings-wrapper,
@@ -477,6 +488,7 @@ input[type=submit],
     font-family: BRL;
     src: url(../fonts/BRLNSR.TTF);
 }
+
 
 
 
