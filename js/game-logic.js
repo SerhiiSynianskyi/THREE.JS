@@ -103,54 +103,32 @@ function targetLogic(state, scene, object, targetParams) {
 
 /////////////////////////////////////////// USER
 
-function userAnimation(program, userRobot, sceneSize, robotParams) {
+function animateUserRobot(userBallBody, userRobot, rigidBodies, radians, distance, controlOffset) {
+	userBallBody.setLinearVelocity(new Ammo.btVector3(Math.sin(radians + controlOffset) * distance * 7, 0, Math.cos(radians + controlOffset) * distance * 7));
+	userBallBody.setAngularVelocity(new Ammo.btVector3(Math.cos(radians + controlOffset) * distance / 16, 0, Math.sin(radians + controlOffset) * (-distance / 16)));
+	userRobot.position.x = rigidBodies[0].position.x;
+	userRobot.position.z = rigidBodies[0].position.z;
+}
+
+function moveViaKeyboard(program, userBallBody, userRobot, rigidBodies) {
+	// 90deg = 1.5708rad
 	switch (program) {
 		case 'up':
-			if (userRobot.position.z >= sceneSize.mixZ + robotParams.bodySize + 10) {
-				userRobot.position.z += -11;
-			}
-			userRobot.children[0].rotation.x -= 180 / Math.PI * 0.002;
+			animateUserRobot(userBallBody, userRobot, rigidBodies, 3.14159, 80, 0);
 			break;
 		case 'down':
-			if (userRobot.position.z <= sceneSize.maxZ - robotParams.bodySize - 10) {
-				userRobot.position.z += 11;
-			}
-			userRobot.children[0].rotation.x += 180 / Math.PI * 0.002;
+			animateUserRobot(userBallBody, userRobot, rigidBodies, 6.28319, 80, 0);
 			break;
 		case 'left':
-			if (userRobot.position.x >= sceneSize.minX + robotParams.bodySize + 10) {
-				userRobot.position.x += -11;
-			}
-			userRobot.children[0].rotation.z += 180 / Math.PI * 0.002;
-			userRobot.children[0].rotation.x = 0;
+			animateUserRobot(userBallBody, userRobot, rigidBodies, 4.71239, 80, 0);
 			break;
 		case 'right':
-			if (userRobot.position.x <= sceneSize.maxX - robotParams.bodySize - 10) {
-				userRobot.position.x += 11;
-			}
-			userRobot.children[0].rotation.z -= 180 / Math.PI * 0.002;
-			userRobot.children[0].rotation.x = 0;
+			animateUserRobot(userBallBody, userRobot, rigidBodies, 1.5708, 80, 0);
 			break;
 		case 'special':
-			// headMesh.position.z += 4 * Math.sin(angle);
-			// headMesh.position.x += 4 * Math.cos(angle);
-			// sphere.position.z += 4 * Math.sin(angle);
-			// sphere.position.x += 4 * Math.cos(angle);
-			// sphere.rotation.y -= 180 / Math.PI * 0.002;
-			// sphere.rotation.x += 180 / Math.PI * 0.002;
-			// angle += Math.PI / 180 * 2; // 2 - degree
-			// head.position.z += -10;
-			// sphere.position.z += -10;
-			// sphere.rotation.x -= 180 / Math.PI * 0.002;
-			// head.position.x += -10;
-			// sphere.position.x += -10;
-			// sphere.rotation.z -= 180 / Math.PI * 0.002;
 			break;
 		default:
 			break;
-			/*sphere.position.z += 8 * Math.sin(angle);
-		sphere.position.x += radius * Math.cos(angle);
-		angle += Math.PI / 180 * 2; // 2 - degree  */
 	}
 };
 

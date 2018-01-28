@@ -4,7 +4,6 @@ window.onload = function() {
 	let mainWrapper = document.getElementsByClassName('main-wrapper')[0],
 		scoresData = document.getElementsByClassName('scores')[0],
 		endGameScored = document.getElementsByClassName('end-game-scores')[0],
-		controlsWrapper = document.getElementById('control-wrapper'),
 		modesWrapper = document.getElementsByClassName('camera-modes')[0],
 		trackBallWrap = document.getElementsByClassName('track-ball')[0],
 		menuIcon = document.getElementsByClassName('menu-icon')[0],
@@ -15,11 +14,12 @@ window.onload = function() {
 		menuSubwrapper = document.getElementById('menu-subwrappers'),
 		inputUserName = userForm.getElementsByClassName('user-name')[0];
 
-	let scene, camera, renderer, light, targetObject, enemyRobot1, userRobot, touchType, stats, controls,
+	let camera, renderer, light, targetObject, enemyRobot1, userRobot, touchType, stats, controls,
 		touchMode = false,
 		gameStart = false,
-		gameState = 0,
+		gameState = 1,
 		smokeParticles = [],
+		scene = new THREE.Scene(),
 		targetParams = {
 			bodySize: 40,
 			targetState: 0,
@@ -51,8 +51,11 @@ window.onload = function() {
 			maxX: 500,
 			minX: -500
 		},
+		maxDistance = 1200,
+		minDistance = 160,
 		clock = new THREE.Clock(),
-		delta = clock.getDelta();
+		delta = clock.getDelta(),
+		controlOffset = 90 * (Math.PI / 180);
 
 	let nippleOptions = {
 			zone: document.getElementById('nipple-wrapper'),
@@ -67,7 +70,20 @@ window.onload = function() {
 			mode: 'static'
 		},
 		nippleManager = nipplejs.create(nippleOptions);
-	scene = new THREE.Scene();
+
+	let physicsWorld,
+		rigidBodies = [],
+		softBodies = [],
+		pos = new THREE.Vector3(),
+		quat = new THREE.Quaternion(),
+		transformAux1 = new Ammo.btTransform(),
+		margin = 0.05,
+		textureLoader,
+		userBallBody,
+		moveUserSphere,
+		userSphereData = {
+			distacne: 0
+		};
 	preInit();
 
 	function initScene() {
@@ -111,14 +127,6 @@ window.onload = function() {
 		scene.add(light);
 	}
 
-	function setSceneLimits() {
-		if (touchMode) {
-			userAnimation(touchType, userRobot, sceneSize, robotParams);
-		}
-		controls.maxDistance = 1200;
-		controls.minDistance = 150;
-	}
-
 	//////////////////////////////////////////////////////
 
 	function creationLogic(params) {
@@ -143,7 +151,6 @@ window.onload = function() {
 	function createEnemies(params) { // TODO -refaactor this fu.....
 		switch (params.count) {
 			case 1:
-				console.log('1!');
 				enemyRobot1 = createEnemyRobot(scene, enemyParams);
 				enemyRobot1.totalBody.movingCoordinate = 0;
 				enemyRobot1.totalBody.robot = true;
@@ -153,7 +160,6 @@ window.onload = function() {
 				enemyLogic(enemies);
 				break;
 			case 2:
-				console.log('2!');
 				let enemyRobot2 = enemyRobot1.totalBody.clone();
 				enemies.push(enemyRobot2);
 				enemyRobot2.position.set(-400, 60, 400);
@@ -162,7 +168,6 @@ window.onload = function() {
 				enemyLogic(enemies);
 				break;
 			case 3:
-				console.log('3!');
 				let enemyRobot3 = enemyRobot1.totalBody.clone();
 				enemies.push(enemyRobot3);
 				enemyRobot3.position.set(-400, 60, -400);
@@ -171,7 +176,6 @@ window.onload = function() {
 				enemyLogic(enemies);
 				break;
 			case 4:
-				console.log('4!');
 				let enemyRobot4 = enemyRobot1.totalBody.clone();
 				enemies.push(enemyRobot4);
 				enemyRobot4.position.set(-400, 60, 400);
@@ -180,7 +184,6 @@ window.onload = function() {
 				enemyLogic(enemies);
 				break;
 			case 5:
-				console.log('5!');
 				let enemyRobot5 = enemyRobot1.totalBody.clone();
 				enemies.push(enemyRobot5);
 				enemyRobot5.position.set(-400, 60, -400);
@@ -189,7 +192,6 @@ window.onload = function() {
 				enemyLogic(enemies);
 				break;
 			case 6:
-				console.log('6!');
 				let enemyRobot6 = enemyRobot1.totalBody.clone();
 				enemies.push(enemyRobot6);
 				enemyRobot6.position.set(-400, 60, 400);
@@ -210,9 +212,7 @@ window.onload = function() {
 
 	//////////////////////////////////////////////////////
 
-	controls = new THREE.OrbitControls(camera);
-	controls.enabled = false;
-	controls.enableKeys = false;
+	controls = createOrbitControl(camera, maxDistance, minDistance);
 	stats = new Stats();
 	window.fps.appendChild(stats.dom);
 
@@ -220,7 +220,6 @@ window.onload = function() {
 		if (gameStart) {
 			requestAnimationFrame(rendering);
 		}
-
 		renderer.render(scene, camera);
 		if (stats) {
 			stats.update();
@@ -229,15 +228,9 @@ window.onload = function() {
 			enemyRobot1.shader.uniforms['time'].value = .005 * (Date.now() - startDate);
 			enemyRobot1.shader.uniforms['weight'].value = perNoizeWeight * 0.05;
 		}
-		if (controls) {
-			setSceneLimits();
-		}
 		if (gameState > 2) {
 			checkCollapse(userRobot, enemies, targetObject, robotParams, enemyParams, targetParams, sceneSize, scene, userData, scoresData, endGame, creationLogic); // A lot of parametrs
 			targetAnimation(targetObject, targetParams)
-
-			// console.log(camera.position);
-			// console.log(camera.rotation);
 			// scene.rotation.y += 90 / Math.PI * 0.0001;
 			// if (cameraMode === 3) {
 			//     camera.lookAt(headMesh.position);
@@ -254,12 +247,19 @@ window.onload = function() {
 				buildSplashAnimation(scene, ['splashSubSceneDetect']);
 			}
 		}
-		// console.log(camera.position);
+		//////////////////////////// PHYSICS
+		let deltaTime = clock.getDelta();
+		updatePhysics(deltaTime, physicsWorld, rigidBodies, transformAux1);
+		if (!moveUserSphere && userSphereData.distance >= 0) {
+			userSphereData.distance -= 1;
+		}
+		if (userSphereData.distance && userBallBody) {
+			animateUserRobot(userBallBody, userRobot, rigidBodies, userSphereData.angle.radian, userSphereData.distance, controlOffset)
+		}
+		if (userRobot && rigidBodies[0]) {
+
+		}
 	};
-
-	let angle = 0,
-		radius = 5;
-
 
 	function buildScores() {
 		let sortedData = users.map(function(num) {
@@ -317,21 +317,24 @@ window.onload = function() {
 	// scene.add(helper);
 
 	function buildObjects() {
+		let userRobotData;
 		scene.add(createSpaceScene());
-		createEdges(scene);
-
-		scene.add(createPlane());
-		userRobot = createRobot(scene, robotParams);
+		createEdges(scene, rigidBodies, physicsWorld);
+		userRobot = createRobot(scene, robotParams, rigidBodies, physicsWorld);
 		scene.add(userRobot);
-
+		setTimeout(function() { // REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!! TODO
+			userBallBody = createRobotPhysics(scene, rigidBodies, physicsWorld, userRobot.children[0]);
+		}, 2000);
 	}
 
 	function init() {
 		if (JSON.parse(localStorage.getItem('starWarsGameUsers', users))) {
 			users = JSON.parse(localStorage.getItem('starWarsGameUsers', users));
 		}
-		if (userRobot) {
+		if (userRobot && rigidBodies[0]) {
 			userRobot.position.set(0, 0, 0);
+			// rigidBodies[0].setOrigin(new Ammo.btVector3(0, 0, 0));
+			console.log(userBallBody);
 		}
 		userData.name = '';
 		userData.scores = 0;
@@ -373,7 +376,7 @@ window.onload = function() {
 			init();
 			buildObjects();
 			gameState = 3;
-		}, 2000);
+		}, 200);
 	}
 
 
@@ -381,6 +384,8 @@ window.onload = function() {
 		initScene();
 		scene.add(new THREE.AmbientLight(0xffffff, 0.2));
 		buildSplashScreen(scene, smokeParticles);
+		physicsWorld = initPhysics();
+		createPlane(scene, rigidBodies, physicsWorld)
 		preBuild();
 	}
 
@@ -392,14 +397,6 @@ window.onload = function() {
 	}
 
 	///////// LISTENERS
-
-	controlsWrapper.addEventListener('touchstart', function(e) {
-		if (e.target.classList.contains('control')) {
-			touchMode = true;
-			touchType = e.target.classList[1];
-			userAnimation(touchType, userRobot, sceneSize, robotParams);
-		}
-	});
 
 	window.addEventListener('touchend', function(e) {
 		touchMode = false;
@@ -442,7 +439,7 @@ window.onload = function() {
 				break;
 		}
 		if (moveType !== 'notype') {
-			userAnimation(moveType, userRobot, sceneSize, robotParams);
+			moveViaKeyboard(moveType, userBallBody, userRobot, rigidBodies);
 		}
 	});
 	window.addEventListener('resize', function(e) {
@@ -524,5 +521,12 @@ window.onload = function() {
 	console.timeEnd('userTime');
 	window.addEventListener('click', function(e) {
 		createBackgroundSound();
+	});
+	nippleManager.on('move', function(evt, data) {
+		moveUserSphere = true;
+		userSphereData = data;
+	});
+	nippleManager.on('end', function(evt, data) {
+		moveUserSphere = false;
 	});
 };

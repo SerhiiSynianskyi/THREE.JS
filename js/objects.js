@@ -1,24 +1,5 @@
 "use strict";
 
-function createPlane() {
-	let planeTexture = new THREE.Texture(),
-		planeLoader = new THREE.ImageLoader(),
-		planeBump = new THREE.TextureLoader().load('images/textures/floorBumpMap.jpg');
-
-	planeLoader.load("images/textures/floorTexture.jpg", function(e) {
-		planeTexture.image = e;
-		planeTexture.needsUpdate = true;
-	});
-
-	let planeGeom = new THREE.CubeGeometry(1010, 50, 1010); // 2д форма для поверхности
-	//planeGeom.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
-	let planeMat = new THREE.MeshStandardMaterial({ map: planeTexture, overdraw: true, bumpMap: planeBump }),
-		planeMesh = new THREE.Mesh(planeGeom, planeMat);
-	planeMesh.receiveShadow = true;
-	planeMesh.position.set(0, -25, 0);
-	return planeMesh;
-}
-
 function createSpaceScene() {
 	let cubeGeometry = new THREE.CubeGeometry(6000, 6000, 6000);
 	// let cubeMaterialsSpace = [
@@ -43,69 +24,71 @@ function createSpaceScene() {
 	return cubeMesh;
 }
 
-function createEdges(scene) {
+function cubeGenerator(obj, scene, rigidBodies, physicsWorld, cubeTexture) {
+	let pos = new THREE.Vector3().set(obj.x, obj.y, obj.z),
+		quat = new THREE.Quaternion().set(0, 0, 0, 1);
+	this.cubeGeom = new THREE.BoxBufferGeometry(obj.w, obj.h, obj.d, 7, 7, 7);
+	this.cubeMat = new THREE.MeshStandardMaterial({
+		map: cubeTexture,
+		overdraw: true,
+		emissive: 0.6,
+		metalness: 0.9,
+		roughness: 0.5
+	});
+	this.cubeMesh = new THREE.Mesh(this.cubeGeom, this.cubeMat);
+	this.cubeMesh.position.set(obj.x, obj.y, obj.z)
+	this.cubeMesh.castShadow = true;
+	this.cubeMesh.receiveShadow = true;
+	let cubeShape = new Ammo.btBoxShape(new Ammo.btVector3(obj.w * 0.5, obj.h * 0.5, obj.d * 0.5));
+	createRigidBody(physicsWorld, this.cubeMesh, cubeShape, 0, pos, quat, rigidBodies, scene);
+	// return this.cubeMesh; // TODO
+}
+
+function createEdges(scene, rigidBodies, physicsWorld) {
 	let boxes = [{
-		w: 25,
-		h: 100,
-		d: 1005,
-		x: -515,
-		y: 0,
-		z: 0
-	}, {
-		w: 25,
-		h: 100,
-		d: 1005,
-		x: 515,
-		y: 0,
-		z: 0
-	}, {
-		w: 1055,
-		h: 100,
-		d: 25,
-		x: 0,
-		y: 0,
-		z: -515
-	}, {
-		w: 1055,
-		h: 100,
-		d: 25,
-		x: 0,
-		y: 0,
-		z: 515
-	}]
+			w: 25,
+			h: 100,
+			d: 1005,
+			x: -515,
+			y: 0,
+			z: 0
+		}, {
+			w: 25,
+			h: 100,
+			d: 1005,
+			x: 515,
+			y: 0,
+			z: 0
+		}, {
+			w: 1055,
+			h: 100,
+			d: 25,
+			x: 0,
+			y: 0,
+			z: -515
+		}, {
+			w: 1055,
+			h: 100,
+			d: 25,
+			x: 0,
+			y: 0,
+			z: 515
+		}],
+		createEdges = new THREE.Group();
 	let cubeTexture = new THREE.Texture(),
 		loader = new THREE.ImageLoader()
 	loader.load("images/textures/edgeTexture.jpg", function(e) {
 		cubeTexture.image = e; // событие загрузки
 		cubeTexture.needsUpdate = true;
 	});
-
-	function cubeGenerator(obj) {
-		let that = this;
-		this.cubeGeom = new THREE.CubeGeometry(obj.w, obj.h, obj.d, 7, 7, 7);
-		this.cubeMat = new THREE.MeshStandardMaterial({
-			map: cubeTexture,
-			overdraw: true,
-			emissive: 0.6,
-			metalness: 0.9,
-			roughness: 0.5
-		});
-		this.cubeMesh = new THREE.Mesh(this.cubeGeom, this.cubeMat);
-		this.cubeMesh.position.set(obj.x, obj.y, obj.z)
-		this.cubeMesh.castShadow = true; //default is false
-		this.cubeMesh.receiveShadow = true; //defaul
-		scene.add(this.cubeMesh); // TODO
-	}
-
-	let box1 = new cubeGenerator(boxes[0]),
-		box2 = new cubeGenerator(boxes[1]),
-		box3 = new cubeGenerator(boxes[2]),
-		box4 = new cubeGenerator(boxes[3]);
+	boxes.forEach(function(item) {
+		let box = new cubeGenerator(item, scene, rigidBodies, physicsWorld, cubeTexture)
+	});
 }
 
 
 function createTargetObject() {
-	let giftGeom = new THREE.OctahedronGeometry(40, 0);
+	let giftGeom = new THREE.OctahedronBufferGeometry(40, 0);
 	let giftBump = new THREE.TextureLoader().load('images/textures/text.jpg');
 	let giftMat = new THREE.MeshStandardMaterial({
 		color: 0x2Dff27,
@@ -162,7 +145,7 @@ function createEnemyRobot(scene, robotParams) {
 
 	let enemyBodyTexture = new THREE.TextureLoader().load('images/textures/enemyTexture.jpg');
 	let enemyBodyBump = new THREE.TextureLoader().load('images/textures/enemyBumpMap.jpg');
-	let enemyBodyGeom = new THREE.SphereGeometry(robotParams.bodySize, 40, 40);
+	let enemyBodyGeom = new THREE.SphereBufferGeometry(robotParams.bodySize, 40, 40);
 	let enemyBodyMat = new THREE.MeshStandardMaterial({
 		map: enemyBodyTexture,
 		roughness: 0.3,
@@ -186,13 +169,12 @@ function createEnemyRobot(scene, robotParams) {
 }
 
 
-function createRobot(scene, robotParams) { //            TODO REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+function createRobot(scene, robotParams, rigidBodies, physicsWorld) { //            TODO REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	let manager = new THREE.LoadingManager(),
 		loader = new THREE.ImageLoader(manager),
 		totalBody = new THREE.Group(),
-		headMesh, bodyMesh;
-
-	let textureHead = new THREE.Texture();
+		textureHead = new THREE.Texture(),
+		headMesh, bodyMesh, userBallBody, userRobot;
 
 	loader.load('model/headTexture.jpg', function(image) {
 		textureHead.image = image;
@@ -207,7 +189,7 @@ function createRobot(scene, robotParams) { //            TODO REFACTOR!!!!!!!!!!
 				meshes.push(child);
 			}
 		});
-		let sphereGeometry = new THREE.SphereGeometry(robotParams.bodySize, 40, 40);
+		let sphereGeometry = new THREE.SphereBufferGeometry(robotParams.bodySize, 40, 40);
 		let sphereTexture = new THREE.Texture(),
 			sphereLoader = new THREE.ImageLoader();
 		sphereLoader.load("model/bodyTexture.jpg", function(e) {
@@ -251,7 +233,6 @@ function createRobot(scene, robotParams) { //            TODO REFACTOR!!!!!!!!!!
 		//     metalness: 0.2,
 		//     overdraw: true
 		// });
-
 		totalBody.add(bodyMesh);
 		totalBody.add(headMesh);
 	});

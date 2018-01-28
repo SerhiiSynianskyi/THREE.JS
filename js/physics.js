@@ -2,7 +2,7 @@
 
 function initPhysics() {
 	// Physics configuration
-	let gravityConstant = 0,
+	let gravityConstant = -9000,
 		collisionConfiguration = new Ammo.btSoftBodyRigidBodyCollisionConfiguration(),
 		dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration),
 		broadphase = new Ammo.btDbvtBroadphase(),
@@ -40,12 +40,12 @@ function createRigidBody(physicsWorld, threeObject, physicsShape, mass, pos, qua
 		});
 	}
 	threeObject.userData.physicsBody = body;
-	scene.add(threeObject);
 	if (mass > 0) {
 		rigidBodies.push(threeObject);
 		body.setActivationState(4);
 	}
 	physicsWorld.addRigidBody(body);
+	scene.add(threeObject);
 	return body;
 }
 
@@ -53,11 +53,11 @@ function createPlane(scene, rigidBodies, physicsWorld) {
 	let pos = new THREE.Vector3().set(0, -25, 0),
 		quat = new THREE.Quaternion().set(0, 0, 0, 1),
 		planeMesh = new THREE.Mesh(new THREE.BoxGeometry(1010, 50, 1010, 1, 1, 1), new THREE.MeshStandardMaterial()),
-		planeShape = new Ammo.btBoxShape(new Ammo.btVector3(1010 * 0.5, 50 * 0.5, 1010 * 0.5));
-	planeShape.setMargin(0.05);
+		planeShape = new Ammo.btBoxShape(new Ammo.btVector3(505, 25, 505));
+	// planeShape.setMargin(0.05);
 	createRigidBody(physicsWorld, planeMesh, planeShape, 0, pos, quat, rigidBodies, scene, "images/textures/floorTexture.jpg", "images/textures/floorBumpMap.jpg");
 	planeMesh.castShadow = true;
-	planeMesh.receiveShadow = true;    
+	planeMesh.receiveShadow = true;
 	return planeMesh;
 }
 
