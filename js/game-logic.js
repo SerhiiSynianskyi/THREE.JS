@@ -103,9 +103,15 @@ function targetLogic(state, scene, object, targetParams) {
 
 /////////////////////////////////////////// USER
 
-function animateUserRobot(userBallBody, userRobot, rigidBodies, radians, distance, controlOffset) {
-	userBallBody.setLinearVelocity(new Ammo.btVector3(Math.sin(radians + controlOffset) * distance * 7, 0, Math.cos(radians + controlOffset) * distance * 7));
-	userBallBody.setAngularVelocity(new Ammo.btVector3(Math.cos(radians + controlOffset) * distance / 16, 0, Math.sin(radians + controlOffset) * (-distance / 16)));
+function animateUserRobot(userBallBody, userRobot, rigidBodies, radians, distance, controlOffset, linearVector, angularVector) {
+	linearVector.setX(Math.sin(radians + controlOffset) * distance * 7);
+	linearVector.setZ(Math.cos(radians + controlOffset) * distance * 7);
+	angularVector.setX(Math.cos(radians + controlOffset) * distance / 16);
+	angularVector.setZ(Math.sin(radians + controlOffset) * (-distance / 16));
+	userBallBody.setLinearVelocity(linearVector);
+	userBallBody.setAngularVelocity(angularVector);
+	// userBallBody.setLinearVelocity(linearVector.setValue(Math.sin(radians + controlOffset) * distance * 7, 0, Math.cos(radians + controlOffset) * distance * 7));
+	// userBallBody.setAngularVelocity(angularVector.setValue(Math.cos(radians + controlOffset) * distance / 16, 0, Math.sin(radians + controlOffset) * (-distance / 16)));
 	userRobot.position.x = rigidBodies[0].position.x;
 	userRobot.position.z = rigidBodies[0].position.z;
 }

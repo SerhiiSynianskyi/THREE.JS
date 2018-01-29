@@ -55,7 +55,9 @@ window.onload = function() {
 		minDistance = 160,
 		clock = new THREE.Clock(),
 		delta = clock.getDelta(),
-		controlOffset = 90 * (Math.PI / 180);
+		controlOffset = 90 * (Math.PI / 180),
+		linearVector = new Ammo.btVector3(),
+		angularVector = new Ammo.btVector3();
 
 	let nippleOptions = {
 			zone: document.getElementById('nipple-wrapper'),
@@ -93,7 +95,7 @@ window.onload = function() {
 		camera.position.set(0, 0, 1530);
 		camera.rotation.set(-0.72, 0, 0);
 		renderer.shadowMap.enabled = true;
-		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+		// renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		renderer.gammaInput = renderer.gammaOutput = true;
 		renderer.toneMapping = THREE.LinearToneMapping;
@@ -114,10 +116,10 @@ window.onload = function() {
 		let d = 900;
 		light = new THREE.DirectionalLight(0xdfebff, 1.1);
 		light.position.set(100, 500, -650);
-		light.position.multiplyScalar(1.3);
+		// light.position.multiplyScalar(1.3);
 		light.castShadow = true;
-		light.shadow.mapSize.width = 1024;
-		light.shadow.mapSize.height = 1024;
+		light.shadow.mapSize.width = 512;
+		light.shadow.mapSize.height = 512;
 		light.shadow.camera.left = -d;
 		light.shadow.camera.right = d;
 		light.shadow.camera.top = d;
@@ -254,7 +256,7 @@ window.onload = function() {
 			userSphereData.distance -= 1;
 		}
 		if (userSphereData.distance && userBallBody) {
-			animateUserRobot(userBallBody, userRobot, rigidBodies, userSphereData.angle.radian, userSphereData.distance, controlOffset)
+			animateUserRobot(userBallBody, userRobot, rigidBodies, userSphereData.angle.radian, userSphereData.distance, controlOffset, linearVector, angularVector)
 		}
 		if (userRobot && rigidBodies[0]) {
 
