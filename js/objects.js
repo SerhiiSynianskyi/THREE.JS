@@ -1,33 +1,55 @@
 "use strict";
 
-function createSpaceScene() {
+function createSceneBackground(currentMap) {
 	let cubeGeometry = new THREE.CubeGeometry(6000, 6000, 6000);
-	// let cubeMaterialsSpace = [
-	// 	new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/space/2.png'), side: THREE.DoubleSide }),
-	// 	new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/space/4.png'), side: THREE.DoubleSide }),
-	// 	new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/space/5.png'), side: THREE.DoubleSide }),
-	// 	new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/space/6.png'), side: THREE.DoubleSide }),
-	// 	new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/space/3.png'), side: THREE.DoubleSide }),
-	// 	new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('skybox/space/1.png'), side: THREE.DoubleSide })
-	// ];
-	let cubeMaterialsDust = [
-		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_ft.jpg'), side: THREE.DoubleSide }),
-		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_bk.jpg'), side: THREE.DoubleSide }),
-		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_up.jpg'), side: THREE.DoubleSide }),
-		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_dn.jpg'), side: THREE.DoubleSide }),
-		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_rt.jpg'), side: THREE.DoubleSide }),
-		new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_lf.jpg'), side: THREE.DoubleSide })
-	];
-	let cubeMaterial = new THREE.MeshFaceMaterial(cubeMaterialsDust);
+	let cubeMat = setSceneTexture(currentMap);
+	let cubeMaterial = new THREE.MeshFaceMaterial(cubeMat);
 	let cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
 	cubeMesh.rotation.set(0, 0.95, 0);
 	return cubeMesh;
 }
 
+function setSceneTexture(sceneType) {
+	let cubeScene;
+	switch (sceneType) {
+		case 2:
+			cubeScene = [
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/snow_dust/sleepyhollow_ft.jpg'), side: THREE.DoubleSide }),
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/snow_dust/sleepyhollow_bk.jpg'), side: THREE.DoubleSide }),
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/snow_dust/sleepyhollow_up.jpg'), side: THREE.DoubleSide }),
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/snow_dust/sleepyhollow_dn.jpg'), side: THREE.DoubleSide }),
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/snow_dust/sleepyhollow_rt.jpg'), side: THREE.DoubleSide }),
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/snow_dust/sleepyhollow_lf.jpg'), side: THREE.DoubleSide })
+			];
+			break;
+		case 3:
+			cubeScene = [
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/space/2.png'), side: THREE.DoubleSide }),
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/space/4.png'), side: THREE.DoubleSide }),
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/space/5.png'), side: THREE.DoubleSide }),
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/space/6.png'), side: THREE.DoubleSide }),
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/space/3.png'), side: THREE.DoubleSide }),
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/space/1.png'), side: THREE.DoubleSide })
+			];
+			break;
+		default:
+			cubeScene = [
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_ft.jpg'), side: THREE.DoubleSide }),
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_bk.jpg'), side: THREE.DoubleSide }),
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_up.jpg'), side: THREE.DoubleSide }),
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_dn.jpg'), side: THREE.DoubleSide }),
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_rt.jpg'), side: THREE.DoubleSide }),
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_lf.jpg'), side: THREE.DoubleSide })
+			];
+			break;
+	}
+	return cubeScene;
+}
+
 function cubeGenerator(obj, scene, rigidBodies, physicsWorld, cubeTexture) {
 	let pos = new THREE.Vector3().set(obj.x, obj.y, obj.z),
 		quat = new THREE.Quaternion().set(0, 0, 0, 1);
-	this.cubeGeom = new THREE.BoxBufferGeometry(obj.w, obj.h, obj.d, 7, 7, 7);
+	this.cubeGeom = new THREE.CubeGeometry(obj.w, obj.h, obj.d, 10, 15, 10);
 	this.cubeMat = new THREE.MeshStandardMaterial({
 		map: cubeTexture,
 		overdraw: true,
@@ -35,6 +57,17 @@ function cubeGenerator(obj, scene, rigidBodies, physicsWorld, cubeTexture) {
 		metalness: 0.9,
 		roughness: 0.5
 	});
+	let randSign = function() { return (Math.random() > 0.4) ? 1 : -1; };
+	for (let vertIndex = 0; vertIndex < this.cubeGeom.vertices.length; vertIndex++) {
+		this.cubeGeom.vertices[vertIndex].x += Math.random() / 0.1 * randSign();
+		this.cubeGeom.vertices[vertIndex].y += Math.random() / 0.1 * randSign();
+		this.cubeGeom.vertices[vertIndex].z += Math.random() / 0.1 * randSign();
+	}
+
+	this.cubeGeom.dynamic = true;
+	this.cubeGeom.computeFaceNormals();
+	this.cubeGeom.computeVertexNormals();
+	this.cubeGeom.normalsNeedUpdate = true;
 	this.cubeMesh = new THREE.Mesh(this.cubeGeom, this.cubeMat);
 	this.cubeMesh.position.set(obj.x, obj.y, obj.z)
 	this.cubeMesh.castShadow = true;

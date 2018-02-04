@@ -12,13 +12,15 @@ window.onload = function() {
 		mainMenu = document.getElementById('main-menu'),
 		userForm = document.getElementById('user-form'),
 		menuSubwrapper = document.getElementById('menu-subwrappers'),
+		mapsWrapper = menuSubwrapper.getElementsByClassName('maps-wrapper')[0],
 		inputUserName = userForm.getElementsByClassName('user-name')[0];
 
-	let camera, renderer, light, targetObject, enemyRobot1, userRobot, touchType, stats, controls,
+	let camera, renderer, light, targetObject, enemyRobot1, userRobot, touchType, stats, controls, sceneBackground,
 		touchMode = false,
 		gameStart = false,
 		gameState = 1,
 		smokeParticles = [],
+		materials = [],
 		scene = new THREE.Scene(),
 		targetParams = {
 			bodySize: 40,
@@ -51,6 +53,28 @@ window.onload = function() {
 			maxX: 500,
 			minX: -500
 		},
+		currentMap = 2,
+		maps = [{
+				name: 'Dark dust',
+				mapType: 1,
+				imagePath: 'asd.jpg'
+			},
+			{
+				name: 'Show',
+				mapType: 2,
+				imagePath: 'asd.jpg'
+			},
+			{
+				name: 'Space',
+				mapType: 3,
+				imagePath: 'asd.jpg'
+			},
+			{
+				name: 'Ocean',
+				mapType: 4,
+				imagePath: 'asd.jpg'
+			}
+		],
 		maxDistance = 1200,
 		minDistance = 160,
 		clock = new THREE.Clock(),
@@ -95,13 +119,14 @@ window.onload = function() {
 		camera.position.set(0, 0, 1530);
 		camera.rotation.set(-0.72, 0, 0);
 		renderer.shadowMap.enabled = true;
-		// renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		renderer.gammaInput = renderer.gammaOutput = true;
 		renderer.toneMapping = THREE.LinearToneMapping;
-		// renderer.toneMappingExposure = 1;
+		renderer.toneMappingExposure = 1;
 		renderer.setClearColor(0x000000);
 		mainWrapper.appendChild(renderer.domElement);
+		// scene.fog = new THREE.FogExp2(0xFFFFFF, 0.0002);
 	}
 
 	function resize() {
@@ -258,9 +283,8 @@ window.onload = function() {
 		if (userSphereData.distance && userBallBody) {
 			animateUserRobot(userBallBody, userRobot, rigidBodies, userSphereData.angle.radian, userSphereData.distance, controlOffset, linearVector, angularVector)
 		}
-		if (userRobot && rigidBodies[0]) {
-
-		}
+		let time = Date.now() * 0.00005;
+		renderSnow(time);
 	};
 
 	function buildScores() {
@@ -313,6 +337,62 @@ window.onload = function() {
 		}
 	}
 
+	function createSnow() {
+		let snowGeom = new THREE.Geometry();
+		for (let i = 0; i < 10000; i++) {
+			let vertex = new THREE.Vector3();
+			vertex.x = Math.random() * 2000 - 1000;
+			vertex.y = Math.random() * 2000 - 1000;
+			vertex.z = Math.random() * 2000 - 1000;
+			snowGeom.vertices.push(vertex);
+		}
+		let parameters = [
+			[
+				[1, 1, 0.5], 6
+			],
+			[
+				[0.95, 1, 0.5], 5
+			],
+			[
+				[0.90, 1, 0.5], 4
+			],
+			[
+				[0.85, 1, 0.5], 3
+			],
+			[
+				[0.80, 1, 0.5], 2
+			]
+		];
+		for (let i = 0; i < parameters.length; i++) {
+			let color = parameters[i][0],
+				size = parameters[i][1];
+			materials[i] = new THREE.PointsMaterial({
+				size: size,
+				color: 0xFFFFFF,
+				map: THREE.ImageUtils.loadTexture(
+					"images/particle.png"
+				),
+				blending: THREE.AdditiveBlending,
+				transparent: true
+			});
+			let particles = new THREE.Points(snowGeom, materials[i]);
+			particles.rotation.x = Math.random() * 6;
+			particles.rotation.y = Math.random() * 6;
+			particles.rotation.z = Math.random() * 6;
+			scene.add(particles);
+		}
+	}
+
+	function renderSnow(time) {
+		for (let i = 0; i < scene.children.length; i++) {
+			let object = scene.children[i];
+			if (object instanceof THREE.Points) {
+				object.rotation.y = time/2 * (i < 8 ? i + 1 : (i + 2));
+				// object.rotation.y += (i < 8 ? i + 1 : (i + 2))/800;
+				// object.rotation.z += (i < 8 ? i + 1 : (i + 2))/2000;
+			}
+		}
+	}
 	///////// FUNCTIONS CALL
 
 	// let helper = new THREE.DirectionalLightHelper(light,5);
@@ -320,7 +400,8 @@ window.onload = function() {
 
 	function buildObjects() {
 		let userRobotData;
-		scene.add(createSpaceScene());
+		sceneBackground = createSceneBackground(currentMap)
+		scene.add(sceneBackground);
 		createEdges(scene, rigidBodies, physicsWorld);
 		userRobot = createRobot(scene, robotParams, rigidBodies, physicsWorld);
 		scene.add(userRobot);
@@ -396,8 +477,15 @@ window.onload = function() {
 		gameStart = true;
 		mainWrapper.classList.remove('stop-game');
 		rendering();
+		parseMaps(maps, mapsWrapper);
+		createSnow();
 	}
 
+	function changeMap() {
+		let sceneTexture = setSceneTexture(maps[currentMap - 1].mapType);
+		sceneBackground.material = sceneTexture;
+		sceneBackground.material.needsUpdate = true
+	}
 	///////// LISTENERS
 
 	window.addEventListener('touchend', function(e) {
@@ -530,5 +618,15 @@ window.onload = function() {
 	});
 	nippleManager.on('end', function(evt, data) {
 		moveUserSphere = false;
+	});
+
+	mapsWrapper.addEventListener('click', function(e) {
+		if (e.target.dataset.mapType) {
+			let selectedMapType = parseInt(e.target.dataset.mapType);
+			if (currentMap !== selectedMapType) {
+				currentMap = selectedMapType;
+				changeMap();
+			}
+		};
 	});
 };
