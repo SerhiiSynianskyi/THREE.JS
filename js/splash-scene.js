@@ -14,13 +14,13 @@ function buildSplashScreen(scene, smokeParticles) {
 	splashSubSceneMesh.position.set(0, 0, 1300);
 	let textGeom = new THREE.PlaneGeometry(300, 300);
 	THREE.ImageUtils.crossOrigin = '';
-	let textTexture = THREE.ImageUtils.loadTexture('images/quick-text.png');
+	let textTexture = new THREE.TextureLoader().load('images/quick-text.png');
 	let textMat = new THREE.MeshLambertMaterial({ color: 0xf2f2f2, opacity: 1, map: textTexture, transparent: true, blending: THREE.AdditiveBlending })
 	let textMesh = new THREE.Mesh(textGeom, textMat);
 	textMesh.position.z = 1350;
 
 
-	let smokeTexture = THREE.ImageUtils.loadTexture('images/smoke-element.png');
+	let smokeTexture = new THREE.TextureLoader().load('images/smoke-element.png');
 	let smokeMaterial = new THREE.MeshLambertMaterial({ color: 0x425662, map: smokeTexture, transparent: true });
 	let smokeGeo = new THREE.PlaneGeometry(300, 300);
 	let particlesGroup = new THREE.Group();

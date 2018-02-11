@@ -12,6 +12,16 @@ function createSceneBackground(currentMap) {
 function setSceneTexture(sceneType) {
 	let cubeScene;
 	switch (sceneType) {
+		case 1:
+			cubeScene = [
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_ft.jpg'), side: THREE.DoubleSide }),
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_bk.jpg'), side: THREE.DoubleSide }),
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_up.jpg'), side: THREE.DoubleSide }),
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_dn.jpg'), side: THREE.DoubleSide }),
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_rt.jpg'), side: THREE.DoubleSide }),
+				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_lf.jpg'), side: THREE.DoubleSide })
+			];
+			break;
 		case 2:
 			cubeScene = [
 				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/snow_dust/sleepyhollow_ft.jpg'), side: THREE.DoubleSide }),
@@ -58,16 +68,16 @@ function cubeGenerator(obj, scene, rigidBodies, physicsWorld, cubeTexture) {
 		roughness: 0.5
 	});
 	let randSign = function() { return (Math.random() > 0.4) ? 1 : -1; };
-	for (let vertIndex = 0; vertIndex < this.cubeGeom.vertices.length; vertIndex++) {
-		this.cubeGeom.vertices[vertIndex].x += Math.random() / 0.1 * randSign();
-		this.cubeGeom.vertices[vertIndex].y += Math.random() / 0.1 * randSign();
-		this.cubeGeom.vertices[vertIndex].z += Math.random() / 0.1 * randSign();
-	}
+	// for (let vertIndex = 0; vertIndex < this.cubeGeom.vertices.length; vertIndex++) {
+	//     this.cubeGeom.vertices[vertIndex].x += Math.random() / 0.1 * randSign();
+	//     this.cubeGeom.vertices[vertIndex].y += Math.random() / 0.1 * randSign();
+	//     this.cubeGeom.vertices[vertIndex].z += Math.random() / 0.1 * randSign();
+	// }
 
-	this.cubeGeom.dynamic = true;
-	this.cubeGeom.computeFaceNormals();
-	this.cubeGeom.computeVertexNormals();
-	this.cubeGeom.normalsNeedUpdate = true;
+	// this.cubeGeom.dynamic = true;
+	// this.cubeGeom.computeFaceNormals();
+	// this.cubeGeom.computeVertexNormals();
+	// this.cubeGeom.normalsNeedUpdate = true;
 	this.cubeMesh = new THREE.Mesh(this.cubeGeom, this.cubeMat);
 	this.cubeMesh.position.set(obj.x, obj.y, obj.z)
 	this.cubeMesh.castShadow = true;
@@ -155,7 +165,7 @@ function createEnemyRobot(scene, robotParams) {
 	shaderMat = new THREE.ShaderMaterial({
 
 		uniforms: {
-			tShine: { type: "t", value: THREE.ImageUtils.loadTexture(imgTexture.src) },
+			tShine: { type: "t", value: new THREE.TextureLoader().load(imgTexture.src) },
 			time: { type: "f", value: 0 },
 			weight: { type: "f", value: 0 }
 		},

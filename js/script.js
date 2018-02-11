@@ -15,7 +15,7 @@ window.onload = function() {
 		mapsWrapper = menuSubwrapper.getElementsByClassName('maps-wrapper')[0],
 		inputUserName = userForm.getElementsByClassName('user-name')[0];
 
-	let camera, renderer, light, targetObject, enemyRobot1, userRobot, touchType, stats, controls, sceneBackground,
+	let camera, renderer, light, targetObject, enemyRobot1, userRobot, touchType, stats, controls, sceneBackground, snowParticlesMesh,
 		touchMode = false,
 		gameStart = false,
 		gameState = 1,
@@ -53,26 +53,36 @@ window.onload = function() {
 			maxX: 500,
 			minX: -500
 		},
-		currentMap = 2,
+		currentMap = {
+			mapType: 1
+		},
 		maps = [{
 				name: 'Dark dust',
 				mapType: 1,
-				imagePath: 'asd.jpg'
+				imagePath: 'images/maps/map_snow.jpg',
+				rotation: false,
+				hasSnow: false
 			},
 			{
 				name: 'Show',
 				mapType: 2,
-				imagePath: 'asd.jpg'
+				imagePath: 'images/maps/map_snow.jpg',
+				rotation: false,
+				hasSnow: true
 			},
 			{
 				name: 'Space',
 				mapType: 3,
-				imagePath: 'asd.jpg'
+				imagePath: 'images/maps/map_snow.jpg',
+				rotation: true,
+				hasSnow: false
 			},
 			{
 				name: 'Ocean',
 				mapType: 4,
-				imagePath: 'asd.jpg'
+				imagePath: 'images/maps/map_snow.jpg',
+				rotation: false,
+				hasSnow: false
 			}
 		],
 		maxDistance = 1200,
@@ -149,7 +159,7 @@ window.onload = function() {
 		light.shadow.camera.right = d;
 		light.shadow.camera.top = d;
 		light.shadow.camera.bottom = -d;
-		light.shadow.camera.far = 2000;
+		light.shadow.camera.far = 1800;
 		scene.add(new THREE.AmbientLight(0xffffff, 0.2));
 		scene.add(light);
 	}
@@ -284,7 +294,9 @@ window.onload = function() {
 			animateUserRobot(userBallBody, userRobot, rigidBodies, userSphereData.angle.radian, userSphereData.distance, controlOffset, linearVector, angularVector)
 		}
 		let time = Date.now() * 0.00005;
-		renderSnow(time);
+		if (currentMap.hasSnow) {
+			renderSnow(time);
+		}
 	};
 
 	function buildScores() {
@@ -338,7 +350,9 @@ window.onload = function() {
 	}
 
 	function createSnow() {
-		let snowGeom = new THREE.Geometry();
+		let snowGeom = new THREE.Geometry(),
+			snowMesh = new THREE.Group();
+		snowMesh.isSnowObject = true;
 		for (let i = 0; i < 10000; i++) {
 			let vertex = new THREE.Vector3();
 			vertex.x = Math.random() * 2000 - 1000;
@@ -351,16 +365,16 @@ window.onload = function() {
 				[1, 1, 0.5], 6
 			],
 			[
-				[0.95, 1, 0.5], 5
+				[1, 1, 0.5], 5
 			],
 			[
-				[0.90, 1, 0.5], 4
+				[1, 1, 0.5], 4
 			],
 			[
-				[0.85, 1, 0.5], 3
+				[1, 1, 0.5], 3
 			],
 			[
-				[0.80, 1, 0.5], 2
+				[1, 1, 0.5], 2
 			]
 		];
 		for (let i = 0; i < parameters.length; i++) {
@@ -369,7 +383,7 @@ window.onload = function() {
 			materials[i] = new THREE.PointsMaterial({
 				size: size,
 				color: 0xFFFFFF,
-				map: THREE.ImageUtils.loadTexture(
+				map: new THREE.TextureLoader().load(
 					"images/particle.png"
 				),
 				blending: THREE.AdditiveBlending,
@@ -379,17 +393,20 @@ window.onload = function() {
 			particles.rotation.x = Math.random() * 6;
 			particles.rotation.y = Math.random() * 6;
 			particles.rotation.z = Math.random() * 6;
-			scene.add(particles);
+			snowMesh.add(particles)
 		}
+		return snowMesh;
 	}
 
 	function renderSnow(time) {
-		for (let i = 0; i < scene.children.length; i++) {
-			let object = scene.children[i];
-			if (object instanceof THREE.Points) {
-				object.rotation.y = time/2 * (i < 8 ? i + 1 : (i + 2));
-				// object.rotation.y += (i < 8 ? i + 1 : (i + 2))/800;
-				// object.rotation.z += (i < 8 ? i + 1 : (i + 2))/2000;
+		for (let j = 0; j < scene.children.length; j++) {
+			let object = scene.children[j];
+			if (object.hasOwnProperty('isSnowObject')) {
+				for (let i = 0; i < object.children.length; i++) {
+					object.children[i].rotation.z = time / 2 * (i < 8 ? i + 1 : (i + 2));
+					// object.rotation.y += (i < 8 ? i + 1 : (i + 2))/800;
+					// object.rotation.z += (i < 8 ? i + 1 : (i + 2))/2000;
+				}
 			}
 		}
 	}
@@ -400,7 +417,7 @@ window.onload = function() {
 
 	function buildObjects() {
 		let userRobotData;
-		sceneBackground = createSceneBackground(currentMap)
+		sceneBackground = createSceneBackground(currentMap.mapType)
 		scene.add(sceneBackground);
 		createEdges(scene, rigidBodies, physicsWorld);
 		userRobot = createRobot(scene, robotParams, rigidBodies, physicsWorld);
@@ -478,11 +495,16 @@ window.onload = function() {
 		mainWrapper.classList.remove('stop-game');
 		rendering();
 		parseMaps(maps, mapsWrapper);
-		createSnow();
+		snowParticlesMesh = createSnow();
 	}
 
 	function changeMap() {
-		let sceneTexture = setSceneTexture(maps[currentMap - 1].mapType);
+		if (currentMap.hasSnow) {
+			scene.add(snowParticlesMesh);
+		} else {
+			scene.remove(snowParticlesMesh);
+		}
+		let sceneTexture = setSceneTexture(maps[currentMap.mapType - 1].mapType);
 		sceneBackground.material = sceneTexture;
 		sceneBackground.material.needsUpdate = true
 	}
@@ -623,8 +645,8 @@ window.onload = function() {
 	mapsWrapper.addEventListener('click', function(e) {
 		if (e.target.dataset.mapType) {
 			let selectedMapType = parseInt(e.target.dataset.mapType);
-			if (currentMap !== selectedMapType) {
-				currentMap = selectedMapType;
+			if (currentMap.mapType !== selectedMapType) {
+				currentMap = maps[selectedMapType - 1];
 				changeMap();
 			}
 		};
