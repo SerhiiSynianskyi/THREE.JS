@@ -3,7 +3,7 @@
 }
 
 html {
-	font-family: sans-serif;
+	font-family: BRL, sans-serif;
 	font-size: 16px;
 }
 
@@ -293,7 +293,7 @@ button {
 	right: 100%;
 	width: 27%;
 	height: 100%;
-	padding: 65px 0 0 70px;
+	padding: 65px 0 0 130px;
 	margin: 0;
 	background-color: rgba(0, 0, 0, 0.5);
 	color: white;
@@ -432,7 +432,7 @@ input[type=submit],
 }
 
 .subwrapper {
-	padding: 100px 50px 100px 300px;
+	padding: 100px 50px 100px 400px;
 	pointer-events: none;
 	opacity: 0;
 }
@@ -490,7 +490,7 @@ input[type=submit],
 }
 
 .maps-wrapper {
-	overflow: scroll;
+	overflow-y: scroll;
 }
 
 .map-wrapper {
@@ -500,7 +500,31 @@ input[type=submit],
 	margin: 20px 0;
 }
 
+.map-wrapper p{
+	font-size: 27px;
+	text-transform: uppercase;
+	font-weight: 700;
+}
 
+.nipple-wrapper,
+.nipple,
+.back,
+.front {
+	transform: translate3d(0, 0, 0);
+}
+
+canvas,
+.nipple-wrapper,
+.nipple,
+.back,
+.front {
+	cursor: none;
+}
+
+h1 {
+	margin: 0.2rem 0;
+	font-size: 2.2rem;
+}
 
 @font-face {
 	font-family: BRL;

@@ -2,7 +2,7 @@ function animateSpleshScene(clock, gameState, camera, smokeParticles) {
 	newDelta = clock.getDelta();
 	evolveSmoke(smokeParticles, newDelta);
 	if (gameState === 1) {
-		camera.position.z -= 12.7;
+		camera.position.z -= 8.7;
 		camera.rotation.z += 0.005;
 	}
 }

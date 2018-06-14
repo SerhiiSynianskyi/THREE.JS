@@ -18,7 +18,7 @@ window.onload = function() {
 	let camera, renderer, light, targetObject, enemyRobot1, userRobot, touchType, stats, controls, sceneBackground, snowParticlesMesh,
 		touchMode = false,
 		gameStart = false,
-		gameState = 1,
+		gameState = 0,
 		smokeParticles = [],
 		materials = [],
 		scene = new THREE.Scene(),
@@ -59,7 +59,7 @@ window.onload = function() {
 		maps = [{
 				name: 'Dark dust',
 				mapType: 1,
-				imagePath: 'images/maps/map_snow.jpg',
+				imagePath: 'images/maps/map_dust.jpg',
 				rotation: false,
 				hasSnow: false
 			},
@@ -73,7 +73,7 @@ window.onload = function() {
 			{
 				name: 'Space',
 				mapType: 3,
-				imagePath: 'images/maps/map_snow.jpg',
+				imagePath: 'images/maps/map_space.jpg',
 				rotation: true,
 				hasSnow: false
 			},
@@ -153,8 +153,8 @@ window.onload = function() {
 		light.position.set(100, 500, -650);
 		// light.position.multiplyScalar(1.3);
 		light.castShadow = true;
-		light.shadow.mapSize.width = 512;
-		light.shadow.mapSize.height = 512;
+		light.shadow.mapSize.width = 1024;
+		light.shadow.mapSize.height = 1024;
 		light.shadow.camera.left = -d;
 		light.shadow.camera.right = d;
 		light.shadow.camera.top = d;
@@ -251,7 +251,7 @@ window.onload = function() {
 
 	controls = createOrbitControl(camera, maxDistance, minDistance);
 	stats = new Stats();
-	window.fps.appendChild(stats.dom);
+	// window.fps.appendChild(stats.dom);
 
 	function rendering() {
 		if (gameStart) {
