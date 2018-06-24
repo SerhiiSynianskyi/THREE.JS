@@ -1,5 +1,4 @@
 "use strict";
-// import './vendor/OBJLoader.js'
 import {animateSpleshScene, buildSplashScreen } from './splash-scene.js'
 import {initPhysics, createRigidBody, createPlane, createRobotPhysics, updatePhysics } from './physics.js'
 import {createSceneBackground, cubeGenerator, createEdges, createTargetObject, createEnemyRobot, createRobot, setSceneTexture} from './objects.js'
@@ -639,9 +638,9 @@ window.onload = function() {
 		}
 	});
 	console.timeEnd('userTime');
-	// window.addEventListener('click', function(e) {
-	// 	createBackgroundSound();
-	// });
+	window.addEventListener('click', function(e) {
+		createBackgroundSound();
+	});
 	nippleManager.on('move', function(evt, data) {
 		moveUserSphere = true;
 		userSphereData = data;

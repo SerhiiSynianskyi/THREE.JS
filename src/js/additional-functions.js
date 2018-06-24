@@ -38,7 +38,8 @@ function createOrbitControl(camera, maxDistance, minDistance) {
 }
 
 function createBackgroundSound() {
-	let audio = new Audio('media/Mega Drive - Converter.mp3');
+	let audio = new Audio(require('../media/Mega Drive - Converter.mp3'));
+	// audio.play();
 	audio.loop = true;
 };
 
