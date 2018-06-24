@@ -1,5 +1,7 @@
 "use strict";
 
+export {createSceneBackground, cubeGenerator, createEdges, createTargetObject, createEnemyRobot, createRobot, setSceneTexture }
+import {initPhysics, createRigidBody, createPlane, createRobotPhysics, updatePhysics } from './physics.js'
 function createSceneBackground(currentMap) {
 	let cubeGeometry = new THREE.CubeGeometry(6000, 6000, 6000);
 	let cubeMat = setSceneTexture(currentMap);
@@ -152,7 +154,7 @@ function createTargetObject() {
 	return giftMesh;
 }
 
-function createEnemyRobot(scene, robotParams) {
+function createEnemyRobot(scene, robotParams, xVertex, xFragment) {
 	let laserGeo, shaderMat, uniforms, buffGeo, laserMesh,
 		enemyBody = {},
 		laserGeom = new THREE.TorusGeometry(48, 9, 40, 40),

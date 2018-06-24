@@ -40,20 +40,12 @@ button {
 	opacity: 1;
 	transition: 0.5s opacity linear;
 	z-index: 100;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	display: none;
 }
 
 .inner-wrapper {
 	height: 100%;
 	width: 100%;
 	position: relative;
-	user-select: none;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
 }
 
 .control {
@@ -88,12 +80,11 @@ button {
 	bottom: 0;
 	left: 50%;
 	transform: translate3d(-50%, 0, 0) rotate(90deg);
-	;
 }
 
 .control:active {
 	opacity: 0.8;
-}
+}z
 
 .other-info {
 	position: absolute;
@@ -513,13 +504,13 @@ input[type=submit],
 	transform: translate3d(0, 0, 0);
 }
 
-canvas,
+/*canvas,
 .nipple-wrapper,
 .nipple,
 .back,
 .front {
 	cursor: none;
-}
+}*/
 
 h1 {
 	margin: 0.2rem 0;

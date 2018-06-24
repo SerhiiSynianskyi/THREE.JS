@@ -1,0 +1,6 @@
+import './styles/normalize.css'
+import './styles/style.css'
+import './js/vendor/OBJLoader.js'
+import './js/vendor/OrbitControls.js'
+import './js/vendor/dat.gui.min.js'
+import './js/script.js'

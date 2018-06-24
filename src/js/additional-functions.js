@@ -1,5 +1,7 @@
 "use strict";
 
+export {setTargetColor, showScores, getRandomInt, removeObjects, createOrbitControl, createBackgroundSound, parseMaps }
+
 function setTargetColor(target, arr) {
 	target.material.color.b = arr[0];
 	target.material.color.g = arr[1];

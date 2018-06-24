@@ -1,5 +1,7 @@
+export {animateSpleshScene, buildSplashScreen }
+
 function animateSpleshScene(clock, gameState, camera, smokeParticles) {
-	newDelta = clock.getDelta();
+	let newDelta = clock.getDelta();
 	evolveSmoke(smokeParticles, newDelta);
 	if (gameState === 1) {
 		camera.position.z -= 8.7;

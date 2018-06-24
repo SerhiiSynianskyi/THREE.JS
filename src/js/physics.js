@@ -1,5 +1,7 @@
 "use strict"
 
+export {initPhysics, createRigidBody, createPlane, createRobotPhysics, updatePhysics }
+
 function initPhysics() {
 	// Physics configuration
 	let gravityConstant = -9000,

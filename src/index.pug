@@ -1,0 +1,76 @@
+doctype html
+html(lang='en')
+	head
+		title ROBOT
+		meta(name='description', content='Game base on Three.js')
+		meta(name='keywords', content='StarWars, WebGL, Three.js')
+		meta(name='author', content='Serhii Synianskyi')
+		meta(charset='UTF-8', name='viewport', content='width=device-width, initial-scale=0.85, maximum-scale=0.85, user-scalable=0, minimal-ui')
+		meta(name='apple-mobile-web-app-capable', content='yes')
+		meta(name='apple-mobile-web-app-status-bar-style', content='black-translucent')
+		meta(http-equiv='X-UA-Compatible', content='IE=edge')
+		meta(http-equiv='imagetoolbar', content='no')
+		meta(name='format-detection', content='telephone=no')
+		meta(name='format-detection', content='address=no')
+		link(rel='apple-touch-icon', href='images/apple-touch-icon-57x57.png')
+		link(rel='apple-touch-icon', sizes='120x120', href='images/touch-icon-iphone-retina.png')
+		link(rel='apple-touch-icon', sizes='152x152', href='images/touch-icon-ipad-retina.png')
+		meta(name='msapplication-square150x150logo', content='images/custom-icon-150.png')
+		meta(name='msapplication-square310x310logo', content='images/custom-icon-310.png')
+		meta(name='msapplication-wide310x150logo', content='images/custom-icon-310x150.png')
+		meta(http-equiv='Cache-Control', content='no-cache')
+	body
+		.main-wrapper
+			.game-data-wrapper
+				.top-menu
+					button.menu-icon
+					.camera-modes
+						button.mode.active(data-mode='1')
+						button.mode(data-mode='2')
+						button.mode(data-mode='3')
+					button.track-ball
+				ul#main-menu
+					li(data-menu='continue') Continue
+					li(data-menu='maps') Maps
+					li(data-menu='scores') Scores
+					li(data-menu='settings') Settings
+					li(data-menu='credits') Credits
+					li(data-menu='exit') Exit game
+				.score-data
+					p SCORES:
+					output.scores(name='scores')
+				#fps
+				//- #control-wrapper
+				//- 	.inner-wrapper
+				//- 		button.control.up
+				//- 		button.control.left
+				//- 		button.control.right
+				//- 		button.control.down
+			//- .other-info
+			//- 	p#data1 111
+			//- 	p#data2 111
+			//- 	p#data3 111
+			.end-game-wrapper
+				p.end-game-text you are defeated
+				output.end-game-scores
+				form#user-form
+					input.user-name(type='text', name='userName', pattern='[a-zA-Z0-9_-]{2,20}', placeholder='YOUR NAME', required='', autocomplete='off')
+					input(type='submit', value='SUBMIT')
+				button.restart-game RESTART
+			#menu-subwrappers.hidden
+				.subwrapper.maps-wrapper(data-subwrapper='maps')
+					h1 MAPS
+				.subwrapper.scores-wrapper(data-subwrapper='scores')
+					div
+						table.scores-head-table
+							thead
+								th
+								th SCORE
+								th NAME
+						.scores-table-wrapper
+							table.scores-table
+				.subwrapper.settings-wrapper(data-subwrapper='settings')
+					h1 SETTINGS
+				.subwrapper.credits-wrapper(data-subwrapper='credits')
+					h1 CREDITS
+		#nipple-wrapper
