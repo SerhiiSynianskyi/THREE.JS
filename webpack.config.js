@@ -63,16 +63,16 @@ let conf = {
 			// 		}
 			// 	},
 			// },
-			// {
-			// 	test: /\.(jpg|svg|png)$/,
-			// 	use: [{
-			// 		loader: "file-loader",
-			// 		options: {
-			// 			name: "images/[name].[ext]",
-			// 			context: './images'
-			// 		}
-			// 	}]
-			// },
+			{
+				test: /\.(mp3|mp4)$/,
+				use: [{
+					loader: "file-loader",
+					options: {
+						name: "./media/[name].[ext]",
+						context: './media'
+					}
+				}]
+			},
 			{
 				test: /\.html$/,
 				use: [{
@@ -82,13 +82,13 @@ let conf = {
 						}
 					},
 					{
-						loader: "extract-loader", // tells webpack that it would be separate file and not include it to main-bundle
+						loader: "extract-loader",
 						options: {
 							publicPath: "../"
 						}
 					},
 					{
-						loader: "html-loader" // linting file ->   extract-loader, then -> file-loader
+						loader: "html-loader"
 					}
 				]
 			},
@@ -112,7 +112,6 @@ let conf = {
 			canPrint: true
 		}),
 		new webpack.ProvidePlugin({
-			// THRE: './js/libs/three.min.js',
 			THREE: 'three',
 			Ammo: 'ammonext',
 			nipplejs: './vendor/nipplejs.min.js',
@@ -131,6 +130,5 @@ module.exports = (env, options) => {
 	conf.devtool = production ?
 		false :
 		'eval-sourcemap';
-	// conf.output.publicPath = production ? './' : '/';
 	return conf;
 }
