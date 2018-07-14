@@ -1,0 +1,32 @@
+{
+	"maps_data": [
+		{
+			"name": "Dark dust",
+			"mapType": 1,
+			"imagePath": "images/maps/map_dust.jpg",
+			"rotation": false,
+			"hasSnow": false
+		},
+		{
+			"name": "Show",
+			"mapType": 2,
+			"imagePath": "images/maps/map_snow.jpg",
+			"rotation": false,
+			"hasSnow": true
+		},
+		{
+			"name": "Space",
+			"mapType": 3,
+			"imagePath": "images/maps/map_space.jpg",
+			"rotation": true,
+			"hasSnow": false
+		},
+		{
+			"name": "Ocean",
+			"mapType": 4,
+			"imagePath": "images/maps/map_snow.jpg",
+			"rotation": false,
+			"hasSnow": false
+		}
+	]
+}
