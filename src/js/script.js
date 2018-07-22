@@ -1,12 +1,37 @@
 "use strict";
-import {animateSpleshScene, buildSplashScreen } from './splash-scene.js'
-import {initPhysics, createRigidBody, createPlane, createRobotPhysics, updatePhysics } from './physics.js'
-import {createSceneBackground, cubeGenerator, createEdges, createTargetObject, createEnemyRobot, createRobot, setSceneTexture} from './objects.js'
-import {setTargetColor, showScores, getRandomInt, removeObjects, createOrbitControl, createBackgroundSound, parseMaps } from './additional-functions.js'
-import {enemyLogic, enemyAnimation, targetAnimation, targetLogic, animateUserRobot, moveViaKeyboard, checkCollapse} from './game-logic.js'
-import * as xVertex from "./shaders/enemy-x-vertex.js"
-import * as xFragment from "./shaders/enemy-x-fragment.js"
-window.onload = function() {
+import {animateSpleshScene, buildSplashScreen} from './splash-scene.js'
+import {initPhysics, createRigidBody, createPlane, createRobotPhysics, updatePhysics} from './physics.js'
+import {
+	createSceneBackground,
+	cubeGenerator,
+	createEdges,
+	createTargetObject,
+	createEnemyRobot,
+	createRobot,
+	setSceneTexture
+} from './objects.js'
+import {
+	setTargetColor,
+	showScores,
+	getRandomInt,
+	removeObjects,
+	createOrbitControl,
+	createBackgroundSound,
+	parseMaps
+} from './additional-functions.js'
+import {
+	enemyLogic,
+	enemyAnimation,
+	targetAnimation,
+	targetLogic,
+	animateUserRobot,
+	moveViaKeyboard,
+	checkCollapse
+} from './game-logic.js'
+
+import maps from '../maps-config.json'
+
+window.onload = function () {
 	console.time('userTime');
 	let mainWrapper = document.getElementsByClassName('main-wrapper')[0],
 		scoresData = document.getElementsByClassName('scores')[0],
@@ -22,7 +47,8 @@ window.onload = function() {
 		mapsWrapper = menuSubwrapper.getElementsByClassName('maps-wrapper')[0],
 		inputUserName = userForm.getElementsByClassName('user-name')[0];
 
-	let camera, renderer, light, targetObject, enemyRobot1, userRobot, touchType, stats, controls, sceneBackground, snowParticlesMesh,
+	let camera, renderer, light, targetObject, enemyRobot1, userRobot, touchType, stats, controls, sceneBackground,
+		snowParticlesMesh,
 		touchMode = false,
 		gameStart = false,
 		gameState = 0,
@@ -63,35 +89,6 @@ window.onload = function() {
 		currentMap = {
 			mapType: 1
 		},
-		maps = [{
-				name: 'Dark dust',
-				mapType: 1,
-				imagePath: 'images/maps/map_dust.jpg',
-				rotation: false,
-				hasSnow: false
-			},
-			{
-				name: 'Show',
-				mapType: 2,
-				imagePath: 'images/maps/map_snow.jpg',
-				rotation: false,
-				hasSnow: true
-			},
-			{
-				name: 'Space',
-				mapType: 3,
-				imagePath: 'images/maps/map_space.jpg',
-				rotation: true,
-				hasSnow: false
-			},
-			{
-				name: 'Ocean',
-				mapType: 4,
-				imagePath: 'images/maps/map_snow.jpg',
-				rotation: false,
-				hasSnow: false
-			}
-		],
 		maxDistance = 1200,
 		minDistance = 160,
 		clock = new THREE.Clock(),
@@ -99,7 +96,6 @@ window.onload = function() {
 		controlOffset = 90 * (Math.PI / 180),
 		linearVector = new Ammo.btVector3(),
 		angularVector = new Ammo.btVector3();
-
 	let nippleOptions = {
 			zone: document.getElementById('nipple-wrapper'),
 			color: 'white',
@@ -131,7 +127,7 @@ window.onload = function() {
 
 	function initScene() {
 		camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 10000);
-		renderer = new THREE.WebGLRenderer({ antialias: true }); // antialias - сглаживаем ребра
+		renderer = new THREE.WebGLRenderer({antialias: true}); // antialias - сглаживаем ребра
 		// camera.position.set(0, 615, 700);
 		camera.position.set(0, 0, 1530);
 		camera.rotation.set(-0.72, 0, 0);
@@ -201,7 +197,7 @@ window.onload = function() {
 				enemies.push(enemyRobot1.totalBody);
 				scene.add(enemyRobot1.totalBody);
 				enemyRobot1.totalBody.position.set(-400, 60, -400);
-				enemyLogic(enemies,getRandomInt);
+				enemyLogic(enemies, getRandomInt);
 				break;
 			case 2:
 				let enemyRobot2 = enemyRobot1.totalBody.clone();
@@ -209,7 +205,7 @@ window.onload = function() {
 				enemyRobot2.position.set(-400, 60, 400);
 				enemyRobot2.robot = true;
 				scene.add(enemyRobot2);
-				enemyLogic(enemies,getRandomInt);
+				enemyLogic(enemies, getRandomInt);
 				break;
 			case 3:
 				let enemyRobot3 = enemyRobot1.totalBody.clone();
@@ -217,7 +213,7 @@ window.onload = function() {
 				enemyRobot3.position.set(-400, 60, -400);
 				enemyRobot3.robot = true;
 				scene.add(enemyRobot3);
-				enemyLogic(enemies,getRandomInt);
+				enemyLogic(enemies, getRandomInt);
 				break;
 			case 4:
 				let enemyRobot4 = enemyRobot1.totalBody.clone();
@@ -225,7 +221,7 @@ window.onload = function() {
 				enemyRobot4.position.set(-400, 60, 400);
 				enemyRobot4.robot = true;
 				scene.add(enemyRobot4);
-				enemyLogic(enemies,getRandomInt);
+				enemyLogic(enemies, getRandomInt);
 				break;
 			case 5:
 				let enemyRobot5 = enemyRobot1.totalBody.clone();
@@ -233,7 +229,7 @@ window.onload = function() {
 				enemyRobot5.position.set(-400, 60, -400);
 				enemyRobot5.robot = true;
 				scene.add(enemyRobot5);
-				enemyLogic(enemies,getRandomInt);
+				enemyLogic(enemies, getRandomInt);
 				break;
 			case 6:
 				let enemyRobot6 = enemyRobot1.totalBody.clone();
@@ -241,7 +237,7 @@ window.onload = function() {
 				enemyRobot6.position.set(-400, 60, 400);
 				enemyRobot6.robot = true;
 				scene.add(enemyRobot6);
-				enemyLogic(enemies,getRandomInt);
+				enemyLogic(enemies, getRandomInt);
 				break;
 			default:
 				break;
@@ -258,7 +254,7 @@ window.onload = function() {
 
 	controls = createOrbitControl(camera, maxDistance, minDistance);
 	stats = new Stats();
-	// window.fps.appendChild(stats.dom);
+	window.fps.appendChild(stats.domElement);
 
 	function rendering() {
 		if (gameStart) {
@@ -280,6 +276,11 @@ window.onload = function() {
 			//     camera.lookAt(headMesh.position);
 			// }
 			targetObject.rotation.y += 0.03;
+			if(userRobot && rigidBodies[0]){
+				userRobot.position.x = rigidBodies[0].position.x;
+				userRobot.position.z = rigidBodies[0].position.z;
+			}
+
 			if (cameraMode === 2) {
 				scene.rotation.y += 90 / Math.PI * 0.0001;
 			}
@@ -294,12 +295,17 @@ window.onload = function() {
 		//////////////////////////// PHYSICS
 		let deltaTime = clock.getDelta();
 		updatePhysics(deltaTime, physicsWorld, rigidBodies, transformAux1);
-		if (!moveUserSphere && userSphereData.distance >= 0) {
+		if (!moveUserSphere && userSphereData.distance > 0) {
 			userSphereData.distance -= 1;
+			Math.floor(userSphereData.distance);
+		}
+		if (!moveUserSphere && userSphereData.distance < 0) {
+			userSphereData.distance = 0;
 		}
 		if (userSphereData.distance && userBallBody) {
 			animateUserRobot(userBallBody, userRobot, rigidBodies, userSphereData.angle.radian, userSphereData.distance, controlOffset, linearVector, angularVector)
 		}
+
 		let time = Date.now() * 0.00005;
 		if (currentMap.hasSnow) {
 			renderSnow(time);
@@ -307,14 +313,14 @@ window.onload = function() {
 	};
 
 	function buildScores() {
-		let sortedData = users.map(function(num) {
+		let sortedData = users.map(function (num) {
 			return num;
 		});
-		sortedData.sort(function(a, b) {
+		sortedData.sort(function (a, b) {
 			return b.scores - a.scores;
 		});
 		let tableBody = document.createElement('tbody');
-		sortedData.forEach(function(item, index) {
+		sortedData.forEach(function (item, index) {
 			let tableRow = document.createElement('tr');
 			tableRow.innerHTML = `<th>${index + 1}</th><td>${item.scores}</td><td>${item.name}</td>`;
 			tableBody.appendChild(tableRow);
@@ -334,7 +340,7 @@ window.onload = function() {
 				mainWrapper.classList.remove('open-menu');
 				mainMenu.className = '';
 				menuSubwrapper.className = '';
-				setTimeout(function() {
+				setTimeout(function () {
 					gameStart = true;
 					rendering();
 				}, 500)
@@ -417,6 +423,7 @@ window.onload = function() {
 			}
 		}
 	}
+
 	///////// FUNCTIONS CALL
 
 	// let helper = new THREE.DirectionalLightHelper(light,5);
@@ -429,7 +436,7 @@ window.onload = function() {
 		createEdges(scene, rigidBodies, physicsWorld);
 		userRobot = createRobot(scene, robotParams, rigidBodies, physicsWorld);
 		scene.add(userRobot);
-		setTimeout(function() { // REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!! TODO
+		setTimeout(function () { // REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!! TODO
 			userBallBody = createRobotPhysics(scene, rigidBodies, physicsWorld, userRobot.children[0]);
 		}, 2000);
 	}
@@ -441,7 +448,7 @@ window.onload = function() {
 		if (userRobot && rigidBodies[0]) {
 			userRobot.position.set(0, 0, 0);
 			// rigidBodies[0].setOrigin(new Ammo.btVector3(0, 0, 0));
-			console.log(userBallBody);
+			// console.log(userBallBody);
 		}
 		userData.name = '';
 		userData.scores = 0;
@@ -452,11 +459,11 @@ window.onload = function() {
 		removeObjects(scene, ['giftDetected']);
 		mainWrapper.classList.remove('stop-game');
 		showScores(scoresData, userData);
-		scene.children.forEach(function(item, index, arr) {
+		scene.children.forEach(function (item, index, arr) {
 			if (item.robot || item.giftDetected) {
 				scene.remove(item);
 			}
-			arr.forEach(function(subItem) {
+			arr.forEach(function (subItem) {
 				if (subItem.robot || subItem.giftDetected) {
 					scene.remove(subItem);
 				}
@@ -466,9 +473,9 @@ window.onload = function() {
 		inputUserName.value = '';
 		enemyParams.count = 1;
 		targetObject = createTargetObject(),
-		targetLogic(0, scene, targetObject, targetParams);
+			targetLogic(0, scene, targetObject, targetParams);
 		createEnemies(enemyParams);
-		enemyLogic(enemies,getRandomInt);
+		enemyLogic(enemies, getRandomInt);
 
 	}
 
@@ -477,7 +484,7 @@ window.onload = function() {
 		removeObjects(scene, props);
 		camera.position.set(0, 615, 700);
 		camera.rotation.set(-0.72, 0, 0);
-		setTimeout(function() {
+		setTimeout(function () {
 			mainWrapper.classList.add('game-process-enabled');
 			mainWrapper.classList.remove('game-previev-ready');
 			init();
@@ -501,7 +508,7 @@ window.onload = function() {
 		gameStart = true;
 		mainWrapper.classList.remove('stop-game');
 		rendering();
-		parseMaps(maps, mapsWrapper);
+		parseMaps(maps.maps_data, mapsWrapper);
 		snowParticlesMesh = createSnow();
 	}
 
@@ -515,15 +522,8 @@ window.onload = function() {
 		sceneBackground.material = sceneTexture;
 		sceneBackground.material.needsUpdate = true
 	}
-	///////// LISTENERS
 
-	window.addEventListener('touchend', function(e) {
-		touchMode = false;
-	});
-	window.addEventListener('touchmove', function(e) {
-		touchMode = false;
-	});
-	document.addEventListener('keydown', function(e) {
+	function checkKeyType(e) {
 		let moveType = 'notype';
 		switch (e.key) {
 			case '8':
@@ -557,11 +557,30 @@ window.onload = function() {
 				moveType = 'notype';
 				break;
 		}
+		return moveType;
+	}
+
+	///////// LISTENERS
+
+	window.addEventListener('touchend', function (e) {
+		touchMode = false;
+	});
+	window.addEventListener('touchmove', function (e) {
+		touchMode = false;
+	});
+	document.addEventListener('keydown', function (e) {
+		let moveType = checkKeyType(e);
 		if (moveType !== 'notype') {
-			moveViaKeyboard(moveType, userBallBody, userRobot, rigidBodies);
+			moveViaKeyboard(moveType, userBallBody, userRobot, rigidBodies, linearVector, angularVector);
 		}
 	});
-	window.addEventListener('resize', function(e) {
+	document.addEventListener('keyup', function (e) {
+		let moveType = checkKeyType(e);
+		if (moveType !== 'notype') {
+			animateUserRobot(userBallBody, userRobot, rigidBodies, userSphereData.angle.radian, 0, controlOffset, linearVector, angularVector)
+		}
+	});
+	window.addEventListener('resize', function (e) {
 		resize();
 	});
 
@@ -577,9 +596,9 @@ window.onload = function() {
 	// }
 
 	///////////////////////////////////////////////////// - camera modes
-	modesWrapper.addEventListener('click', function(e) {
+	modesWrapper.addEventListener('click', function (e) {
 		if (e.target.className === 'mode') {
-			Array.prototype.forEach.call(modesWrapper.children, function(item) {
+			Array.prototype.forEach.call(modesWrapper.children, function (item) {
 				item.classList.remove('active');
 			});
 			e.target.classList.add('active');
@@ -592,10 +611,11 @@ window.onload = function() {
 				scene.rotation.y = 0;
 				checkTrackBall();
 			}
-			if (cameraMode === 2) {}
+			if (cameraMode === 2) {
+			}
 		}
 	});
-	trackBallWrap.addEventListener('click', function(e) {
+	trackBallWrap.addEventListener('click', function (e) {
 		controls.enabled = !controls.enabled;
 		checkTrackBall();
 	});
@@ -604,20 +624,20 @@ window.onload = function() {
 		controls.enabled ? trackBallWrap.classList.add('active') : trackBallWrap.classList.remove('active');
 	}
 
-	menuIcon.addEventListener('click', function() {
+	menuIcon.addEventListener('click', function () {
 		mainWrapper.classList.add('open-menu');
 		mainMenu.className = ('state-continue');
 		gameStart = false;
 	});
 
-	mainMenu.addEventListener('click', function(e) {
+	mainMenu.addEventListener('click', function (e) {
 		if (e.target.dataset.menu) {
 			mainMenu.className = ('state-' + e.target.dataset.menu);
 			menuSubwrapper.className = ('substate-' + e.target.dataset.menu);
 			menuInteraction(e.target.dataset.menu);
 		}
 	});
-	restartGame.addEventListener('click', function(e) {
+	restartGame.addEventListener('click', function (e) {
 		init();
 	});
 
@@ -625,37 +645,35 @@ window.onload = function() {
 	//  let orientation = Math.abs(window.orientation) == 90 ? 'landscape' : 'portrait';
 	//        console.log(orientation);
 	// }, false);
-	window.addEventListener('submit', function(e) {
+	window.addEventListener('submit', function (e) {
 		userData.name = inputUserName.value;
 		users.push(userData);
 		localStorage.setItem('starWarsGameUsers', JSON.stringify(users));
 		e.preventDefault();
 		init();
 	});
-	mainWrapper.addEventListener('click', function() {
+	mainWrapper.addEventListener('click', function () {
 		if (gameState === 0) { // TODO refector this shit
 			gameState = 1;
+			createBackgroundSound();
 		}
 	});
 	console.timeEnd('userTime');
-	window.addEventListener('click', function(e) {
-		createBackgroundSound();
-	});
-	nippleManager.on('move', function(evt, data) {
+	nippleManager.on('move', function (evt, data) {
 		moveUserSphere = true;
 		userSphereData = data;
 	});
-	nippleManager.on('end', function(evt, data) {
+	nippleManager.on('end', function (evt, data) {
 		moveUserSphere = false;
 	});
 
-	mapsWrapper.addEventListener('click', function(e) {
+	mapsWrapper.addEventListener('click', function (e) {
 		if (e.target.dataset.mapType) {
 			let selectedMapType = parseInt(e.target.dataset.mapType);
 			if (currentMap.mapType !== selectedMapType) {
 				currentMap = maps[selectedMapType - 1];
 				changeMap();
 			}
-		};
+		}
 	});
 };

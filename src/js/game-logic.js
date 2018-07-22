@@ -114,26 +114,28 @@ function animateUserRobot(userBallBody, userRobot, rigidBodies, radians, distanc
 	angularVector.setZ(Math.sin(radians + controlOffset) * (-distance / 16));
 	userBallBody.setLinearVelocity(linearVector);
 	userBallBody.setAngularVelocity(angularVector);
+	// console.log(rigidBodies)
 	// userBallBody.setLinearVelocity(linearVector.setValue(Math.sin(radians + controlOffset) * distance * 7, 0, Math.cos(radians + controlOffset) * distance * 7));
 	// userBallBody.setAngularVelocity(angularVector.setValue(Math.cos(radians + controlOffset) * distance / 16, 0, Math.sin(radians + controlOffset) * (-distance / 16)));
 	userRobot.position.x = rigidBodies[0].position.x;
 	userRobot.position.z = rigidBodies[0].position.z;
 }
 
-function moveViaKeyboard(program, userBallBody, userRobot, rigidBodies) {
+function moveViaKeyboard(program, userBallBody, userRobot, rigidBodies,linearVector, angularVector) {
 	// 90deg = 1.5708rad
+	// console.log(123)
 	switch (program) {
 		case 'up':
-			animateUserRobot(userBallBody, userRobot, rigidBodies, 3.14159, 80, 0);
+			animateUserRobot(userBallBody, userRobot, rigidBodies, 3.14159, 80, 0,linearVector, angularVector);
 			break;
 		case 'down':
-			animateUserRobot(userBallBody, userRobot, rigidBodies, 6.28319, 80, 0);
+			animateUserRobot(userBallBody, userRobot, rigidBodies, 6.28319, 80, 0,linearVector, angularVector);
 			break;
 		case 'left':
-			animateUserRobot(userBallBody, userRobot, rigidBodies, 4.71239, 80, 0);
+			animateUserRobot(userBallBody, userRobot, rigidBodies, 4.71239, 80, 0,linearVector, angularVector);
 			break;
 		case 'right':
-			animateUserRobot(userBallBody, userRobot, rigidBodies, 1.5708, 80, 0);
+			animateUserRobot(userBallBody, userRobot, rigidBodies, 1.5708, 80, 0,linearVector, angularVector);
 			break;
 		case 'special':
 			break;
