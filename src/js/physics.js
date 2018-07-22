@@ -66,7 +66,7 @@ function createPlane(scene, rigidBodies, physicsWorld) {
 function createRobotPhysics(scene, rigidBodies, physicsWorld, mesh) {
 	let pos = new THREE.Vector3(),
 		quat = new THREE.Quaternion();
-	pos.set(0, -5, 0);
+	pos.set(0, 50, 0);
 	let userShape = new Ammo.btSphereShape(50),
 		userBallBody = createRigidBody(physicsWorld, mesh, userShape, 60, pos, quat, rigidBodies, scene);
 	return userBallBody;
