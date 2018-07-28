@@ -118,6 +118,7 @@ let conf = {
 			Stats: 'stats-js'
 		}),
 		new CopyWebpackPlugin([
+			{ from: 'src/manifest.json', to: 'manifest.json'},
 			{ from: 'src/images', to: 'images' },
 			{ from: 'src/model', to: 'model' },
 			{ from: 'src/fonts', to: 'fonts' }
