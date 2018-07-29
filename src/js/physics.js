@@ -1,6 +1,6 @@
 "use strict"
 
-export {initPhysics, createRigidBody, createPlane, createRobotPhysics, updatePhysics }
+export {initPhysics, createRigidBody, createPlane, updatePhysics }
 
 function initPhysics() {
 	// Physics configuration
@@ -61,31 +61,4 @@ function createPlane(scene, rigidBodies, physicsWorld) {
 	planeMesh.castShadow = true;
 	planeMesh.receiveShadow = true;
 	return planeMesh;
-}
-
-function createRobotPhysics(scene, rigidBodies, physicsWorld, mesh) {
-	let pos = new THREE.Vector3(),
-		quat = new THREE.Quaternion();
-	pos.set(0, 50, 0);
-	let userShape = new Ammo.btSphereShape(50),
-		userBallBody = createRigidBody(physicsWorld, mesh, userShape, 60, pos, quat, rigidBodies, scene);
-	return userBallBody;
-}
-
-function updatePhysics(deltaTime, physicsWorld, rigidBodies, transformAux1) {
-	// Step world
-	physicsWorld.stepSimulation(deltaTime, 10);
-	// Update rigid bodies
-	for (let i = 0, il = rigidBodies.length; i < il; i++) {
-		let objThree = rigidBodies[i];
-		let objPhys = objThree.userData.physicsBody;
-		let ms = objPhys.getMotionState();
-		if (ms) {
-			ms.getWorldTransform(transformAux1);
-			let p = transformAux1.getOrigin();
-			let q = transformAux1.getRotation();
-			objThree.position.set(p.x(), p.y(), p.z());
-			objThree.quaternion.set(q.x(), q.y(), q.z(), q.w());
-		}
-	}
 }
