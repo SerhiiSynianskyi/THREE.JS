@@ -20,9 +20,11 @@ let conf = {
 	},
 	module: {
 		rules: [{
-				test: /\.exec\.js$/,
-				loader: 'babel-loader',
-				exclude: '/node_modules'
+				test: /\.js$/,
+				exclude: /(node_modules|bower_components)/,
+				use: {
+					loader: "babel-loader"
+				}
 			},
 			{
 				test: /\.css$/,
@@ -118,7 +120,7 @@ let conf = {
 			Stats: 'stats-js'
 		}),
 		new CopyWebpackPlugin([
-			{ from: 'src/manifest.json', to: 'manifest.json'},
+			{ from: 'src/manifest.json', to: 'manifest.json' },
 			{ from: 'src/images', to: 'images' },
 			{ from: 'src/model', to: 'model' },
 			{ from: 'src/fonts', to: 'fonts' }
