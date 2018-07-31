@@ -1,6 +1,6 @@
 "use strict";
 
-export {enemyLogic, enemyAnimation, targetAnimation, targetLogic, animateUserRobot, moveViaKeyboard, checkCollapse}
+export {enemyLogic, enemyAnimation, targetAnimation, targetLogic, moveViaKeyboard, checkCollapse}
 import {setTargetColor, showScores, getRandomInt, removeObjects, createOrbitControl, createBackgroundSound, parseMaps } from './additional-functions.js'
 
 /////////////////////////////////////////// ENEMY

@@ -5,8 +5,8 @@ export { addLights, removeObjects, createOrbitControl, resize, rotateAroundWorld
 function addLights(scene) {
 	let lightDistance = 900,
 		light = new THREE.DirectionalLight(0xdfebff, 1.1);
-	light.position.set(100, 500, -650);
-	// light.position.multiplyScalar(1.3);
+	light.position.set(100, 600, -650);
+	light.position.multiplyScalar(1.3);
 	light.castShadow = true;
 	light.shadow.mapSize.width = 1024;
 	light.shadow.mapSize.height = 1024;
@@ -15,7 +15,7 @@ function addLights(scene) {
 	light.shadow.camera.top = lightDistance;
 	light.shadow.camera.bottom = -lightDistance;
 	light.shadow.camera.far = 1800;
-	scene.add(new THREE.AmbientLight(0xffffff, 0.2));
+	scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 	scene.add(light);
 }
 

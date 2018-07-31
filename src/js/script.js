@@ -31,7 +31,6 @@ import {
 	enemyAnimation,
 	targetAnimation,
 	targetLogic,
-	animateUserRobot,
 	moveViaKeyboard,
 	checkCollapse
 } from './game-logic.js'
@@ -114,7 +113,7 @@ window.onload = function() {
 			color: 'white',
 			size: 170,
 			fadeTime: 500,
-			restOpacity: 0,
+			restOpacity: 0.15,
 			position: {
 				right: '13%',
 				bottom: '20%'
@@ -219,17 +218,26 @@ window.onload = function() {
 	stats = new Stats();
 	window.fps.appendChild(stats.domElement);
 
+	function limitMovement(userRobotPosition, value, maxSceneLimit, minSceneLimit) {
+		// debugger
+		if(((userRobotPosition >= maxSceneLimit)&&(value < 0)) || ((userRobotPosition <= maxSceneLimit)&&(userRobotPosition >= minSceneLimit)) || ((userRobotPosition <= minSceneLimit)&&(value > 0))) {
+			userRobotPosition += value;
+		}
+	}
+
 	function moveUserRobot() {
-		let x = new THREE.Vector3(Math.cos(userSphereData.angle.radian) / 10, 0, -Math.sin(userSphereData.angle.radian) / 10);
-		let xAxis = Math.cos(userSphereData.angle.radian) / 10,
-			yAxis = -Math.sin(userSphereData.angle.radian) / 10;
+		let worldXAxis = new THREE.Vector3(Math.cos(userSphereData.angle.radian) / 10, 0, -Math.sin(userSphereData.angle.radian) / 10);
+		let xAxis = Math.cos(userSphereData.angle.radian),
+			yAxis = -Math.sin(userSphereData.angle.radian);
 		let axisRotation = (new THREE.Quaternion).setFromEuler(
 			new THREE.Euler(xAxis, 0, yAxis)
 		);
-		userRobot.position.z += Math.cos(userSphereData.angle.radian) * (userSphereData.distance / 15);
-		userRobot.position.x += Math.sin(userSphereData.angle.radian) * (userSphereData.distance / 15);
+		// limitMovement(userRobot.position.z,  Math.cos(userSphereData.angle.radian) * (userSphereData.distance / 10), 400, -400);
+		// limitMovement(userRobot.position.x,  Math.sin(userSphereData.angle.radian) * (userSphereData.distance / 10), 400, -400);
+		userRobot.position.z += Math.cos(userSphereData.angle.radian) * (userSphereData.distance / 10);
+		userRobot.position.x += Math.sin(userSphereData.angle.radian) * (userSphereData.distance / 10);
 		userRobot.children[0].quaternion.multiply(axisRotation);
-		rotateAroundWorldAxis(userRobot.children[0], x, 0.1)
+		rotateAroundWorldAxis(userRobot.children[0], worldXAxis, userSphereData.distance / 700)
 	}
 
 	function rendering() {
@@ -280,9 +288,6 @@ window.onload = function() {
 		}
 		if (!moveUserSphere && userSphereData.distance < 0) {
 			userSphereData.distance = 0;
-		}
-		if (userSphereData.distance && userBallBody) {
-			animateUserRobot(userBallBody, userRobot, rigidBodies, userSphereData.angle.radian, userSphereData.distance, controlOffset, linearVector, angularVector)
 		}
 
 		let time = Date.now() * 0.00005;
@@ -359,7 +364,6 @@ window.onload = function() {
 
 	function preInit() {
 		initScene();
-		scene.add(new THREE.AmbientLight(0xffffff, 0.2));
 		buildSplashScreen(scene, smokeParticles);
 		physicsWorld = initPhysics();
 		createPlane(scene, rigidBodies, physicsWorld)
@@ -403,7 +407,7 @@ window.onload = function() {
 	document.addEventListener('keyup', function(e) {
 		let moveType = checkKeyType(e);
 		if (moveType !== 'notype') {
-			animateUserRobot(userBallBody, userRobot, rigidBodies, userSphereData.angle.radian, 0, controlOffset, linearVector, angularVector)
+
 		}
 	});
 	window.addEventListener('resize', function(e) {
