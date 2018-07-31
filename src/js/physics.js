@@ -1,6 +1,6 @@
 "use strict"
 
-export {initPhysics, createRigidBody, createPlane, updatePhysics }
+export {initPhysics, createRigidBody, createPlane}
 
 function initPhysics() {
 	// Physics configuration
