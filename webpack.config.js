@@ -28,10 +28,6 @@ let conf = {
 			},
 			{
 				test: /\.css$/,
-				// use: [
-				// 	{ loader: "style-loader" }, // считывает данные с файла
-				// 	{ loader: "css-loader" }
-				// ]
 				use: ExtractTextPlugin.extract({
 					fallback: "style-loader",
 					use: {
@@ -47,7 +43,7 @@ let conf = {
 			{
 				test: /\.styl$/,
 				use: [{
-						loader: "style-loader" // считывает данные с файла
+						loader: "style-loader"
 					},
 					{
 						loader: "css-loader"
@@ -55,16 +51,6 @@ let conf = {
 					{ loader: "stylus-loader" }
 				]
 			},
-			// {
-			// 	test: /\.(woff|woff2|TTF)$/,
-			// 	use: {
-			// 		loader: "url-loader",
-			// 		options: {
-			// 			limit: 50000,
-			// 			name: "./fonts/[name].[ext]",
-			// 		}
-			// 	},
-			// },
 			{
 				test: /\.(mp3|mp4)$/,
 				use: [{
