@@ -1,6 +1,6 @@
 "use strict";
 import { animateSpleshScene, buildSplashScreen } from './splash-scene.js'
-import { initPhysics, createRigidBody, createPlane, updatePhysics } from './physics.js'
+import { initPhysics, createRigidBody, createPlane } from './physics.js'
 import {
 	createSceneBackground,
 	cubeGenerator,
