@@ -1,15 +1,23 @@
 "use strict";
 
-export {enemyLogic, enemyAnimation, targetAnimation, targetLogic, moveViaKeyboard, checkCollapse}
-import {setTargetColor, showScores, getRandomInt, removeObjects, createOrbitControl, createBackgroundSound, parseMaps } from './additional-functions.js'
+import {rotateAroundWorldAxis} from "./scene-functions";
+
+export {enemyLogic, enemyAnimation, targetAnimation, targetLogic, moveViaKeyboard, checkCollapse, moveUserRobot}
+import {
+	setTargetColor,
+	showScores,
+	getRandomInt,
+	removeObjects,
+	createOrbitControl
+} from './additional-functions.js'
 
 /////////////////////////////////////////// ENEMY
-function enemyLogic(enemies,getRandomInt) {
+function enemyLogic(enemies, getRandomInt) {
 	let randomInterval = 2500;
-	enemies.forEach(function(item) {
+	enemies.forEach(function (item) {
 		randomInterval = randomInterval - 300;
 		let startMovingCoordinate = item.movingCoordinate
-		setInterval(function() {
+		setInterval(function () {
 			if (!item.colapsed) {
 				item.movingCoordinate = getRandomInt(0, 3);
 				if (item.movingCoordinate === startMovingCoordinate) {
@@ -79,13 +87,13 @@ function targetLogic(state, scene, object, targetParams) {
 			object.position.set((getRandomInt(-40, 40) * 10), 50, (getRandomInt(-40, 40) * 10));
 			let targetType = getRandomInt(0, 10);
 			if (targetType === 0) {
-				setTargetColor(object, [0, 0, 1])
+				setTargetColor(object, [0, 0, 1]);
 				targetParams.targetType = 0;
 			} else if (targetType >= 1 && targetType <= 3) {
-				setTargetColor(object, [0.1, 1, 1])
+				setTargetColor(object, [0.1, 1, 1]);
 				targetParams.targetType = 1;
 			} else {
-				setTargetColor(object, [0.1, 1, 0.2])
+				setTargetColor(object, [0.1, 1, 0.2]);
 				targetParams.targetType = 2;
 			}
 			scene.add(object);
@@ -95,54 +103,81 @@ function targetLogic(state, scene, object, targetParams) {
 			break;
 		case 2:
 			targetParams.targetState = 2;
-			setTimeout(function() {
+			setTimeout(function () {
 				targetParams.targetState = 0;
 				targetLogic(0, _scene, object, targetParams);
-			}, 750)
+			}, 750);
 			break;
 		default:
 			break;
 	}
 }
 
-/////////////////////////////////////////// USER
-
-function animateUserRobot(userBallBody, userRobot, rigidBodies, radians, distance, controlOffset, linearVector, angularVector) {
-	linearVector.setX(Math.sin(radians + controlOffset) * distance * 7);
-	linearVector.setZ(Math.cos(radians + controlOffset) * distance * 7);
-	angularVector.setX(Math.cos(radians + controlOffset) * distance / 16);
-	angularVector.setZ(Math.sin(radians + controlOffset) * (-distance / 16));
-	userBallBody.setLinearVelocity(linearVector);
-	userBallBody.setAngularVelocity(angularVector);
-	// console.log(rigidBodies)
-	// userBallBody.setLinearVelocity(linearVector.setValue(Math.sin(radians + controlOffset) * distance * 7, 0, Math.cos(radians + controlOffset) * distance * 7));
-	// userBallBody.setAngularVelocity(angularVector.setValue(Math.cos(radians + controlOffset) * distance / 16, 0, Math.sin(radians + controlOffset) * (-distance / 16)));
-	userRobot.position.x = rigidBodies[0].position.x;
-	userRobot.position.z = rigidBodies[0].position.z;
+function _limitMovement(userRobotPosition, axis, value, maxSceneLimit, minSceneLimit) {
+	if (((userRobotPosition.position[axis] <= maxSceneLimit) && (userRobotPosition.position[axis] >= minSceneLimit)) || ((userRobotPosition.position[axis] >= maxSceneLimit) && (value < 0)) || ((userRobotPosition.position[axis] <= minSceneLimit) && (value > 0))) {
+		userRobotPosition.position[axis] += value;
+	}
 }
 
-function moveViaKeyboard(program, userBallBody, userRobot, rigidBodies,linearVector, angularVector) {
+function moveUserRobot(userRobot, controlData) {
+	let worldXAxis = new THREE.Vector3(Math.cos(controlData.angle.radian) / 10, 0, -Math.sin(controlData.angle.radian) / 10);
+	let xAxis = Math.cos(controlData.angle.radian),
+		yAxis = -Math.sin(controlData.angle.radian);
+	let axisRotation = (new THREE.Quaternion).setFromEuler(
+		new THREE.Euler(xAxis, 0, yAxis)
+	);
+	_limitMovement(userRobot, 'z', Math.cos(controlData.angle.radian) * (controlData.distance / 10), 445, -445);
+	_limitMovement(userRobot, 'x', Math.sin(controlData.angle.radian) * (controlData.distance / 10), 445, -445);
+	userRobot.children[0].quaternion.multiply(axisRotation);
+	rotateAroundWorldAxis(userRobot.children[0], worldXAxis, controlData.distance / 700)
+}
+
+function moveViaKeyboard(program, userBallBody, userRobot, rigidBodies, userSphereData) {
 	// 90deg = 1.5708rad
-	// console.log(123)
+	let radians = 1.5708;
+	userSphereData = {
+		distance: 200,
+		angle: {}
+	};
 	switch (program) {
 		case 'up':
-			animateUserRobot(userBallBody, userRobot, rigidBodies, 3.14159, 80, 0,linearVector, angularVector);
+			userSphereData.angle.radian = radians;
+			moveUserRobot(userRobot, userSphereData);
 			break;
 		case 'down':
-			animateUserRobot(userBallBody, userRobot, rigidBodies, 6.28319, 80, 0,linearVector, angularVector);
+			userSphereData.angle.radian = radians * 3;
+			moveUserRobot(userRobot, userSphereData);
 			break;
 		case 'left':
-			animateUserRobot(userBallBody, userRobot, rigidBodies, 4.71239, 80, 0,linearVector, angularVector);
+			userSphereData.angle.radian = radians * 2;
+			moveUserRobot(userRobot, userSphereData);
 			break;
 		case 'right':
-			animateUserRobot(userBallBody, userRobot, rigidBodies, 1.5708, 80, 0,linearVector, angularVector);
+			userSphereData.angle.radian = radians * 4;
+			moveUserRobot(userRobot, userSphereData);
+			break;
+		case 'top-left':
+			userSphereData.angle.radian = radians * 1.5;
+			moveUserRobot(userRobot, userSphereData);
+			break;
+		case 'top-right':
+			userSphereData.angle.radian = radians * 0.5;
+			moveUserRobot(userRobot, userSphereData);
+			break;
+		case 'bottom-left':
+			userSphereData.angle.radian = radians * 2.5;
+			moveUserRobot(userRobot, userSphereData);
+			break;
+		case 'bottom-right':
+			userSphereData.angle.radian = radians * 3.5;
+			moveUserRobot(userRobot, userSphereData);
 			break;
 		case 'special':
 			break;
 		default:
 			break;
 	}
-};
+}
 
 /////////////////////////////////////////// COLLAPSE
 
@@ -167,8 +202,8 @@ function checkCollapse(userRobot, enemyRobots, target, robotParams, enemyParams,
 		}
 	}
 
-	enemyRobots.forEach(function(item, i, arr) {
-		let subArray = arr.map(function(subItem) {
+	enemyRobots.forEach(function (item, i, arr) {
+		let subArray = arr.map(function (subItem) {
 			return subItem;
 		});
 		subArray.splice(subArray.indexOf(item), 1);
@@ -189,7 +224,7 @@ function checkCollapse(userRobot, enemyRobots, target, robotParams, enemyParams,
 
 		}
 		///////////////////////////////////////////// - enemies collapse
-		subArray.forEach(function(subItem, subI, subArr) {
+		subArray.forEach(function (subItem, subI, subArr) {
 			let basicRobot = item.movingCoordinate,
 				comparableRobot = subItem.movingCoordinate,
 				comparableRobotX = subItem.position.x,

@@ -20,7 +20,16 @@ function checkKeyType(e) {
 			moveType = 'right';
 			break;
 		case '7':
-			moveType = 'special';
+			moveType = 'top-left';
+			break;
+		case '9':
+			moveType = 'top-right';
+			break;
+		case '1':
+			moveType = 'bottom-left';
+			break;
+		case '3':
+			moveType = 'bottom-right';
 			break;
 		case 'ArrowUp':
 			moveType = 'up';

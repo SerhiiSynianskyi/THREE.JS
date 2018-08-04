@@ -32,7 +32,8 @@ import {
 	targetAnimation,
 	targetLogic,
 	moveViaKeyboard,
-	checkCollapse
+	checkCollapse,
+	moveUserRobot
 } from './game-logic.js'
 
 import {
@@ -127,11 +128,12 @@ window.onload = function() {
 		softBodies = [],
 		pos = new THREE.Vector3(),
 		quat = new THREE.Quaternion(),
-		transformAux1 = new Ammo.btTransform(),
-		margin = 0.05,
+
 		textureLoader,
 		userBallBody,
 		moveUserSphere,
+		isMovedViaJoystick,
+		isMovedViaKeyboard,
 		userSphereData = {
 			distacne: 0
 		};
@@ -218,31 +220,14 @@ window.onload = function() {
 	stats = new Stats();
 	window.fps.appendChild(stats.domElement);
 
-	function limitMovement(userRobotPosition, axis, value, maxSceneLimit, minSceneLimit) {
-		if(((userRobotPosition.position[axis] <= maxSceneLimit)&&(userRobotPosition.position[axis] >= minSceneLimit))||((userRobotPosition.position[axis] >= maxSceneLimit)&&(value < 0))||((userRobotPosition.position[axis] <= minSceneLimit)&&(value > 0))){
-			userRobotPosition.position[axis] += value;
-		}
-	}
 
-	function moveUserRobot() {
-		let worldXAxis = new THREE.Vector3(Math.cos(userSphereData.angle.radian) / 10, 0, -Math.sin(userSphereData.angle.radian) / 10);
-		let xAxis = Math.cos(userSphereData.angle.radian),
-			yAxis = -Math.sin(userSphereData.angle.radian);
-		let axisRotation = (new THREE.Quaternion).setFromEuler(
-			new THREE.Euler(xAxis, 0, yAxis)
-		);
-		limitMovement(userRobot, 'z',  Math.cos(userSphereData.angle.radian) * (userSphereData.distance / 10), 445, -445);
-		limitMovement(userRobot, 'x',  Math.sin(userSphereData.angle.radian) * (userSphereData.distance / 10), 445, -445);
-		userRobot.children[0].quaternion.multiply(axisRotation);
-		rotateAroundWorldAxis(userRobot.children[0], worldXAxis, userSphereData.distance / 700)
-	}
 
 	function rendering() {
 		if (gameStart) {
 			requestAnimationFrame(rendering);
 		}
 		if (userSphereData.angle) {
-			moveUserRobot()
+			moveUserRobot(userRobot, userSphereData);
 		}
 
 		renderer.render(scene, camera);
@@ -256,10 +241,6 @@ window.onload = function() {
 		if (gameState > 2) {
 			checkCollapse(userRobot, enemies, targetObject, robotParams, enemyParams, targetParams, sceneSize, scene, userData, scoresData, endGame, creationLogic); // A lot of parametrs
 			targetAnimation(targetObject, targetParams)
-			// scene.rotation.y += 90 / Math.PI * 0.0001;
-			// if (cameraMode === 3) {
-			//     camera.lookAt(headMesh.position);
-			// }
 			targetObject.rotation.y += 0.03;
 			if (userRobot && rigidBodies[0]) {
 				userRobot.position.x = rigidBodies[0].position.x;
@@ -285,6 +266,7 @@ window.onload = function() {
 		}
 		if (!moveUserSphere && userSphereData.distance < 0) {
 			userSphereData.distance = 0;
+			isMovedViaJoystick = false;
 		}
 
 		let time = Date.now() * 0.00005;
@@ -398,13 +380,14 @@ window.onload = function() {
 	document.addEventListener('keydown', function(e) {
 		let moveType = checkKeyType(e);
 		if (moveType !== 'notype') {
-			moveViaKeyboard(moveType, userBallBody, userRobot, rigidBodies, linearVector, angularVector);
+			isMovedViaKeyboard = true
+			moveViaKeyboard(moveType, userBallBody, userRobot, rigidBodies, userSphereData);
 		}
 	});
 	document.addEventListener('keyup', function(e) {
 		let moveType = checkKeyType(e);
 		if (moveType !== 'notype') {
-
+			isMovedViaKeyboard = false;
 		}
 	});
 	window.addEventListener('resize', function(e) {
@@ -492,6 +475,7 @@ window.onload = function() {
 	console.timeEnd('userTime');
 	nippleManager.on('move', function(evt, data) {
 		moveUserSphere = true;
+		isMovedViaJoystick = true;
 		userSphereData = data;
 	});
 	nippleManager.on('end', function(evt, data) {
