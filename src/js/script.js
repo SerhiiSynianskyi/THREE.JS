@@ -218,10 +218,9 @@ window.onload = function() {
 	stats = new Stats();
 	window.fps.appendChild(stats.domElement);
 
-	function limitMovement(userRobotPosition, value, maxSceneLimit, minSceneLimit) {
-		// debugger
-		if(((userRobotPosition >= maxSceneLimit)&&(value < 0)) || ((userRobotPosition <= maxSceneLimit)&&(userRobotPosition >= minSceneLimit)) || ((userRobotPosition <= minSceneLimit)&&(value > 0))) {
-			userRobotPosition += value;
+	function limitMovement(userRobotPosition, axis, value, maxSceneLimit, minSceneLimit) {
+		if(((userRobotPosition.position[axis] <= maxSceneLimit)&&(userRobotPosition.position[axis] >= minSceneLimit))||((userRobotPosition.position[axis] >= maxSceneLimit)&&(value < 0))||((userRobotPosition.position[axis] <= minSceneLimit)&&(value > 0))){
+			userRobotPosition.position[axis] += value;
 		}
 	}
 
@@ -232,10 +231,8 @@ window.onload = function() {
 		let axisRotation = (new THREE.Quaternion).setFromEuler(
 			new THREE.Euler(xAxis, 0, yAxis)
 		);
-		// limitMovement(userRobot.position.z,  Math.cos(userSphereData.angle.radian) * (userSphereData.distance / 10), 400, -400);
-		// limitMovement(userRobot.position.x,  Math.sin(userSphereData.angle.radian) * (userSphereData.distance / 10), 400, -400);
-		userRobot.position.z += Math.cos(userSphereData.angle.radian) * (userSphereData.distance / 10);
-		userRobot.position.x += Math.sin(userSphereData.angle.radian) * (userSphereData.distance / 10);
+		limitMovement(userRobot, 'z',  Math.cos(userSphereData.angle.radian) * (userSphereData.distance / 10), 445, -445);
+		limitMovement(userRobot, 'x',  Math.sin(userSphereData.angle.radian) * (userSphereData.distance / 10), 445, -445);
 		userRobot.children[0].quaternion.multiply(axisRotation);
 		rotateAroundWorldAxis(userRobot.children[0], worldXAxis, userSphereData.distance / 700)
 	}
