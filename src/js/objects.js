@@ -1,7 +1,7 @@
 "use strict";
 
 export {createSceneBackground, cubeGenerator, createEdges, createTargetObject, createEnemyRobot, createRobot, setSceneTexture }
-import {initPhysics, createRigidBody, createPlane, createRobotPhysics, updatePhysics } from './physics.js'
+import {createRigidBody, createPlane} from './physics.js'
 function createSceneBackground(currentMap) {
 	let cubeGeometry = new THREE.CubeGeometry(6000, 6000, 6000);
 	let cubeMat = setSceneTexture(currentMap);
@@ -58,7 +58,7 @@ function setSceneTexture(sceneType) {
 	return cubeScene;
 }
 
-function cubeGenerator(obj, scene, rigidBodies, physicsWorld, cubeTexture) {
+function cubeGenerator(obj, scene, cubeTexture) {
 	let pos = new THREE.Vector3().set(obj.x, obj.y, obj.z),
 		quat = new THREE.Quaternion().set(0, 0, 0, 1);
 	this.cubeGeom = new THREE.CubeGeometry(obj.w, obj.h, obj.d, 10, 15, 10);
@@ -69,13 +69,13 @@ function cubeGenerator(obj, scene, rigidBodies, physicsWorld, cubeTexture) {
 		metalness: 0.9,
 		roughness: 0.5
 	});
-	let randSign = function() { return (Math.random() > 0.4) ? 1 : -1; };
+	// let randSign = function() { return (Math.random() > 0.4) ? 1 : -1; };
 	// for (let vertIndex = 0; vertIndex < this.cubeGeom.vertices.length; vertIndex++) {
 	//     this.cubeGeom.vertices[vertIndex].x += Math.random() / 0.1 * randSign();
 	//     this.cubeGeom.vertices[vertIndex].y += Math.random() / 0.1 * randSign();
 	//     this.cubeGeom.vertices[vertIndex].z += Math.random() / 0.1 * randSign();
 	// }
-
+	//
 	// this.cubeGeom.dynamic = true;
 	// this.cubeGeom.computeFaceNormals();
 	// this.cubeGeom.computeVertexNormals();
@@ -84,12 +84,11 @@ function cubeGenerator(obj, scene, rigidBodies, physicsWorld, cubeTexture) {
 	this.cubeMesh.position.set(obj.x, obj.y, obj.z)
 	this.cubeMesh.castShadow = true;
 	this.cubeMesh.receiveShadow = true;
-	// let cubeShape = new Ammo.btBoxShape(new Ammo.btVector3(obj.w * 0.5, obj.h * 0.5, obj.d * 0.5));
-	// createRigidBody(physicsWorld, this.cubeMesh, cubeShape, 0, pos, quat, rigidBodies, scene);
-	// return this.cubeMesh; // TODO
+	this.cubeMesh = createRigidBody(this.cubeMesh, 0, pos, scene);
+	return this.cubeMesh;
 }
 
-function createEdges(scene, rigidBodies, physicsWorld) {
+function createEdges(scene) {
 	let boxes = [{
 			w: 25,
 			h: 100,
@@ -118,19 +117,20 @@ function createEdges(scene, rigidBodies, physicsWorld) {
 			x: 0,
 			y: 0,
 			z: 515
-		}],
-		createEdges = new THREE.Group();
+		}];
 	let cubeTexture = new THREE.Texture(),
-		loader = new THREE.ImageLoader()
+		loader = new THREE.ImageLoader(),
+		edgesMeshes = new THREE.Group();
 	loader.load("images/textures/edgeTexture.jpg", function(e) {
 		cubeTexture.image = e; // событие загрузки
 		cubeTexture.needsUpdate = true;
 	});
 	boxes.forEach(function(item) {
-		let box = new cubeGenerator(item, scene, rigidBodies, physicsWorld, cubeTexture)
+		let edgeMesh = new cubeGenerator(item, scene, cubeTexture);
+		edgesMeshes.add(edgeMesh);
 	});
+	scene.add(edgesMeshes);
 }
-
 
 function createTargetObject() {
 	let giftGeom = new THREE.OctahedronBufferGeometry(40, 0);
@@ -214,7 +214,7 @@ function createEnemyRobot(scene, robotParams, xVertex, xFragment) {
 }
 
 
-function createRobot(scene, robotParams, rigidBodies, physicsWorld) { //            TODO REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+function createRobot(scene, robotParams) { //            TODO REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	let manager = new THREE.LoadingManager(),
 		loader = new THREE.ImageLoader(manager),
 		totalBody = new THREE.Group(),

@@ -1,6 +1,6 @@
 "use strict";
 import { animateSpleshScene, buildSplashScreen } from './splash-scene.js'
-// import { createRigidBody, createPlane } from './physics.js'
+import { createRigidBody, createPlane } from './physics.js'
 import {
 	createSceneBackground,
 	cubeGenerator,
@@ -280,7 +280,7 @@ window.onload = function() {
 		let userRobotData;
 		sceneBackground = createSceneBackground(currentMap.mapType)
 		scene.add(sceneBackground);
-		createEdges(scene, rigidBodies, physicsWorld);
+		createEdges(scene);
 		userRobot = createRobot(scene, robotParams, rigidBodies, physicsWorld);
 		scene.add(userRobot);
 	}
@@ -342,7 +342,7 @@ window.onload = function() {
 	function preInit() {
 		initScene();
 		buildSplashScreen(scene, smokeParticles);
-		// createPlane(scene, rigidBodies, physicsWorld)
+		createPlane(scene, rigidBodies)
 		preBuild();
 	}
 
