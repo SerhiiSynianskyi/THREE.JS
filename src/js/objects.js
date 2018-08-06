@@ -84,8 +84,8 @@ function cubeGenerator(obj, scene, rigidBodies, physicsWorld, cubeTexture) {
 	this.cubeMesh.position.set(obj.x, obj.y, obj.z)
 	this.cubeMesh.castShadow = true;
 	this.cubeMesh.receiveShadow = true;
-	let cubeShape = new Ammo.btBoxShape(new Ammo.btVector3(obj.w * 0.5, obj.h * 0.5, obj.d * 0.5));
-	createRigidBody(physicsWorld, this.cubeMesh, cubeShape, 0, pos, quat, rigidBodies, scene);
+	// let cubeShape = new Ammo.btBoxShape(new Ammo.btVector3(obj.w * 0.5, obj.h * 0.5, obj.d * 0.5));
+	// createRigidBody(physicsWorld, this.cubeMesh, cubeShape, 0, pos, quat, rigidBodies, scene);
 	// return this.cubeMesh; // TODO
 }
 

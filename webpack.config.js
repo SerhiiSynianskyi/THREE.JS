@@ -102,7 +102,6 @@ let conf = {
 		}),
 		new webpack.ProvidePlugin({
 			THREE: 'three',
-			Ammo: 'ammonext',
 			nipplejs: './vendor/nipplejs.min.js',
 			Stats: 'stats-js'
 		}),

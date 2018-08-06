@@ -1,6 +1,6 @@
 "use strict";
 import { animateSpleshScene, buildSplashScreen } from './splash-scene.js'
-import { initPhysics, createRigidBody, createPlane } from './physics.js'
+// import { createRigidBody, createPlane } from './physics.js'
 import {
 	createSceneBackground,
 	cubeGenerator,
@@ -106,8 +106,6 @@ window.onload = function() {
 		clock = new THREE.Clock(),
 		delta = clock.getDelta(),
 		controlOffset = 90 * (Math.PI / 180),
-		linearVector = new Ammo.btVector3(),
-		angularVector = new Ammo.btVector3(),
 		startEvent = new Event('startGame');
 	let nippleOptions = {
 			zone: document.getElementById('nipple-wrapper'),
@@ -344,8 +342,7 @@ window.onload = function() {
 	function preInit() {
 		initScene();
 		buildSplashScreen(scene, smokeParticles);
-		physicsWorld = initPhysics();
-		createPlane(scene, rigidBodies, physicsWorld)
+		// createPlane(scene, rigidBodies, physicsWorld)
 		preBuild();
 	}
 

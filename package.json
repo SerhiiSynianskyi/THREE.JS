@@ -22,7 +22,6 @@
   },
   "homepage": "https://github.com/SerhiiSynianskyi/THREE.JS#readme",
   "devDependencies": {
-    "ammonext": "0.0.3",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.7.0",
