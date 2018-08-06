@@ -1,32 +1,59 @@
 {
-	"maps_data": [
-		{
+	"maps_data": {
+		"dark_dust": {
 			"name": "Dark dust",
 			"mapType": 1,
 			"imagePath": "images/maps/map_dust.jpg",
 			"rotation": false,
-			"hasSnow": false
+			"hasSnow": false,
+			"main_path": "images/skybox/dark_dust/",
+			"parts": [
+				"sleepyhollow_ft.jpg",
+				"sleepyhollow_bk.jpg",
+				"sleepyhollow_up.jpg",
+				"sleepyhollow_dn.jpg",
+				"sleepyhollow_rt.jpg",
+				"sleepyhollow_lf.jpg"
+			]
 		},
-		{
+		"snow_dust": {
 			"name": "Show",
 			"mapType": 2,
 			"imagePath": "images/maps/map_snow.jpg",
 			"rotation": false,
-			"hasSnow": true
+			"hasSnow": true,
+			"main_path": "images/skybox/snow_dust/",
+			"parts": [
+				"sleepyhollow_ft.jpg",
+				"sleepyhollow_bk.jpg",
+				"sleepyhollow_up.jpg",
+				"sleepyhollow_dn.jpg",
+				"sleepyhollow_rt.jpg",
+				"sleepyhollow_lf.jpg"
+			]
 		},
-		{
+		"space": {
 			"name": "Space",
 			"mapType": 3,
 			"imagePath": "images/maps/map_space.jpg",
 			"rotation": true,
-			"hasSnow": false
+			"hasSnow": false,
+			"main_path": "images/skybox/space/",
+			"parts": [
+				"2.png",
+				"4.png",
+				"5.png",
+				"6.png",
+				"3.png",
+				"1.png"
+			]
 		},
-		{
+		"ocean": {
 			"name": "Ocean",
 			"mapType": 4,
 			"imagePath": "images/maps/map_snow.jpg",
 			"rotation": false,
 			"hasSnow": false
 		}
-	]
+	}
 }

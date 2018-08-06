@@ -20,19 +20,20 @@ function createBackgroundSound() {
 	let audio = new Audio(require('../media/Mega Drive - Converter.mp3'));
 	// audio.play();
 	audio.loop = true;
-};
+}
 
 function parseMaps(maps, parentElement) {
 	let mapsSubWrapper = document.createDocumentFragment();
-	maps.forEach(function(item) {
+	let mapsNames = Object.keys(maps);
+	mapsNames.forEach(function(item) {
 		let mapWrapper = document.createElement('div'),
 			mapImage = document.createElement('img'),
 			mapName = document.createElement('p');
 		mapWrapper.classList.add('map-wrapper');
-		mapWrapper.dataset.mapType = item.mapType;
+		mapWrapper.dataset.mapType = item;
 		mapImage.classList.add('map-image');
-		mapImage.src = item.imagePath;
-		mapName.innerText = item.name;
+		mapImage.src = maps[item].imagePath;
+		mapName.innerText = maps[item].name;
 		mapWrapper.appendChild(mapName);
 		mapWrapper.appendChild(mapImage);
 		mapsSubWrapper.appendChild(mapWrapper);

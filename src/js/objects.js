@@ -2,59 +2,26 @@
 
 export {createSceneBackground, cubeGenerator, createEdges, createTargetObject, createEnemyRobot, createRobot, setSceneTexture }
 import {createRigidBody, createPlane} from './physics.js'
-function createSceneBackground(currentMap) {
-	let cubeGeometry = new THREE.CubeGeometry(6000, 6000, 6000);
-	let cubeMat = setSceneTexture(currentMap);
-	let cubeMaterial = new THREE.MeshFaceMaterial(cubeMat);
-	let cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
+
+function createSceneBackground(currentMap, maps) {
+	let cubeGeometry = new THREE.CubeGeometry(6000, 6000, 6000),
+		cubeMat = setSceneTexture(currentMap, maps),
+		cubeMaterial = new THREE.MeshFaceMaterial(cubeMat),
+		cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
 	cubeMesh.rotation.set(0, 0.95, 0);
 	return cubeMesh;
 }
 
-function setSceneTexture(sceneType) {
-	let cubeScene;
-	switch (sceneType) {
-		case 1:
-			cubeScene = [
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_ft.jpg'), side: THREE.DoubleSide }),
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_bk.jpg'), side: THREE.DoubleSide }),
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_up.jpg'), side: THREE.DoubleSide }),
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_dn.jpg'), side: THREE.DoubleSide }),
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_rt.jpg'), side: THREE.DoubleSide }),
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_lf.jpg'), side: THREE.DoubleSide })
-			];
-			break;
-		case 2:
-			cubeScene = [
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/snow_dust/sleepyhollow_ft.jpg'), side: THREE.DoubleSide }),
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/snow_dust/sleepyhollow_bk.jpg'), side: THREE.DoubleSide }),
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/snow_dust/sleepyhollow_up.jpg'), side: THREE.DoubleSide }),
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/snow_dust/sleepyhollow_dn.jpg'), side: THREE.DoubleSide }),
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/snow_dust/sleepyhollow_rt.jpg'), side: THREE.DoubleSide }),
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/snow_dust/sleepyhollow_lf.jpg'), side: THREE.DoubleSide })
-			];
-			break;
-		case 3:
-			cubeScene = [
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/space/2.png'), side: THREE.DoubleSide }),
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/space/4.png'), side: THREE.DoubleSide }),
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/space/5.png'), side: THREE.DoubleSide }),
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/space/6.png'), side: THREE.DoubleSide }),
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/space/3.png'), side: THREE.DoubleSide }),
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/space/1.png'), side: THREE.DoubleSide })
-			];
-			break;
-		default:
-			cubeScene = [
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_ft.jpg'), side: THREE.DoubleSide }),
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_bk.jpg'), side: THREE.DoubleSide }),
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_up.jpg'), side: THREE.DoubleSide }),
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_dn.jpg'), side: THREE.DoubleSide }),
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_rt.jpg'), side: THREE.DoubleSide }),
-				new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('images/skybox/dark_dust/sleepyhollow_lf.jpg'), side: THREE.DoubleSide })
-			];
-			break;
-	}
+function createCubeMesh(mapName, maps) {
+	let cubeSides = [];
+	maps[mapName].parts.forEach(function(item){
+		cubeSides.push(new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load(maps[mapName].main_path + item), side: THREE.DoubleSide }));
+	});
+	return cubeSides;
+}
+
+function setSceneTexture(mapName, maps) {
+	let cubeScene = createCubeMesh(mapName, maps);
 	return cubeScene;
 }
 
@@ -69,6 +36,8 @@ function cubeGenerator(obj, scene, cubeTexture) {
 		metalness: 0.9,
 		roughness: 0.5
 	});
+	// Difficult structure of the edge
+
 	// let randSign = function() { return (Math.random() > 0.4) ? 1 : -1; };
 	// for (let vertIndex = 0; vertIndex < this.cubeGeom.vertices.length; vertIndex++) {
 	//     this.cubeGeom.vertices[vertIndex].x += Math.random() / 0.1 * randSign();

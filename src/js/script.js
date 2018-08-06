@@ -98,9 +98,7 @@ window.onload = function() {
 			maxX: 500,
 			minX: -500
 		},
-		currentMap = {
-			mapType: 1
-		},
+		currentMap =  'dark_dust',
 		maxDistance = 1200,
 		minDistance = 160,
 		clock = new THREE.Clock(),
@@ -268,7 +266,7 @@ window.onload = function() {
 		}
 
 		let time = Date.now() * 0.00005;
-		if (currentMap.hasSnow) {
+		if (maps[currentMap].hasSnow) {
 			renderSnow(time, scene);
 		}
 	};
@@ -278,7 +276,7 @@ window.onload = function() {
 
 	function buildObjects() {
 		let userRobotData;
-		sceneBackground = createSceneBackground(currentMap.mapType)
+		sceneBackground = createSceneBackground(currentMap, maps);
 		scene.add(sceneBackground);
 		createEdges(scene);
 		userRobot = createRobot(scene, robotParams, rigidBodies, physicsWorld);
@@ -355,13 +353,13 @@ window.onload = function() {
 		snowParticlesMesh = createSnow();
 	}
 
-	function changeMap(currentMap) {
-		if (currentMap.hasSnow) {
+	function changeMap(currentMap, maps) {
+		if (maps[currentMap].hasSnow) {
 			scene.add(snowParticlesMesh);
 		} else {
 			scene.remove(snowParticlesMesh);
 		}
-		let sceneTexture = setSceneTexture(maps[currentMap.mapType - 1].mapType);
+		let sceneTexture = setSceneTexture(currentMap, maps);
 		sceneBackground.material = sceneTexture;
 		sceneBackground.material.needsUpdate = true
 	}
@@ -481,10 +479,10 @@ window.onload = function() {
 
 	mapsWrapper.addEventListener('click', function(e) {
 		if (e.target.dataset.mapType) {
-			let selectedMapType = parseInt(e.target.dataset.mapType);
-			if (currentMap.mapType !== selectedMapType) {
-				currentMap = maps[selectedMapType - 1];
-				changeMap(currentMap);
+			let selectedMapType = e.target.dataset.mapType;
+			if (currentMap !== selectedMapType) {
+				currentMap = selectedMapType;
+				changeMap(currentMap, maps);
 			}
 		}
 	});
