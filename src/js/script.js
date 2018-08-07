@@ -43,6 +43,9 @@ import {
 
 import mapsData from '../maps-config.json'
 
+import * as vertexShader from './shaders/enemy-x-vertex.js'
+import * as fragmentShader from './shaders/enemy-x-fragment.js'
+
 window.onload = function() {
 	console.time('userTime');
 	let mainWrapper = document.getElementsByClassName('main-wrapper')[0],
@@ -163,7 +166,7 @@ window.onload = function() {
 	function initEnemyRobot(enemyPrototype, scene, enemies, getRandomInt, position) {
 		let enemyRobot;
 		if (!enemyPrototype) {
-			enemyRobotPrototype = createEnemyRobot(scene, enemyParams);
+			enemyRobotPrototype = createEnemyRobot(scene, enemyParams, vertexShader.xVertex, fragmentShader.xFragment);
 			enemyRobotPrototype.totalBody.movingCoordinate = 0;
 			enemyRobot = enemyRobotPrototype.totalBody;
 		} else {

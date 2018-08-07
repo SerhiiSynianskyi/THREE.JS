@@ -1,4 +1,4 @@
-const xFragment = `
+export let xFragment = `
 
 varying vec2 vUv;
 varying vec3 vNormal;
