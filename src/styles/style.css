@@ -496,8 +496,11 @@ input[type=submit],
 	font-size: 27px;
 	text-transform: uppercase;
 	font-weight: 700;
+	pointer-events: none;
 }
-
+.map-wrapper .map-image {
+	pointer-events: none;
+}
 .nipple-wrapper,
 .nipple,
 .back,
