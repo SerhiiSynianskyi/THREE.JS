@@ -104,7 +104,9 @@ window.onload = function() {
 		clock = new THREE.Clock(),
 		delta = clock.getDelta(),
 		controlOffset = 90 * (Math.PI / 180),
-		startEvent = new Event('startGame');
+		gameEvents = {
+			startEvent: new Event('startGame')
+		};
 	let nippleOptions = {
 			zone: document.getElementById('nipple-wrapper'),
 			color: 'white',
@@ -316,7 +318,6 @@ window.onload = function() {
 			targetLogic(0, scene, targetObject, targetParams);
 		createEnemies(enemyParams);
 		enemyLogic(enemies, getRandomInt);
-
 	}
 
 	function setCameraDefault() {
@@ -437,12 +438,12 @@ window.onload = function() {
 		if (e.target.dataset.menu) {
 			mainMenu.className = ('state-' + e.target.dataset.menu);
 			menuSubwrapper.className = ('substate-' + e.target.dataset.menu);
-			menuInteraction(e.target.dataset.menu, mainWrapper, mainMenu, menuSubwrapper, scene, startEvent);
-
+			menuInteraction(e.target.dataset.menu, mainWrapper, mainMenu, menuSubwrapper, scene, gameEvents.startEvent);
 		}
 	});
 	restartGame.addEventListener('click', function(e) {
 		init();
+		rendering();
 	});
 
 	window.addEventListener('startGame', function(e) {
