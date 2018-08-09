@@ -132,7 +132,7 @@ function moveUserRobot(userRobot, controlData) {
 	rotateAroundWorldAxis(userRobot.children[0], worldXAxis, controlData.distance / 700)
 }
 
-function moveViaKeyboard(program, userBallBody, userRobot, rigidBodies, userSphereData) {
+function moveViaKeyboard(program, userBallBody, userRobot, userSphereData) {
 	// 90deg = 1.5708rad
 	let radians = 1.5708;
 	userSphereData = {

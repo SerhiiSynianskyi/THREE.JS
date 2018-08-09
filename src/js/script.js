@@ -61,7 +61,8 @@ window.onload = function() {
 		menuSubwrapper = document.getElementById('menu-subwrappers'),
 		mapsWrapper = menuSubwrapper.getElementsByClassName('maps-wrapper')[0],
 		inputUserName = userForm.getElementsByClassName('user-name')[0],
-		nippleWrapper = document.getElementById('nipple-wrapper');
+		nippleWrapper = document.getElementById('nipple-wrapper'),
+		fullScreen = mainWrapper.querySelector('.full-screen');
 
 	let camera, renderer, targetObject, enemyRobotPrototype, userRobot, touchType, stats, controls, sceneBackground,
 		snowParticlesMesh,
@@ -371,9 +372,9 @@ window.onload = function() {
 	});
 	document.addEventListener('keydown', function(e) {
 		let moveType = checkKeyType(e);
-		if (moveType !== 'notype') {
-			isMovedViaKeyboard = true
-			moveViaKeyboard(moveType, userBallBody, userRobot, rigidBodies, userSphereData);
+		if (moveType !== 'notype' && gameState === 3) {
+			isMovedViaKeyboard = true;
+			moveViaKeyboard(moveType, userBallBody, userRobot, userSphereData);
 		}
 	});
 	document.addEventListener('keyup', function(e) {
@@ -412,7 +413,6 @@ window.onload = function() {
 				scene.rotation.y = 0;
 				checkTrackBall();
 			}
-			if (cameraMode === 2) {}
 		}
 	});
 	trackBallWrap.addEventListener('click', function(e) {
@@ -448,6 +448,34 @@ window.onload = function() {
 	window.addEventListener('pauseGame', function(e) {
 		mainWrapper.classList.add('stop-game');
 		isGameLoopRun = false;
+	});
+
+	function setFullscreen(e, mainWrapper) {
+		if(document.webkitIsFullScreen){
+			if(document.exitFullscreen)
+				document.exitFullscreen();
+			else if(document.mozCancelFullScreen)
+				document.mozCancelFullScreen();
+			else if(document.webkitExitFullscreen)
+				document.webkitExitFullscreen();
+			else if(document.msExitFullscreen)
+				document.msExitFullscreen();
+			e.target.classList.remove('open');
+		} else {
+			if(mainWrapper.requestFullscreen)
+				mainWrapper.requestFullscreen();
+			else if(mainWrapper.mozRequestFullScreen)
+				mainWrapper.mozRequestFullScreen();
+			else if(mainWrapper.webkitRequestFullscreen)
+				mainWrapper.webkitRequestFullscreen();
+			else if(mainWrapper.msRequestFullscreen)
+				mainWrapper.msRequestFullscreen();
+			e.target.classList.add('open');
+		}
+	}
+
+	fullScreen.addEventListener('click', function(e) {
+		setFullscreen(e, mainWrapper);
 	});
 
 	window.addEventListener('modelEvent', function(e) {

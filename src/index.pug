@@ -32,7 +32,7 @@ html(lang='en')
 						.camera-modes
 							button.mode.active(data-mode='1')
 							button.mode(data-mode='2')
-							button.mode(data-mode='3')
+							button.mode.full-screen
 						button.track-ball
 					ul#main-menu
 						li(data-menu='continue') Continue
@@ -45,16 +45,6 @@ html(lang='en')
 						p SCORES:
 						output.scores(name='scores')
 					#fps
-					//- #control-wrapper
-					//- 	.inner-wrapper
-					//- 		button.control.up
-					//- 		button.control.left
-					//- 		button.control.right
-					//- 		button.control.down
-				//- .other-info
-				//- 	p#data1 111
-				//- 	p#data2 111
-				//- 	p#data3 111
 				.end-game-wrapper
 					p.end-game-text you are defeated
 					output.end-game-scores

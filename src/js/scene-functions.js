@@ -41,7 +41,7 @@ function createOrbitControl(camera, maxDistance, minDistance) {
 
 function resize(camera, renderer) {
 	camera.aspect = window.innerWidth / window.innerHeight;
-	renderer.setSize(window.innerWidth - 5, window.innerHeight - 5);
+	renderer.setSize(window.innerWidth, window.innerHeight);
 	camera.updateProjectionMatrix()
 }
 
