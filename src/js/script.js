@@ -60,12 +60,13 @@ window.onload = function() {
 		userForm = document.getElementById('user-form'),
 		menuSubwrapper = document.getElementById('menu-subwrappers'),
 		mapsWrapper = menuSubwrapper.getElementsByClassName('maps-wrapper')[0],
-		inputUserName = userForm.getElementsByClassName('user-name')[0];
+		inputUserName = userForm.getElementsByClassName('user-name')[0],
+		nippleWrapper = document.getElementById('nipple-wrapper');
 
 	let camera, renderer, targetObject, enemyRobotPrototype, userRobot, touchType, stats, controls, sceneBackground,
 		snowParticlesMesh,
 		touchMode = false,
-		gameStart = false,
+		isGameLoopRun = false,
 		gameState = 0,
 		smokeParticles = [],
 		maps = mapsData.maps_data,
@@ -108,10 +109,12 @@ window.onload = function() {
 		delta = clock.getDelta(),
 		controlOffset = 90 * (Math.PI / 180),
 		gameEvents = {
-			startEvent: new Event('startGame')
+			startEvent: new Event('startGame'),
+			pauseEvent: new Event('pauseGame'),
+			stopEvent: new Event('stopGame')
 		};
 	let nippleOptions = {
-			zone: document.getElementById('nipple-wrapper'),
+			zone: nippleWrapper,
 			color: 'white',
 			size: 170,
 			fadeTime: 500,
@@ -124,14 +127,7 @@ window.onload = function() {
 		},
 		nippleManager = nipplejs.create(nippleOptions);
 
-	let physicsWorld,
-		rigidBodies = [],
-		softBodies = [],
-		pos = new THREE.Vector3(),
-		quat = new THREE.Quaternion(),
-
-		textureLoader,
-		userBallBody,
+	let userBallBody,
 		moveUserSphere,
 		isMovedViaJoystick,
 		isMovedViaKeyboard,
@@ -213,8 +209,7 @@ window.onload = function() {
 
 	function endGame() {
 		endGameScored.value = userData.scores;
-		gameStart = false;
-		mainWrapper.classList.add('stop-game');
+		window.dispatchEvent(gameEvents.pauseEvent);
 	}
 
 	controls = createOrbitControl(camera, maxDistance, minDistance);
@@ -224,7 +219,7 @@ window.onload = function() {
 
 
 	function rendering() {
-		if (gameStart) {
+		if (isGameLoopRun) {
 			requestAnimationFrame(rendering);
 		}
 		if (userSphereData.angle) {
@@ -239,15 +234,10 @@ window.onload = function() {
 			enemyRobotPrototype.shader.uniforms['time'].value = .005 * (Date.now() - startDate);
 			enemyRobotPrototype.shader.uniforms['weight'].value = perNoizeWeight * 0.05;
 		}
-		if (gameState > 2) {
+		if (gameState > 1) {
 			checkCollapse(userRobot, enemies, targetObject, robotParams, enemyParams, targetParams, sceneSize, scene, userData, scoresData, endGame, creationLogic); // A lot of parametrs
-			targetAnimation(targetObject, targetParams)
+			targetAnimation(targetObject, targetParams);
 			targetObject.rotation.y += 0.03;
-			if (userRobot && rigidBodies[0]) {
-				userRobot.position.x = rigidBodies[0].position.x;
-				userRobot.position.z = rigidBodies[0].position.z;
-			}
-
 			if (cameraMode === 2) {
 				scene.rotation.y += 90 / Math.PI * 0.0001;
 			}
@@ -274,7 +264,7 @@ window.onload = function() {
 		if (maps[currentMap].hasSnow) {
 			renderSnow(time, scene);
 		}
-	};
+	}
 
 	// let helper = new THREE.DirectionalLightHelper(light,5);
 	// scene.add(helper);
@@ -284,7 +274,7 @@ window.onload = function() {
 		sceneBackground = createSceneBackground(currentMap, maps);
 		scene.add(sceneBackground);
 		createEdges(scene);
-		userRobot = createRobot(scene, robotParams, rigidBodies, physicsWorld);
+		userRobot = createRobot(scene, robotParams);
 		scene.add(userRobot);
 	}
 
@@ -292,17 +282,14 @@ window.onload = function() {
 		if (JSON.parse(localStorage.getItem('starWarsGameUsers', users))) {
 			users = JSON.parse(localStorage.getItem('starWarsGameUsers', users));
 		}
-		if (userRobot && rigidBodies[0]) {
+		if (userRobot) {
 			userRobot.position.set(0, 0, 0);
 		}
 		userData.name = '';
 		userData.scores = 0;
-		if (!gameStart) {
-			gameStart = true;
-			rendering();
-		}
+		userSphereData = '';
 		removeObjects(scene, ['giftDetected']);
-		mainWrapper.classList.remove('stop-game');
+
 		showScores(scoresData, userData);
 		scene.children.forEach(function(item, index, arr) {
 			if (item.robot || item.giftDetected) {
@@ -317,10 +304,11 @@ window.onload = function() {
 		enemies.length = 0;
 		inputUserName.value = '';
 		enemyParams.count = 1;
-		targetObject = createTargetObject(),
-			targetLogic(0, scene, targetObject, targetParams);
+		targetObject = createTargetObject();
+		targetLogic(0, scene, targetObject, targetParams);
 		createEnemies(enemyParams);
 		enemyLogic(enemies, getRandomInt);
+		runGame()
 	}
 
 	function setCameraDefault() {
@@ -334,9 +322,8 @@ window.onload = function() {
 		setCameraDefault();
 		setTimeout(function() {
 			mainWrapper.classList.add('game-process-enabled');
+			nippleWrapper.classList.remove('hidden');
 			mainWrapper.classList.remove('game-previev-ready');
-			init();
-			buildObjects();
 			gameState = 3;
 		}, 200);
 	}
@@ -344,15 +331,15 @@ window.onload = function() {
 	function preInit() {
 		initScene();
 		buildSplashScreen(scene, smokeParticles);
-		createPlane(scene, rigidBodies)
+		createPlane(scene);
 		preBuild();
+		buildObjects();
+		init();
 	}
 
 	function preBuild() {
 		addLights(scene);
-		gameStart = true;
 		mainWrapper.classList.remove('stop-game');
-		rendering();
 		parseMaps(maps, mapsWrapper);
 		snowParticlesMesh = createSnow();
 	}
@@ -366,6 +353,12 @@ window.onload = function() {
 		let sceneTexture = setSceneTexture(currentMap, maps);
 		sceneBackground.material = sceneTexture;
 		sceneBackground.material.needsUpdate = true
+	}
+
+	function runGame() {
+		mainWrapper.classList.remove('stop-game');
+		isGameLoopRun = true;
+		rendering();
 	}
 
 	///////// LISTENERS
@@ -433,25 +426,32 @@ window.onload = function() {
 
 	menuIcon.addEventListener('click', function() {
 		mainWrapper.classList.add('open-menu');
+		nippleWrapper.classList.add('hidden');
 		mainMenu.className = ('state-continue');
-		gameStart = false;
+		isGameLoopRun = false;
 	});
 
 	mainMenu.addEventListener('click', function(e) {
 		if (e.target.dataset.menu) {
 			mainMenu.className = ('state-' + e.target.dataset.menu);
 			menuSubwrapper.className = ('substate-' + e.target.dataset.menu);
-			menuInteraction(e.target.dataset.menu, mainWrapper, mainMenu, menuSubwrapper, scene, gameEvents.startEvent);
+			menuInteraction(e.target.dataset.menu, mainWrapper, mainMenu, menuSubwrapper, scene, gameEvents.startEvent,users, scoresTable, nippleWrapper);
 		}
 	});
 	restartGame.addEventListener('click', function(e) {
 		init();
-		rendering();
 	});
 
 	window.addEventListener('startGame', function(e) {
-		gameStart = true;
-		rendering()
+		runGame();
+	});
+	window.addEventListener('pauseGame', function(e) {
+		mainWrapper.classList.add('stop-game');
+		isGameLoopRun = false;
+	});
+
+	window.addEventListener('modelEvent', function(e) {
+
 	});
 
 	// window.addEventListener(deviceorientation, function() {

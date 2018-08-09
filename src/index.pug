@@ -25,75 +25,76 @@ html(lang='en')
 		meta(http-equiv='Cache-Control', content='no-cache')
 	body
 		.main-wrapper
-			.game-data-wrapper
-				.top-menu
-					button.menu-icon
-					.camera-modes
-						button.mode.active(data-mode='1')
-						button.mode(data-mode='2')
-						button.mode(data-mode='3')
-					button.track-ball
-				ul#main-menu
-					li(data-menu='continue') Continue
-					li(data-menu='maps') Maps
-					li(data-menu='scores') Scores
-					li(data-menu='settings') Settings
-					li(data-menu='credits') Credits
-					li(data-menu='exit') Exit game
-				.score-data
-					p SCORES:
-					output.scores(name='scores')
-				#fps
-				//- #control-wrapper
-				//- 	.inner-wrapper
-				//- 		button.control.up
-				//- 		button.control.left
-				//- 		button.control.right
-				//- 		button.control.down
-			//- .other-info
-			//- 	p#data1 111
-			//- 	p#data2 111
-			//- 	p#data3 111
-			.end-game-wrapper
-				p.end-game-text you are defeated
-				output.end-game-scores
-				form#user-form
-					input.user-name(type='text', name='userName', pattern='[a-zA-Z0-9_-]{2,20}', placeholder='YOUR NAME', required='', autocomplete='off')
-					input(type='submit', value='SUBMIT')
-				button.restart-game RESTART
-			#menu-subwrappers.hidden
-				.subwrapper.maps-wrapper(data-subwrapper='maps')
-					h2 MAPS
-				.subwrapper.scores-wrapper(data-subwrapper='scores')
-					div
-						table.scores-head-table
-							thead
-								th
-								th SCORE
-								th NAME
-						.scores-table-wrapper
-							table.scores-table
-				.subwrapper.settings-wrapper(data-subwrapper='settings')
-					h2 SETTINGS
-					.inner-settings
-						.game-settings
-							.setting-item
-								p Scene effects
-							.setting-item
-								p FPS meter
-							.setting-item
-								p Enable music
-							.setting-item
-								p Shadows
-						.music-selection
-					p.version v1.0.0
-				.subwrapper.credits-wrapper(data-subwrapper='credits')
-					h2 CREDITS
-					p In 2017 year I visited my first WSD in Kiev. This conference changed and inspired me....
-					p It is my first experience in GameDev and WebGL technology.
-					p I hope you enjoy it and you will not be critical to all bugs in the user interface =)
-					p If you have any questions, wishes or offers, you can easily communicate with me and tell me your ideas <a href="mailto:kfzadrser@gmail.com">kfzadrser@gmail.com</a>
+			.main-game-wrapper
+				.game-data-wrapper
+					.top-menu
+						button.menu-icon
+						.camera-modes
+							button.mode.active(data-mode='1')
+							button.mode(data-mode='2')
+							button.mode(data-mode='3')
+						button.track-ball
+					ul#main-menu
+						li(data-menu='continue') Continue
+						li(data-menu='maps') Maps
+						li(data-menu='scores') Scores
+						li(data-menu='settings') Settings
+						li(data-menu='credits') Credits
+						li(data-menu='exit') Exit game
+					.score-data
+						p SCORES:
+						output.scores(name='scores')
+					#fps
+					//- #control-wrapper
+					//- 	.inner-wrapper
+					//- 		button.control.up
+					//- 		button.control.left
+					//- 		button.control.right
+					//- 		button.control.down
+				//- .other-info
+				//- 	p#data1 111
+				//- 	p#data2 111
+				//- 	p#data3 111
+				.end-game-wrapper
+					p.end-game-text you are defeated
+					output.end-game-scores
+					form#user-form
+						input.user-name(type='text', name='userName', pattern='[a-zA-Z0-9_-]{2,20}', placeholder='YOUR NAME', required='', autocomplete='off')
+						input(type='submit', value='SUBMIT')
+					button.restart-game RESTART
+				#menu-subwrappers.hidden
+					.subwrapper.maps-wrapper(data-subwrapper='maps')
+						h2 MAPS
+					.subwrapper.scores-wrapper(data-subwrapper='scores')
+						div
+							table.scores-head-table
+								thead
+									th
+									th SCORE
+									th NAME
+							.scores-table-wrapper
+								table.scores-table
+					.subwrapper.settings-wrapper(data-subwrapper='settings')
+						h2 SETTINGS
+						.inner-settings
+							.game-settings
+								.setting-item
+									p Scene effects
+								.setting-item
+									p FPS meter
+								.setting-item
+									p Enable music
+								.setting-item
+									p Shadows
+							.music-selection
+						p.version v1.0.0
+					.subwrapper.credits-wrapper(data-subwrapper='credits')
+						h2 CREDITS
+						p In 2017 year I visited my first WSD in Kiev. This conference changed and inspired me....
+						p It is my first experience in GameDev and WebGL technology.
+						p I hope you enjoy it and you will not be critical to all bugs in the user interface =)
+						p If you have any questions, wishes or offers, you can easily communicate with me and tell me your ideas <a href="mailto:kfzadrser@gmail.com">kfzadrser@gmail.com</a>
 
-					p Enjoy and create your own worlds!
-					p developed by S+ in 2018
-		#nipple-wrapper
+						p Enjoy and create your own worlds!
+						p developed by S+ in 2018
+			#nipple-wrapper.hidden

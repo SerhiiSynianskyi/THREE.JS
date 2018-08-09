@@ -50,10 +50,11 @@ function checkKeyType(e) {
 	return moveType;
 }
 
-function menuInteraction(type, mainWrapper, mainMenu, menuSubwrapper, scene, event, users, scoresTable) {
+function menuInteraction(type, mainWrapper, mainMenu, menuSubwrapper, scene, event, users, scoresTable, nippleWrapper) {
 	switch (type) {
 		case 'continue':
 			mainWrapper.classList.remove('open-menu');
+			nippleWrapper.classList.remove('hidden');
 			mainMenu.className = '';
 			menuSubwrapper.className = '';
 			window.dispatchEvent(event);

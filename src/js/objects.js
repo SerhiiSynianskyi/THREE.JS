@@ -26,8 +26,7 @@ function setSceneTexture(mapName, maps) {
 }
 
 function cubeGenerator(obj, scene, cubeTexture) {
-	let pos = new THREE.Vector3().set(obj.x, obj.y, obj.z),
-		quat = new THREE.Quaternion().set(0, 0, 0, 1);
+	let pos = new THREE.Vector3().set(obj.x, obj.y, obj.z);
 	this.cubeGeom = new THREE.CubeGeometry(obj.w, obj.h, obj.d, 10, 15, 10);
 	this.cubeMat = new THREE.MeshStandardMaterial({
 		map: cubeTexture,
@@ -201,6 +200,7 @@ function createRobot(scene, robotParams) { //            TODO REFACTOR!!!!!!!!!!
 		object.traverse(function(child) {
 			if (child instanceof THREE.Mesh) {
 				meshes.push(child);
+				window.dispatchEvent(new Event('modelEvent'))
 			}
 		});
 		let sphereGeometry = new THREE.SphereBufferGeometry(robotParams.bodySize, 40, 40);
@@ -249,6 +249,8 @@ function createRobot(scene, robotParams) { //            TODO REFACTOR!!!!!!!!!!
 		// });
 		totalBody.add(bodyMesh);
 		totalBody.add(headMesh);
+	},null, function(){
+		window.dispatchEvent(new Event('modelEvent'));
 	});
 	return totalBody;
 }

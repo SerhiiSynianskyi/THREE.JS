@@ -26,7 +26,7 @@ function enemyLogic(enemies, getRandomInt) {
 			}
 		}, randomInterval);
 	});
-};
+}
 
 function enemyAnimation(enemy, _sceneSize) {
 	switch (enemy.movingCoordinate) {
@@ -230,7 +230,6 @@ function checkCollapse(userRobot, enemyRobots, target, robotParams, enemyParams,
 				comparableRobotX = subItem.position.x,
 				comparableRobotZ = subItem.position.z,
 				collapsed;
-
 			if ((enemyBodyX + fullEnemyBodySize >= comparableRobotX - fullEnemyBodySize) && (enemyBodyX - fullEnemyBodySize <= comparableRobotX + fullEnemyBodySize) && (enemyBodyZ + fullEnemyBodySize >= comparableRobotZ - fullEnemyBodySize) && (enemyBodyZ - fullEnemyBodySize <= comparableRobotZ + fullEnemyBodySize)) {
 				collapsed = true;
 				item.movingCoordinate = Math.abs(3 - basicRobot);
@@ -240,8 +239,6 @@ function checkCollapse(userRobot, enemyRobots, target, robotParams, enemyParams,
 				collapsed = false;
 				item.collapsed = false;
 			}
-
-
 		});
 		enemyAnimation(item, sceneSize);
 	})

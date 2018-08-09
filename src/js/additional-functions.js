@@ -1,6 +1,6 @@
 "use strict";
 
-export { setTargetColor, showScores, getRandomInt, createBackgroundSound, parseMaps,createSnow,renderSnow, buildScores}
+export {setTargetColor, showScores, getRandomInt, createBackgroundSound, parseMaps, createSnow, renderSnow, buildScores}
 
 function setTargetColor(target, arr) {
 	target.material.color.b = arr[0];
@@ -9,7 +9,7 @@ function setTargetColor(target, arr) {
 }
 
 function showScores(_scoresData, _userData) {
-	_scoresData.value = _userData.scores;;
+	_scoresData.value = _userData.scores;
 }
 
 function getRandomInt(min, max) {
@@ -25,7 +25,7 @@ function createBackgroundSound() {
 function parseMaps(maps, parentElement) {
 	let mapsSubWrapper = document.createDocumentFragment();
 	let mapsNames = Object.keys(maps);
-	mapsNames.forEach(function(item) {
+	mapsNames.forEach(function (item) {
 		let mapWrapper = document.createElement('div'),
 			mapImage = document.createElement('img'),
 			mapName = document.createElement('p');
@@ -42,21 +42,21 @@ function parseMaps(maps, parentElement) {
 }
 
 function buildScores(users, scoresTable) {
-		let sortedData = users.map(function(num) {
-			return num;
-		});
-		sortedData.sort(function(a, b) {
-			return b.scores - a.scores;
-		});
-		let tableBody = document.createElement('tbody');
-		sortedData.forEach(function(item, index) {
-			let tableRow = document.createElement('tr');
-			tableRow.innerHTML = `<th>${index + 1}</th><td>${item.scores}</td><td>${item.name}</td>`;
-			tableBody.appendChild(tableRow);
-		});
-		scoresTable.innerHTML = '';
-		scoresTable.appendChild(tableBody);
-	}
+	let sortedData = users.map(function (num) {
+		return num;
+	});
+	sortedData.sort(function (a, b) {
+		return b.scores - a.scores;
+	});
+	let tableBody = document.createElement('tbody');
+	sortedData.forEach(function (item, index) {
+		let tableRow = document.createElement('tr');
+		tableRow.innerHTML = `<th>${index + 1}</th><td>${item.scores}</td><td>${item.name}</td>`;
+		tableBody.appendChild(tableRow);
+	});
+	scoresTable.innerHTML = '';
+	scoresTable.appendChild(tableBody);
+}
 
 
 function createSnow() {
