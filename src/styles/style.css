@@ -21,6 +21,7 @@ body {
 button {
 	border: none;
 	outline: none;
+	cursor: pointer;
 	/*Unhuman interface =(*/
 }
 
@@ -33,63 +34,6 @@ button {
 	width: 100%;
 	height: 100%;
 }
-
-#control-wrapper {
-	position: absolute;
-	bottom: 40px;
-	right: 40px;
-	width: 160px;
-	height: 160px;
-	border-radius: 50%;
-	background-color: rgba(95, 105, 115, 0.4);
-	opacity: 1;
-	transition: 0.5s opacity linear;
-	z-index: 100;
-}
-
-.inner-wrapper {
-	height: 100%;
-	width: 100%;
-	position: relative;
-}
-
-.control {
-	position: absolute;
-	width: 55px;
-	height: 55px;
-	border-radius: 50%;
-	background: url('../images/control.png') center center/ 65% 65% no-repeat;
-	opacity: 0.2;
-	z-index: 101;
-}
-
-.up {
-	top: 0;
-	left: 50%;
-	transform: translate3d(-50%, 0, 0) rotate(-90deg);
-}
-
-.left {
-	left: 0;
-	top: 50%;
-	transform: translate3d(0, -50%, 0) rotate(-180deg);
-}
-
-.right {
-	right: 0;
-	top: 50%;
-	transform: translate3d(0, -50%, 0);
-}
-
-.down {
-	bottom: 0;
-	left: 50%;
-	transform: translate3d(-50%, 0, 0) rotate(90deg);
-}
-
-.control:active {
-	opacity: 0.8;
-}z
 
 .other-info {
 	position: absolute;
@@ -123,11 +67,6 @@ button {
 	opacity: 1;
 }
 
-.stop-game #control-wrapper {
-	pointer-events: none;
-	opacity: 0;
-}
-
 .end-game-text {
 	margin-bottom: 50px;
 	font: 700 85px/1 BRL;
@@ -141,18 +80,17 @@ button {
 	font: 900 70px/1 sans-serif;
 	text-transform: uppercase;
 	color: white;
-	animation-duration: 1.5s;
+	animation-duration: 2s;
 	animation-name: pulse;
 	animation-iteration-count: infinite;
 }
 
-@-webkit-keyframes pulse {
+@keyframes pulse {
 	0% {
 		opacity: 0.3;
 	}
-
 	50% {
-		opacity: 1;
+		opacity: 0.9;
 	}
 	100% {
 		opacity: 0.3;
@@ -224,17 +162,16 @@ button {
 .menu-icon {
 	width: 40px;
 	height: 40px;
-	margin-top: 10px;
 	border-radius: 50%;
 	opacity: 0.2;
-	background: rgb(100, 100, 100);
+	background: rgb(100, 100, 100) url('../images/menu.png') center center/ 55% 55% no-repeat;
 }
 
 .camera-modes {
 	display: flex;
 	justify-content: space-between;
-	width: 180px;
-	margin: 10px 30px;
+	width: 250px;
+	margin: 10px 30px 10px 5px;
 }
 
 .camera-modes .mode {
@@ -256,8 +193,13 @@ button {
 	background: rgb(100, 100, 100) url('../images/mode2.png') center center/ 70% 70% no-repeat;
 }
 
-.mode[data-mode='3'] {
-	background: rgb(100, 100, 100) url('../images/mode3.png') center center/ 70% 70% no-repeat;
+.full-screen {
+	background: rgb(100, 100, 100) url('../images/fullscreen.png') center center/ 70% 70% no-repeat;
+}
+
+.full-screen.open {
+	background: rgb(100, 100, 100) url('../images/exitfullscreen.png') center center/ 70% 70% no-repeat;
+	opacity: 0.9;
 }
 
 .track-ball {
@@ -298,6 +240,7 @@ button {
 	box-shadow: 5px 0px 26px 8px rgba(0, 0, 0, 0.8);
 	transform: translate3d(-100%, 0, 0) skew(-5deg);
 	transition: 0.5s linear transform;
+	cursor: pointer;
 	z-index: 30;
 }
 
@@ -326,11 +269,6 @@ button {
 
 .open-menu #main-menu {
 	transform: translate3d(87%, 0, 0) skew(-5deg);
-}
-
-.open-menu #control-wrapper {
-	opacity: 0;
-	pointer-events: none;
 }
 
 .score-data {
@@ -395,8 +333,7 @@ input[type=submit],
 	width: 190px;
 	margin-bottom: 50px;
 	font: 700 20px/1 sans-serif;
-	color: white;
-	box-shadow: 0px 5px 17px 4px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 5px 17px 4px rgba(0, 0, 0, 0.2);
 	background: linear-gradient(to bottom, #a80303, #330000);
 	letter-spacing: 3px;
 	color: lightgray;
@@ -428,17 +365,13 @@ input[type=submit],
 }
 
 .subwrapper {
-	padding: 100px 50px 100px 400px;
+	padding: 100px 50px 100px 360px;
 	pointer-events: none;
 	opacity: 0;
 }
 
 .nipple {
-	/*display: none !important; /* I have to =(*/
-}
-
-.game-process-enabled .nipple {
-	/*display: block !important;*/
+	cursor: pointer;
 }
 
 .substate-maps .maps-wrapper,
@@ -447,6 +380,16 @@ input[type=submit],
 .substate-credits .credits-wrapper {
 	opacity: 1;
 	pointer-events: auto;
+}
+
+.credits-wrapper h2 {
+	margin-bottom: 40px;
+}
+
+.credits-wrapper p {
+	margin-bottom: 40px;
+	font-size: 1.5rem;
+	text-align: center;
 }
 
 .scores-table-wrapper {
@@ -486,14 +429,28 @@ input[type=submit],
 }
 
 .maps-wrapper {
-	overflow-y: scroll;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.maps-wrapper h2{
+	width: 100%;
+}
+.maps-wrapper p {
+	margin-right: 20px;
+}
+
+.map-wrapper img {
+	width: 70%;
 }
 
 .map-wrapper {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	margin: 20px 0;
+	flex-basis: 50%;
+	padding: 20px;
+	cursor: pointer;
 }
 
 .map-wrapper p{
@@ -512,35 +469,16 @@ input[type=submit],
 	transform: translate3d(0, 0, 0);
 }
 
-/*canvas,
-.nipple-wrapper,
-.nipple,
-.back,
-.front {
-	cursor: none;
-}*/
-
 h2 {
 	margin: 0.2rem 0;
 	font-size: 2.2rem;
+	text-align: center;
 }
 
 @font-face {
 	font-family: BRL;
 	src: url(../fonts/BRLNSR.TTF);
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*@media screen and (orientation:portrait) {*/
 
