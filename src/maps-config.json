@@ -51,7 +51,7 @@
 		"ocean": {
 			"name": "Ocean",
 			"mapType": 4,
-			"imagePath": "images/maps/map_snow.jpg",
+			"imagePath": "images/maps/map_ocean.jpg",
 			"rotation": false,
 			"hasSnow": false
 		}
