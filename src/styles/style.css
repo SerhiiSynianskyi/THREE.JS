@@ -29,11 +29,6 @@ button {
 	opacity: 0;
 	pointer-events: none;
 }
-.main-wrapper {
-	position: fixed;
-	width: 100%;
-	height: 100%;
-}
 
 .other-info {
 	position: absolute;
@@ -105,10 +100,13 @@ button {
 	display: none;
 }
 
-
-
-
 /*/////////// - GAME PREVIEW*/
+.main-wrapper {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+}
 
 .main-wrapper:before {
 	content: '';
@@ -117,8 +115,14 @@ button {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: rgba(0, 0, 0, 0);
-	transition: background 3s linear;
+	background: url('../images/preloader.gif') center / 10% no-repeat, rgba(0, 0, 0, 1);
+	z-index: 100;
+}
+.main-wrapper.loader {
+	pointer-events: auto;
+}
+.loader.main-wrapper:before {
+	background: none;
 	pointer-events: none;
 }
 
@@ -231,13 +235,13 @@ button {
 	right: 100%;
 	width: 345px;
 	height: 100%;
-	padding: 65px 0 0 130px;
+	padding: 3em 0 0 130px;
 	margin: 0;
 	background-color: rgba(0, 0, 0, 0.5);
 	color: white;
-	font: 700 28px/1 BRL;
+	font: 700 1.9em / 1 BRL;
 	letter-spacing: 5px;
-	box-shadow: 5px 0px 26px 8px rgba(0, 0, 0, 0.8);
+	box-shadow: 5px 0 26px 8px rgba(0, 0, 0, 0.8);
 	transform: translate3d(-100%, 0, 0) skew(-5deg);
 	transition: 0.5s linear transform;
 	cursor: pointer;
@@ -246,8 +250,8 @@ button {
 
 #main-menu li {
 	position: relative;
-	margin: 30px 0;
-	padding: 15px 0;
+	margin: 1.5em 0;
+	padding: 0.8em 0;
 	list-style: none;
 	text-transform: uppercase;
 	transform: skew(5deg) translate3d(0, 0, 0);
@@ -392,6 +396,10 @@ input[type=submit],
 	text-align: center;
 }
 
+.credits-wrapper a {
+	color: #f00;
+}
+
 .outher-table-wrapper {
 	height: 100%;
 }
@@ -450,6 +458,7 @@ input[type=submit],
 .maps-wrapper {
 	display: flex;
 	flex-wrap: wrap;
+	align-items: flex-start;
 }
 
 .maps-wrapper p {
@@ -474,7 +483,7 @@ input[type=submit],
 }
 
 .map-wrapper p{
-	font-size: 27px;
+	font-size: 1.7em;
 	text-transform: uppercase;
 	font-weight: 700;
 	pointer-events: none;
@@ -491,14 +500,32 @@ input[type=submit],
 
 h2 {
 	width: 100%;
-	margin-bottom: 40px;
-	font-size: 2.2rem;
+	margin: 0 0 1em;
+	font-size: 2.3rem;
 	text-align: center;
 }
 
 @font-face {
 	font-family: BRL;
 	src: url(../fonts/BRLNSR.TTF);
+}
+
+@media (min-height: 300px) {
+	body {
+		font-size: 8px;
+	}
+}
+
+@media (min-height: 600px) {
+	body {
+		font-size: 11px;
+	}
+}
+
+@media (min-height: 900px) {
+	body {
+		font-size: 16px;
+	}
 }
 
 /*@media screen and (orientation:portrait) {*/

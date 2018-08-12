@@ -135,6 +135,12 @@ window.onload = function() {
 		userSphereData = {
 			distacne: 0
 		};
+
+	let now,
+		fpsDelta,
+		then = Date.now(),
+		interval = 1000/60;
+
 	preInit();
 
 	function initScene() {
@@ -223,47 +229,52 @@ window.onload = function() {
 		if (isGameLoopRun) {
 			requestAnimationFrame(rendering);
 		}
-		if (userSphereData.angle) {
-			moveUserRobot(userRobot, userSphereData);
-		}
-
-		renderer.render(scene, camera);
-		if (stats) {
-			stats.update();
-		}
-		if (enemyRobotPrototype) {
-			enemyRobotPrototype.shader.uniforms['time'].value = .005 * (Date.now() - startDate);
-			enemyRobotPrototype.shader.uniforms['weight'].value = perNoizeWeight * 0.05;
-		}
-		if (gameState > 1) {
-			checkCollapse(userRobot, enemies, targetObject, robotParams, enemyParams, targetParams, sceneSize, scene, userData, scoresData, endGame, creationLogic); // A lot of parametrs
-			targetAnimation(targetObject, targetParams);
-			targetObject.rotation.y += 0.03;
-			if (cameraMode === 2) {
-				scene.rotation.y += 90 / Math.PI * 0.0001;
+		now = Date.now();
+		fpsDelta = now - then;
+		if (fpsDelta > interval) {
+			then = now - (fpsDelta % interval);
+			if (userSphereData.angle) {
+				moveUserRobot(userRobot, userSphereData);
 			}
-		}
-		if (gameState < 2 && camera.position.z > 910) {
-			animateSpleshScene(clock, gameState, camera, smokeParticles);
-			if (camera.position.z <= 910) {
-				gameState = 2;
-				buildSplashAnimation(scene, ['splashSubSceneDetect']);
-			}
-		}
-		//////////////////////////// PHYSICS
-		let deltaTime = clock.getDelta();
-		if (!moveUserSphere && userSphereData.distance > 0) {
-			userSphereData.distance -= 1;
-			Math.floor(userSphereData.distance);
-		}
-		if (!moveUserSphere && userSphereData.distance < 0) {
-			userSphereData.distance = 0;
-			isMovedViaJoystick = false;
-		}
 
-		let time = Date.now() * 0.00005;
-		if (maps[currentMap].hasSnow) {
-			renderSnow(time, scene);
+			renderer.render(scene, camera);
+			if (stats) {
+				stats.update();
+			}
+			if (enemyRobotPrototype) {
+				enemyRobotPrototype.shader.uniforms['time'].value = .005 * (Date.now() - startDate);
+				enemyRobotPrototype.shader.uniforms['weight'].value = perNoizeWeight * 0.05;
+			}
+			if (gameState > 1) {
+				checkCollapse(userRobot, enemies, targetObject, robotParams, enemyParams, targetParams, sceneSize, scene, userData, scoresData, endGame, creationLogic); // A lot of parametrs
+				targetAnimation(targetObject, targetParams);
+				targetObject.rotation.y += 0.03;
+				if (cameraMode === 2) {
+					scene.rotation.y += 90 / Math.PI * 0.0001;
+				}
+			}
+			if (gameState < 2 && camera.position.z > 910) {
+				animateSpleshScene(clock, gameState, camera, smokeParticles);
+				if (camera.position.z <= 910) {
+					gameState = 2;
+					buildSplashAnimation(scene, ['splashSubSceneDetect']);
+				}
+			}
+			//////////////////////////// PHYSICS
+			let deltaTime = clock.getDelta();
+			if (!moveUserSphere && userSphereData.distance > 0) {
+				userSphereData.distance -= 1;
+				Math.floor(userSphereData.distance);
+			}
+			if (!moveUserSphere && userSphereData.distance < 0) {
+				userSphereData.distance = 0;
+				isMovedViaJoystick = false;
+			}
+
+			let time = Date.now() * 0.00005;
+			if (maps[currentMap].hasSnow) {
+				renderSnow(time, scene);
+			}
 		}
 	}
 
@@ -479,7 +490,7 @@ window.onload = function() {
 	});
 
 	window.addEventListener('modelEvent', function(e) {
-
+		mainWrapper.classList.add('loader');
 	});
 
 	// window.addEventListener(deviceorientation, function() {

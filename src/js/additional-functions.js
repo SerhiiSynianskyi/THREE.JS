@@ -18,7 +18,7 @@ function getRandomInt(min, max) {
 
 function createBackgroundSound() {
 	let audio = new Audio(require('../media/Mega Drive - Converter.mp3'));
-	// audio.play();
+	audio.play();
 	audio.loop = true;
 }
 

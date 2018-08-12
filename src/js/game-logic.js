@@ -16,7 +16,7 @@ function enemyLogic(enemies, getRandomInt) {
 	let randomInterval = 2500;
 	enemies.forEach(function (item) {
 		randomInterval = randomInterval - 300;
-		let startMovingCoordinate = item.movingCoordinate
+		let startMovingCoordinate = item.movingCoordinate;
 		setInterval(function () {
 			if (!item.colapsed) {
 				item.movingCoordinate = getRandomInt(0, 3);
