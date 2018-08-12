@@ -10,7 +10,7 @@ function animateSpleshScene(clock, gameState, camera, smokeParticles) {
 }
 
 function buildSplashScreen(scene, smokeParticles) {
-	let splashSubSceneGeom = new THREE.CubeGeometry(1310, 1300, 1100),
+	let splashSubSceneGeom = new THREE.CubeGeometry(1010, 1300, 1100),
 		splashSubSceneMat = new THREE.MeshPhongMaterial({ color: 0x000000, side: THREE.DoubleSide }),
 		splashSubSceneMesh = new THREE.Mesh(splashSubSceneGeom, splashSubSceneMat);
 	splashSubSceneMesh.position.set(0, 0, 1300);
