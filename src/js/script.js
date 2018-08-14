@@ -62,10 +62,12 @@ window.onload = function() {
 		mapsWrapper = menuSubwrapper.getElementsByClassName('maps-wrapper')[0],
 		inputUserName = userForm.getElementsByClassName('user-name')[0],
 		nippleWrapper = document.getElementById('nipple-wrapper'),
-		fullScreen = mainWrapper.querySelector('.full-screen');
+		fullScreen = mainWrapper.querySelector('.full-screen'),
+		seetingsCheckboxes = mainWrapper.querySelector('.ckeckboxes-block');
 
 	let camera, renderer, targetObject, enemyRobotPrototype, userRobot, touchType, stats, controls, sceneBackground,
 		snowParticlesMesh,
+		backgroundMusic,
 		touchMode = false,
 		isGameLoopRun = false,
 		gameState = 0,
@@ -95,6 +97,11 @@ window.onload = function() {
 			name: '',
 			scores: 0
 		},
+		gameOptions = {
+			fpsMetter: false,
+			music: true,
+			keyboard: false
+		},
 		users = [],
 		enemies = [],
 		sceneSize = {
@@ -103,7 +110,7 @@ window.onload = function() {
 			maxX: 500,
 			minX: -500
 		},
-		currentMap =  'dark_dust',
+		currentMap = 'dark_dust',
 		maxDistance = 1200,
 		minDistance = 160,
 		clock = new THREE.Clock(),
@@ -119,7 +126,7 @@ window.onload = function() {
 			color: 'white',
 			size: 170,
 			fadeTime: 500,
-			restOpacity: 0.15,
+			restOpacity: 0.25,
 			position: {
 				right: '13%',
 				bottom: '20%'
@@ -221,9 +228,7 @@ window.onload = function() {
 
 	controls = createOrbitControl(camera, maxDistance, minDistance);
 	stats = new Stats();
-	window.fps.appendChild(stats.domElement);
-
-
+	window.fpsMetter.appendChild(stats.domElement);
 
 	function rendering() {
 		if (isGameLoopRun) {
@@ -383,7 +388,7 @@ window.onload = function() {
 	});
 	document.addEventListener('keydown', function(e) {
 		let moveType = checkKeyType(e);
-		if (moveType !== 'notype' && gameState === 3) {
+		if (moveType !== 'notype' && gameState === 3 && gameOptions.keyboard) {
 			isMovedViaKeyboard = true;
 			moveViaKeyboard(moveType, userBallBody, userRobot, userSphereData);
 		}
@@ -433,6 +438,39 @@ window.onload = function() {
 
 	function checkTrackBall() {
 		controls.enabled ? trackBallWrap.classList.add('active') : trackBallWrap.classList.remove('active');
+	}
+
+	function setSettings(e) {// TODO REFACTOR !!!!!!!!!!!!!!!!
+		switch (e.target.dataset.type) {
+			case 'fpsMode':
+				if (e.target.checked){
+					window.fpsMetter.classList.remove('removed');
+					gameOptions.fpsMetter = true;
+				}
+				else {
+					window.fpsMetter.classList.add('removed');
+					gameOptions.fpsMetter = false;
+				}
+				break;
+			case 'musicMode':
+				if(e.target.checked){
+					gameOptions.music = true;
+					backgroundMusic.muted = false;
+				} else {
+					gameOptions.music = false;
+					backgroundMusic.muted = true;
+				}
+				break;
+			case 'keyboardMode':
+				if(e.target.checked){
+					gameOptions.keyboard = true;
+				} else {
+					gameOptions.keyboard = false;
+				}
+				break;
+			default:
+				break;
+		}
 	}
 
 	menuIcon.addEventListener('click', function() {
@@ -507,7 +545,7 @@ window.onload = function() {
 	mainWrapper.addEventListener('click', function() {
 		if (gameState === 0) { // TODO refector this shit
 			gameState = 1;
-			createBackgroundSound();
+			backgroundMusic = createBackgroundSound();
 		}
 	});
 	console.timeEnd('userTime');
@@ -529,4 +567,5 @@ window.onload = function() {
 			}
 		}
 	});
+	seetingsCheckboxes.addEventListener('change', setSettings.bind(this));
 };

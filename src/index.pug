@@ -44,7 +44,7 @@ html(lang='en')
 					.score-data
 						p SCORES:
 						output.scores(name='scores')
-					#fps
+					#fpsMetter.removed
 				.end-game-wrapper
 					p.end-game-text you are defeated
 					output.end-game-scores
@@ -69,19 +69,41 @@ html(lang='en')
 						h2 SETTINGS
 						.inner-settings
 							.game-settings
-								.setting-item
-									p Scene effects
-								.setting-item
-									p FPS meter
-								.setting-item
-									p Enable music
-								.setting-item
-									p Shadows
+								.top-block
+									.setting-item
+										p Scene effects
+
+									.setting-item
+										p Shadows
+								.ckeckboxes-block
+									label.setting-ckeckbox
+										span.item-text FPS meter
+										input(type="checkbox" data-type="fpsMode")
+										span.checkmark
+									label.setting-ckeckbox
+										span.item-text Enable music
+										input(type="checkbox" checked="true" data-type="musicMode")
+										span.checkmark
+									label.setting-ckeckbox
+										span.item-text Enable keyboard
+										input(type="checkbox" data-type="keyboardMode")
+										span.checkmark
 							.music-selection
+								.setting-item
+									p Select music:
+									.music-list
+										p.item.selected Mega Drive - Converter
+										p.item
+										p.item
+										p.item
+										p.item
+										p.item
+										p.item
 						p.version v1.0.0
 					.subwrapper.credits-wrapper(data-subwrapper='credits')
 						h2 CREDITS
-						p In 2017 year I visited my first WSD in Kiev. This conference changed and inspired me....
+						p In 2017 year I visited my first WSD in Kiev.
+						p This conference changed and inspired me....
 						p This little game is my first experience in GameDev and WebGL technology.
 						p I hope you enjoy it and you will not be critical to all bugs in the user interface =)
 						p If you have any questions, wishes or offers, you can easily communicate with me and tell me your ideas <a href="mailto:kfzadrser@gmail.com">kfzadrser@gmail.com</a>

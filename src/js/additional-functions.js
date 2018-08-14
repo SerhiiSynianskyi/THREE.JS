@@ -17,9 +17,10 @@ function getRandomInt(min, max) {
 }
 
 function createBackgroundSound() {
-	let audio = new Audio(require('../media/Mega Drive - Converter.mp3'));
-	audio.play();
-	audio.loop = true;
+	let backgroundMusic = new Audio(require('../media/Mega Drive - Converter.mp3'));
+	backgroundMusic.play();
+	backgroundMusic.loop = true;
+	return backgroundMusic;
 }
 
 function parseMaps(maps, parentElement) {
