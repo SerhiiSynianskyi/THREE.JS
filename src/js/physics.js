@@ -1,8 +1,6 @@
 "use strict"
 
-export {createRigidBody, createPlane}
-
-function createRigidBody(threeObject, physicsShape, pos, scene, texture, bumpMap) {
+export function createRigidBody(threeObject, physicsShape, pos, scene, texture, bumpMap) {
 	let textureLoader,
 		bumpLoader;
 	threeObject.position.copy(pos);
@@ -21,7 +19,7 @@ function createRigidBody(threeObject, physicsShape, pos, scene, texture, bumpMap
 	return threeObject;
 }
 
-function createPlane(scene) {
+export function createPlane(scene) {
 	let pos = new THREE.Vector3().set(0, -25, 0),
 		planeMesh = new THREE.Mesh(new THREE.BoxGeometry(1010, 50, 1010, 1, 1, 1), new THREE.MeshStandardMaterial());
 	let fullPlaneMesh = createRigidBody(planeMesh, planeMesh, pos, scene, "images/textures/floorTexture.jpg", "images/textures/floorBumpMap.jpg");

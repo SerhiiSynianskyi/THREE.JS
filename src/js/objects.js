@@ -1,9 +1,8 @@
 "use strict";
 
-export {createSceneBackground, cubeGenerator, createEdges, createTargetObject, createEnemyRobot, createRobot, setSceneTexture }
 import {createRigidBody, createPlane} from './physics.js'
 
-function createSceneBackground(currentMap, maps) {
+export function createSceneBackground(currentMap, maps) {
 	let cubeGeometry = new THREE.CubeGeometry(6000, 6000, 6000),
 		cubeMat = setSceneTexture(currentMap, maps),
 		cubeMaterial = new THREE.MeshFaceMaterial(cubeMat),
@@ -20,12 +19,12 @@ function createCubeMesh(mapName, maps) {
 	return cubeSides;
 }
 
-function setSceneTexture(mapName, maps) {
+export function setSceneTexture(mapName, maps) {
 	let cubeScene = createCubeMesh(mapName, maps);
 	return cubeScene;
 }
 
-function cubeGenerator(obj, scene, cubeTexture) {
+export function cubeGenerator(obj, scene, cubeTexture) {
 	let pos = new THREE.Vector3().set(obj.x, obj.y, obj.z);
 	this.cubeGeom = new THREE.CubeGeometry(obj.w, obj.h, obj.d, 10, 15, 10);
 	this.cubeMat = new THREE.MeshStandardMaterial({
@@ -56,7 +55,7 @@ function cubeGenerator(obj, scene, cubeTexture) {
 	return this.cubeMesh;
 }
 
-function createEdges(scene) {
+export function createEdges(scene) {
 	let boxes = [{
 			w: 25,
 			h: 100,
@@ -100,7 +99,7 @@ function createEdges(scene) {
 	scene.add(edgesMeshes);
 }
 
-function createTargetObject() {
+export function createTargetObject() {
 	let giftGeom = new THREE.OctahedronBufferGeometry(40, 0);
 	let giftBump = new THREE.TextureLoader().load('images/textures/text.jpg');
 	let giftMat = new THREE.MeshStandardMaterial({
@@ -122,7 +121,7 @@ function createTargetObject() {
 	return giftMesh;
 }
 
-function createEnemyRobot(scene, robotParams, xVertex, xFragment) {
+export function createEnemyRobot(scene, robotParams, xVertex, xFragment) {
 	let laserGeo, shaderMat, uniforms, buffGeo, laserMesh,
 		enemyBody = {},
 		laserGeom = new THREE.TorusGeometry(48, 9, 40, 40),
@@ -182,7 +181,7 @@ function createEnemyRobot(scene, robotParams, xVertex, xFragment) {
 }
 
 
-function createRobot(scene, robotParams) { //            TODO REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+export function createRobot(scene, robotParams) { //            TODO REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	let manager = new THREE.LoadingManager(),
 		loader = new THREE.ImageLoader(manager),
 		totalBody = new THREE.Group(),

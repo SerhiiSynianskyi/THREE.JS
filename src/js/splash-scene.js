@@ -1,6 +1,4 @@
-export {animateSpleshScene, buildSplashScreen }
-
-function animateSpleshScene(clock, gameState, camera, smokeParticles) {
+export function animateSpleshScene(clock, gameState, camera, smokeParticles) {
 	let newDelta = clock.getDelta();
 	evolveSmoke(smokeParticles, newDelta);
 	if (gameState === 1) {
@@ -9,7 +7,7 @@ function animateSpleshScene(clock, gameState, camera, smokeParticles) {
 	}
 }
 
-function buildSplashScreen(scene, smokeParticles) {
+export function buildSplashScreen(scene, smokeParticles) {
 	let splashSubSceneGeom = new THREE.CubeGeometry(1010, 1300, 1100),
 		splashSubSceneMat = new THREE.MeshPhongMaterial({ color: 0x000000, side: THREE.DoubleSide }),
 		splashSubSceneMesh = new THREE.Mesh(splashSubSceneGeom, splashSubSceneMat);

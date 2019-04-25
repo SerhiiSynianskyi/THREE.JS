@@ -1,4 +1,5 @@
 "use strict";
+import * as gameConfig from '../game-config.json'
 import { animateSpleshScene, buildSplashScreen } from './splash-scene.js'
 import { createRigidBody, createPlane } from './physics.js'
 import {
@@ -17,7 +18,8 @@ import {
 	createBackgroundSound,
 	parseMaps,
 	createSnow,
-	renderSnow
+	renderSnow,
+	isMobileDevice
 } from './additional-functions.js'
 import {
 	addLights,
@@ -100,7 +102,8 @@ window.onload = function() {
 		gameOptions = {
 			fpsMetter: false,
 			music: true,
-			keyboard: false
+			keyboard: false,
+			graphicQuolity : {}
 		},
 		users = [],
 		enemies = [],
@@ -151,6 +154,7 @@ window.onload = function() {
 	preInit();
 
 	function initScene() {
+		gameOptions.graphicQuolity = isMobileDevice() ? gameConfig.settings.graphicQuolity.low : gameConfig.settings.graphicQuolity.medium;
 		camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 10000);
 		renderer = new THREE.WebGLRenderer({ antialias: true }); // antialias - сглаживаем ребра
 		camera.position.set(0, 0, 1530);
@@ -306,7 +310,6 @@ window.onload = function() {
 		userData.scores = 0;
 		userSphereData = '';
 		removeObjects(scene, ['giftDetected']);
-
 		showScores(scoresData, userData);
 		scene.children.forEach(function(item, index, arr) {
 			if (item.robot || item.giftDetected) {
@@ -355,7 +358,7 @@ window.onload = function() {
 	}
 
 	function preBuild() {
-		addLights(scene);
+		addLights(scene, gameOptions.graphicQuolity.lightShadowMapSize);
 		mainWrapper.classList.remove('stop-game');
 		parseMaps(maps, mapsWrapper);
 		snowParticlesMesh = createSnow();

@@ -1,10 +1,9 @@
 "use strict";
 
-export { checkKeyType, menuInteraction }
 import {
 	buildScores
 } from './additional-functions.js'
-function checkKeyType(e) {
+export function checkKeyType(e) {
 	let moveType = 'notype';
 	switch (e.key) {
 		case '8':
@@ -50,7 +49,7 @@ function checkKeyType(e) {
 	return moveType;
 }
 
-function menuInteraction(type, mainWrapper, mainMenu, menuSubwrapper, scene, event, users, scoresTable, nippleWrapper) {
+export function menuInteraction(type, mainWrapper, mainMenu, menuSubwrapper, scene, event, users, scoresTable, nippleWrapper) {
 	switch (type) {
 		case 'continue':
 			mainWrapper.classList.remove('open-menu');

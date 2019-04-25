@@ -1,29 +1,27 @@
 "use strict";
 
-export {setTargetColor, showScores, getRandomInt, createBackgroundSound, parseMaps, createSnow, renderSnow, buildScores}
-
-function setTargetColor(target, arr) {
+export function setTargetColor(target, arr) {
 	target.material.color.b = arr[0];
 	target.material.color.g = arr[1];
 	target.material.color.r = arr[2];
 }
 
-function showScores(_scoresData, _userData) {
+export function showScores(_scoresData, _userData) {
 	_scoresData.value = _userData.scores;
 }
 
-function getRandomInt(min, max) {
+export function getRandomInt(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function createBackgroundSound() {
+export function createBackgroundSound() {
 	let backgroundMusic = new Audio(require('../media/Mega Drive - Converter.mp3'));
-	backgroundMusic.play();
+	// backgroundMusic.play();
 	backgroundMusic.loop = true;
 	return backgroundMusic;
 }
 
-function parseMaps(maps, parentElement) {
+export function parseMaps(maps, parentElement) {
 	let mapsSubWrapper = document.createDocumentFragment();
 	let mapsNames = Object.keys(maps);
 	mapsNames.forEach(function (item) {
@@ -42,7 +40,7 @@ function parseMaps(maps, parentElement) {
 	parentElement.appendChild(mapsSubWrapper);
 }
 
-function buildScores(users, scoresTable) {
+export function buildScores(users, scoresTable) {
 	let sortedData = users.map(function (num) {
 		return num;
 	});
@@ -60,7 +58,7 @@ function buildScores(users, scoresTable) {
 }
 
 
-function createSnow() {
+export function createSnow() {
 	let snowGeom = new THREE.Geometry(),
 		snowMesh = new THREE.Group(),
 		materials = [];
@@ -110,7 +108,7 @@ function createSnow() {
 	return snowMesh;
 }
 
-function renderSnow(time, scene) {
+export function renderSnow(time, scene) {
 	for (let j = 0; j < scene.children.length; j++) {
 		let object = scene.children[j];
 		if (object.hasOwnProperty('isSnowObject')) {
@@ -121,4 +119,8 @@ function renderSnow(time, scene) {
 			}
 		}
 	}
+}
+
+export function isMobileDevice() {
+	return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('Mobile') !== -1);
 }

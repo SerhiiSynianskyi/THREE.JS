@@ -2,7 +2,6 @@
 
 import {rotateAroundWorldAxis} from "./scene-functions";
 
-export {enemyLogic, enemyAnimation, targetAnimation, targetLogic, moveViaKeyboard, checkCollapse, moveUserRobot}
 import {
 	setTargetColor,
 	showScores,
@@ -12,7 +11,7 @@ import {
 } from './additional-functions.js'
 
 /////////////////////////////////////////// ENEMY
-function enemyLogic(enemies, getRandomInt) {
+export function enemyLogic(enemies, getRandomInt) {
 	let randomInterval = 2500;
 	enemies.forEach(function (item) {
 		randomInterval = randomInterval - 300;
@@ -28,7 +27,7 @@ function enemyLogic(enemies, getRandomInt) {
 	});
 }
 
-function enemyAnimation(enemy, _sceneSize) {
+export function enemyAnimation(enemy, _sceneSize) {
 	switch (enemy.movingCoordinate) {
 		case 0:
 			if (enemy.position.z >= _sceneSize.mixZ + 60) {
@@ -55,7 +54,7 @@ function enemyAnimation(enemy, _sceneSize) {
 
 /////////////////////////////////////////// TARGET
 
-function targetAnimation(object, params) {
+export function targetAnimation(object, params) {
 	if (params.targetState === 1) {
 		if (object.scale.x <= 1) {
 			object.scale.x += 0.03;
@@ -80,7 +79,7 @@ function targetAnimation(object, params) {
 	}
 }
 
-function targetLogic(state, scene, object, targetParams) {
+export function targetLogic(state, scene, object, targetParams) {
 	let _scene = scene;
 	switch (state) { ////////////// - TODO better to use onserver
 		case 0:
@@ -119,7 +118,7 @@ function _limitMovement(userRobotPosition, axis, value, maxSceneLimit, minSceneL
 	}
 }
 
-function moveUserRobot(userRobot, controlData) {
+export function moveUserRobot(userRobot, controlData) {
 	let worldXAxis = new THREE.Vector3(Math.cos(controlData.angle.radian) / 10, 0, -Math.sin(controlData.angle.radian) / 10);
 	let xAxis = Math.cos(controlData.angle.radian),
 		yAxis = -Math.sin(controlData.angle.radian);
@@ -132,7 +131,7 @@ function moveUserRobot(userRobot, controlData) {
 	rotateAroundWorldAxis(userRobot.children[0], worldXAxis, controlData.distance / 700)
 }
 
-function moveViaKeyboard(program, userBallBody, userRobot, userSphereData) {
+export function moveViaKeyboard(program, userBallBody, userRobot, userSphereData) {
 	// 90deg = 1.5708rad
 	let radians = 1.5708;
 	userSphereData = {
@@ -181,7 +180,7 @@ function moveViaKeyboard(program, userBallBody, userRobot, userSphereData) {
 
 /////////////////////////////////////////// COLLAPSE
 
-function checkCollapse(userRobot, enemyRobots, target, robotParams, enemyParams, targetParams, sceneSize, scene, userData, scoresData, endGame, creationLogic) { // A lot of parametrs
+export function checkCollapse(userRobot, enemyRobots, target, robotParams, enemyParams, targetParams, sceneSize, scene, userData, scoresData, endGame, creationLogic) { // A lot of parametrs
 	let enemyBodyX,
 		enemyBodyZ,
 		userX = userRobot.position.x,

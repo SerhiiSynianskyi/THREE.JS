@@ -1,14 +1,14 @@
 {
 	"settings": {
-		"graphic_quolity": {
+		"graphicQuolity": {
 			"low": {
-
+				"lightShadowMapSize": 128
 			},
 			"medium": {
-
+				"lightShadowMapSize": 512
 			},
 			"high": {
-
+				"lightShadowMapSize": 2048
 			}
 		}
 	}
