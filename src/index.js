@@ -1,5 +1,10 @@
 import './styles/normalize.css'
-import './styles/style.css'
+import './styles/styles.css'
+import './styles/maps.css'
+import './styles/menus-controls.css'
+import './styles/scores.css'
+import './styles/settings.css'
+
 import './js/vendor/OBJLoader.js'
 import './js/vendor/OrbitControls.js'
 import './js/script.js'

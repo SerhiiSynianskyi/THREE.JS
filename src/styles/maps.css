@@ -1,0 +1,37 @@
+.maps-wrapper {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+}
+
+.maps-wrapper p {
+	margin-right: 20px;
+}
+
+.map-wrapper img {
+	width: 70%;
+}
+
+.map-wrapper {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-basis: 50%;
+	padding: 20px;
+	cursor: pointer;
+}
+
+.map-wrapper:last-of-type {
+	pointer-events: none;
+}
+
+.map-wrapper p {
+	font-size: 1.7rem;
+	text-transform: uppercase;
+	font-weight: 700;
+	pointer-events: none;
+}
+
+.map-wrapper .map-image {
+	pointer-events: none;
+}

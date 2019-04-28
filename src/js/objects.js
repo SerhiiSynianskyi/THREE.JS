@@ -26,7 +26,7 @@ export function setSceneTexture(mapName, maps) {
 
 export function cubeGenerator(obj, scene, cubeTexture) {
 	let pos = new THREE.Vector3().set(obj.x, obj.y, obj.z);
-	this.cubeGeom = new THREE.CubeGeometry(obj.w, obj.h, obj.d, 10, 15, 10);
+	this.cubeGeom = new THREE.CubeGeometry(obj.w, obj.h, obj.d, 1, 1, 1);
 	this.cubeMat = new THREE.MeshStandardMaterial({
 		map: cubeTexture,
 		overdraw: true,
@@ -124,7 +124,7 @@ export function createTargetObject() {
 export function createEnemyRobot(scene, robotParams, xVertex, xFragment) {
 	let laserGeo, shaderMat, uniforms, buffGeo, laserMesh,
 		enemyBody = {},
-		laserGeom = new THREE.TorusGeometry(48, 9, 40, 40),
+		laserGeom = new THREE.TorusGeometry(48, 9, 30, 30),
 		buffGeom = new THREE.BufferGeometry().fromGeometry(laserGeom);
 	let imgTexture = new Image;
 	imgTexture.src = "images/textures/laserTexture.jpg";

@@ -1,0 +1,56 @@
+.scores-table-wrapper {
+	height: 70%;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+.scores-table-wrapper::-webkit-scrollbar {
+	width: 1rem
+}
+
+.scores-table-wrapper::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.scores-table-wrapper::-webkit-scrollbar-thumb {
+	background-color: #999;
+	outline: 3px solid slategrey;
+	border-radius: 10px;
+}
+
+.scores-head-table {
+	padding-bottom: 10px;
+}
+
+.scores-table td,
+.scores-table th,
+.scores-head-table th {
+	font-size: 24px;
+	text-align: center;
+}
+
+.scores-table,
+.scores-head-table {
+	width: 100%;
+}
+
+.scores-head-table th,
+.scores-table th {
+	width: 10%;
+}
+
+.scores-head-table th:nth-of-type(2),
+.scores-table td:first-of-type {
+	width: 30%;
+}
+
+.scores-head-table th:last-of-type,
+.scores-table td:last-of-type {
+	width: 60%;
+}
+
+.score-data p,
+.score-data output {
+	font: 700 2.3rem/1 BRL;
+	color: white;
+}

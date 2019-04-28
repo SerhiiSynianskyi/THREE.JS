@@ -33,6 +33,9 @@ html(lang='en')
 							button.mode.active(data-mode='1')
 							button.mode(data-mode='2')
 							button.mode.full-screen
+						.score-data
+							p SCORES:
+							output.scores(name='scores')
 						button.track-ball
 					ul#main-menu
 						li(data-menu='continue') Continue
@@ -41,9 +44,7 @@ html(lang='en')
 						li(data-menu='settings') Settings
 						li(data-menu='credits') Credits
 						li(data-menu='exit') Exit game
-					.score-data
-						p SCORES:
-						output.scores(name='scores')
+
 					#fpsMetter.removed
 				.end-game-wrapper
 					p.end-game-text you are defeated
@@ -70,12 +71,25 @@ html(lang='en')
 						.inner-settings
 							.game-settings
 								.top-block
-									.setting-item
-										p Scene effects
-
-									.setting-item
-										p Shadows
+									h3 Graphic quality:
+									.quality-settings
+										label.quality-item
+											span.item-text Hight
+											input(name="quality" type="radio" value="hight" checked="checked")
+											span.radio-checkmark
+										label.quality-item
+											span.item-text Medium
+											input(name="quality" type="radio" value="medium")
+											span.radio-checkmark
+										label.quality-item
+											span.item-text Low
+											input(name="quality" type="radio" value="low" )
+											span.radio-checkmark
 								.ckeckboxes-block
+									label.setting-ckeckbox
+										span.item-text Shadows
+										input(type="checkbox" data-type="shadows")
+										span.checkmark
 									label.setting-ckeckbox
 										span.item-text FPS meter
 										input(type="checkbox" data-type="fpsMode")
@@ -90,7 +104,7 @@ html(lang='en')
 										span.checkmark
 							.music-selection
 								.setting-item
-									p Select music:
+									h3 Select music:
 									.music-list
 										p.item.selected Mega Drive - Converter
 										p.item
@@ -99,7 +113,7 @@ html(lang='en')
 										p.item
 										p.item
 										p.item
-						p.version v1.0.0
+						p.version v1.1.0
 					.subwrapper.credits-wrapper(data-subwrapper='credits')
 						h2 CREDITS
 						p In 2017 year I visited my first WSD in Kiev.
