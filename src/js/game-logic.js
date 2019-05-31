@@ -181,8 +181,12 @@ export function moveViaKeyboard(program, userBallBody, userRobot, userSphereData
 /////////////////////////////////////////// COLLAPSE
 
 export function checkCollapse(userRobot, enemyRobots, target, robotParams, enemyParams, targetParams, sceneSize, scene, userData, scoresData, endGame, creationLogic) { // A lot of parametrs
-	let enemyBodyX,
+	  let enemyBodyX,
+		enemyBodyXOuther,
+		enemyBodyXInner,
 		enemyBodyZ,
+		enemyBodyZOuther,
+		enemyBodyZInner,
 		userX = userRobot.position.x,
 		userZ = userRobot.position.z,
 		targetSize = target.geometry.parameters.radius,
@@ -205,18 +209,22 @@ export function checkCollapse(userRobot, enemyRobots, target, robotParams, enemy
 		let subArray = arr.map(function (subItem) {
 			return subItem;
 		});
+		// Compare current robot with other for collisions
 		subArray.splice(subArray.indexOf(item), 1);
-
 		if (item) {
 			enemyBodyX = item.position.x;
 			enemyBodyZ = item.position.z;
+			enemyBodyXOuther = enemyBodyX + fullEnemyBodySize;
+			enemyBodyXInner = enemyBodyX - fullEnemyBodySize;
+			enemyBodyZOuther = enemyBodyZ + fullEnemyBodySize;
+			enemyBodyZInner = enemyBodyZ - fullEnemyBodySize;
 		}
 		///////////////////////////////////////////// - user collapse
 		if ((userX + robotParams.bodySize >= enemyBodyX - enemyParams.bodySize + delta) && (userX - robotParams.bodySize <= enemyBodyX + enemyParams.bodySize - delta) && (userZ + robotParams.bodySize >= enemyBodyZ - enemyParams.bodySize + delta) && (userZ - robotParams.bodySize <= enemyBodyZ + enemyParams.bodySize - delta)) {
 			endGame();
 		}
 		///////////////////////////////////////////// - enemy and target collapse
-		if ((enemyBodyX + fullEnemyBodySize >= targetX - targetSize) && (enemyBodyX - fullEnemyBodySize <= targetX + targetSize) && (enemyBodyZ + fullEnemyBodySize >= targetZ - targetSize) && (enemyBodyZ - fullEnemyBodySize <= targetZ + targetSize)) {
+		if ((enemyBodyXOuther >= targetX - targetSize) && (enemyBodyXInner <= targetX + targetSize) && (enemyBodyZOuther >= targetZ - targetSize) && (enemyBodyZInner <= targetZ + targetSize)) {
 			if (targetParams.targetState !== 2) {
 				targetLogic(2, scene, target, targetParams);
 			}
@@ -225,17 +233,13 @@ export function checkCollapse(userRobot, enemyRobots, target, robotParams, enemy
 		///////////////////////////////////////////// - enemies collapse
 		subArray.forEach(function (subItem, subI, subArr) {
 			let basicRobot = item.movingCoordinate,
-				comparableRobot = subItem.movingCoordinate,
 				comparableRobotX = subItem.position.x,
-				comparableRobotZ = subItem.position.z,
-				collapsed;
-			if ((enemyBodyX + fullEnemyBodySize >= comparableRobotX - fullEnemyBodySize) && (enemyBodyX - fullEnemyBodySize <= comparableRobotX + fullEnemyBodySize) && (enemyBodyZ + fullEnemyBodySize >= comparableRobotZ - fullEnemyBodySize) && (enemyBodyZ - fullEnemyBodySize <= comparableRobotZ + fullEnemyBodySize)) {
-				collapsed = true;
+				comparableRobotZ = subItem.position.z;
+			if ((enemyBodyXOuther >= comparableRobotX - fullEnemyBodySize) && (enemyBodyXInner <= comparableRobotX + fullEnemyBodySize) && (enemyBodyZOuther >= comparableRobotZ - fullEnemyBodySize) && (enemyBodyZInner <= comparableRobotZ + fullEnemyBodySize)) {
 				item.movingCoordinate = Math.abs(3 - basicRobot);
 				subItem.movingCoordinate = Math.abs(1 - basicRobot);
 				item.collapsed = true;
 			} else {
-				collapsed = false;
 				item.collapsed = false;
 			}
 		});
